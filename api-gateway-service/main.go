@@ -9,21 +9,23 @@ import (
 
 	gohandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	hclog "github.com/hashicorp/go-hclog"
-	"github.com/isidora-stanic/ntp-projekat/product-service/handlers"
+	"github.com/hashicorp/go-hclog"
+	"github.com/isidora-stanic/ntp-projekat/api-gateway-service/handlers"
 	"github.com/nicholasjackson/env"
 )
 
-var bindAddress = env.String("BIND_ADDRESS", false, ":9090", "Bind address for the server")
+var bindAddress = env.String("BIND_ADDRESS", false, ":9091", "Bind address for the server")
 var logLevel = env.String("LOG_LEVEL", false, "debug", "Log output level for the server [debug, info, trace]")
 var basePath = env.String("BASE_PATH", false, "/tmp/images", "Base path to save images")
+
+
 
 func main() {
 	env.Parse()
 
 	l := hclog.New(
 		&hclog.LoggerOptions{
-			Name: "product-api",
+			Name: "api-gateway",
 			Level: hclog.LevelFromString(*logLevel),
 		},
 	)
@@ -35,22 +37,20 @@ func main() {
 	sm := mux.NewRouter()
 
 	getRouter := sm.Methods(http.MethodGet).Subrouter()
-	getRouter.HandleFunc("/api/products", ph.GetProducts)
-	getRouter.HandleFunc("/api/products/{id:[0-9]+}", ph.GetProduct)
-
-	putRouter := sm.Methods(http.MethodPut).Subrouter()
-	putRouter.HandleFunc("/api/products/{id:[0-9]+}", ph.UpdateProducts)
-	putRouter.Use(ph.MiddlewareValidateProduct)
-
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
-	postRouter.HandleFunc("/api/products", ph.AddProduct)
-	postRouter.Use(ph.MiddlewareValidateProduct)
-
+	putRouter := sm.Methods(http.MethodPut).Subrouter()
 	deleteRouter := sm.Methods(http.MethodDelete).Subrouter()
-	deleteRouter.HandleFunc("/api/products/{id:[0-9]+}", ph.DeleteProduct)
+	getRouter.Use(ph.MiddlewareInfo)
+	postRouter.Use(ph.MiddlewareInfo)
+	putRouter.Use(ph.MiddlewareInfo)
+	deleteRouter.Use(ph.MiddlewareInfo)
 
-	// todo: za expose fajla na serveru
-	getRouter.Handle("/images/default_tile.jpg", http.FileServer(http.Dir("./")))
+	// product-service routes
+	getRouter.HandleFunc("/api/products", ph.GetAllProducts)
+	getRouter.HandleFunc("/api/products/{id:[0-9]+}", ph.GetOneProduct)
+	postRouter.HandleFunc("/api/products", ph.AddProduct)
+	putRouter.HandleFunc("/api/products/{id:[0-9]+}", ph.UpdateProduct)
+	deleteRouter.HandleFunc("/api/products/{id:[0-9]+}", ph.DeleteProduct)
 
 	// CORS
 	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"http://localhost:3000"}))
