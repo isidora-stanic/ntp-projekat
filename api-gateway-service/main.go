@@ -34,6 +34,7 @@ func main() {
 
 	ph := handlers.NewProducts(sl)
 	uh := handlers.NewUsers(sl)
+	eh := handlers.NewEmails(sl)
 
 	sm := mux.NewRouter()
 
@@ -64,6 +65,9 @@ func main() {
 	putRouter.HandleFunc("/api/users/{id:[0-9]+}", uh.UpdateUser)
 	deleteRouter.HandleFunc("/api/users/{id:[0-9]+}", uh.DeleteUser)
 
+	// email-service routes
+	postRouter.HandleFunc("/api/email/send", eh.SendBasicEmail)
+
 	// CORS
 	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"http://localhost:3000"}))
 
@@ -71,9 +75,9 @@ func main() {
 		Addr: *bindAddress,
 		Handler: ch(sm),
 		ErrorLog: sl,
-		IdleTimeout: 120*time.Second,
-		ReadTimeout: 1*time.Second,
-		WriteTimeout: 1*time.Second,
+		// IdleTimeout: 120*time.Second,
+		// ReadTimeout: 1*time.Second,
+		// WriteTimeout: 1*time.Second,
 	}
 
 	go func() {

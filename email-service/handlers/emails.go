@@ -33,8 +33,6 @@ func (p *EmailBasicInfo) FromJSON(r io.Reader) error {
 
 func SendEmail(ei *EmailBasicInfo, rw http.ResponseWriter) {
 	// Sender data.
-	from := ei.From
-	// password := "extremely_secret_pass"
 
 	// Receiver email address.
 	to := []string{ei.To,}
@@ -61,18 +59,20 @@ func SendEmail(ei *EmailBasicInfo, rw http.ResponseWriter) {
 	})
 
 	// Sending email.
-	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, body.Bytes())
+	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, ei.From, to, body.Bytes())
 	if err != nil {
 		http.Error(rw, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	
+	rw.Write([]byte("Email successfuly sent"))
 }
 
 func (e *Email) SendBasicEmail(rw http.ResponseWriter, r *http.Request) {
 	e.l.Println("Handle sending basic email")
+	e.l.Println("EXCUSE ME1")
 
 	ei := EmailBasicInfo{}
+	e.l.Println("EXCUSE ME2")
 
 	err := ei.FromJSON(r.Body)
 	if err != nil {
