@@ -53,9 +53,6 @@ func main() {
 	deleteRouter := sm.Methods(http.MethodDelete).Subrouter()
 	deleteRouter.HandleFunc("/api/users/{id:[0-9]+}", uh.DeleteUser)
 
-	// todo: za expose fajla na serveru
-	getRouter.Handle("/images/default_tile.jpg", http.FileServer(http.Dir("./")))
-
 	// CORS
 	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"http://localhost:9091"}))
 

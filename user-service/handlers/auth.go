@@ -12,7 +12,7 @@ import (
 
 func Authorize(r *http.Request) (*jwt.Token, error) {
 	cookie := r.Header.Values("Authorization")
-	tokenString := strings.Split(cookie[0], " ")[1]
+	tokenString := strings.Split(cookie[0], "Bearer ")[1]
 
 	claims := data.Claims{}
 	token, err := jwt.ParseWithClaims(tokenString, &claims,

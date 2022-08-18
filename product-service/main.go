@@ -53,7 +53,7 @@ func main() {
 	getRouter.Handle("/images/default_tile.jpg", http.FileServer(http.Dir("./")))
 
 	// CORS
-	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"http://localhost:3000"}))
+	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"http://localhost:9091"}))
 
 	s := &http.Server{
 		Addr: *bindAddress,

@@ -33,6 +33,7 @@ func main() {
 	sl := l.StandardLogger(&hclog.StandardLoggerOptions{InferLevels: true})
 
 	ph := handlers.NewProducts(sl)
+	uh := handlers.NewUsers(sl)
 
 	sm := mux.NewRouter()
 
@@ -51,6 +52,17 @@ func main() {
 	postRouter.HandleFunc("/api/products", ph.AddProduct)
 	putRouter.HandleFunc("/api/products/{id:[0-9]+}", ph.UpdateProduct)
 	deleteRouter.HandleFunc("/api/products/{id:[0-9]+}", ph.DeleteProduct)
+
+	// user-service routes
+	getRouter.HandleFunc("/api/users", uh.GetAllUsers)
+	getRouter.HandleFunc("/api/users/{id:[0-9]+}", uh.GetOneUser)
+	getRouter.HandleFunc("/api/users/{id:[0-9]+}/ban", uh.BanUser)
+	getRouter.HandleFunc("/api/users/{id:[0-9]+}/permit", uh.PermitUser)
+	postRouter.HandleFunc("/api/users/login", uh.Login)
+	postRouter.HandleFunc("/api/users/register", uh.Register)
+	postRouter.HandleFunc("/api/users", uh.CreateUser)
+	putRouter.HandleFunc("/api/users/{id:[0-9]+}", uh.UpdateUser)
+	deleteRouter.HandleFunc("/api/users/{id:[0-9]+}", uh.DeleteUser)
 
 	// CORS
 	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"http://localhost:3000"}))
