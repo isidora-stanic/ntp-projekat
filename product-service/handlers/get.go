@@ -14,14 +14,11 @@ import (
 func (p *Products) GetProducts(rw http.ResponseWriter, r *http.Request) {
 	p.l.Println("Handle GET Products - now with db...")
 
-	lp := db.GetAll()//data.GetProducts()
-
-	p.l.Println(lp[len(lp)-1].Name)
+	lp := db.GetAll()
 
 	dlp := []models.ProductDTO{}
 	
 	for _, prod := range lp {
-		p.l.Println(prod.SKU)
 		dlp = append(dlp, prod.ToDTO())
 	}
 
@@ -32,7 +29,7 @@ func (p *Products) GetProduct(rw http.ResponseWriter, r *http.Request) {
 	p.l.Println("Handle GET Product - now with db...")
 
 	vars := mux.Vars(r)
-	id, err := strconv.ParseUint(vars["id"], 10, 32)//strconv.Atoi()
+	id, err := strconv.ParseUint(vars["id"], 10, 32)
 	if err != nil {
 		http.Error(rw, "Unable to convert id", http.StatusBadRequest)
 		return
@@ -41,7 +38,7 @@ func (p *Products) GetProduct(rw http.ResponseWriter, r *http.Request) {
 
 	p.l.Println("[DEBUG] get record id", uid)
 
-	prod, err := db.GetOne(uid)//data.FindProduct(id)
+	prod, err := db.GetOne(uid)
 
 	switch err {
 	case nil:

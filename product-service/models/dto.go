@@ -15,10 +15,34 @@ type ProductDTO struct {
 	ImageSrc    string  `json:"image"`
 	Price       float32 `json:"price" validate:"gt=0"`
 	SKU         string  `json:"sku" validate:"required,sku"`
+	Producer	string	`json:"producer"`
+	Brand		string	`json:"brand"`
+	Dimensions  string  `json:"dimensions"`
+	Type        string  `json:"type"`
+	Finish		string	`json:"finish"`
+	Purpose		string	`json:"purpose"`
+	Color		string	`json:"color"`
+	Series		string	`json:"series"`
+	BoxSize		float32	`json:"boxSize"`
 }
 
 func (p *ProductDTO) ToProduct() Product {
-	return Product{Name: p.Name, Description: p.Description, ImageSrc: p.ImageSrc, Price: p.Price, SKU: p.SKU}
+	return Product{
+		Name: p.Name, 
+		Description: p.Description, 
+		ImageSrc: p.ImageSrc, 
+		Price: p.Price, 
+		SKU: p.SKU,
+		Producer: p.Producer,
+		Brand: p.Brand,
+		Dimensions: p.Dimensions,
+		Type: p.Type,
+		Finish: p.Finish,
+		Purpose: p.Purpose,
+		Color: p.Color,
+		Series: p.Series,
+		BoxSize: p.BoxSize,
+	}
 }
 
 func (p *ProductDTO) ToJSON(w io.Writer) error {

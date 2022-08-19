@@ -1,19 +1,14 @@
 package db
 
 import (
-	"fmt"
-
 	"github.com/isidora-stanic/ntp-projekat/product-service/exceptions"
 	"github.com/isidora-stanic/ntp-projekat/product-service/models"
 )
 
 func GetAll() ([]models.Product) {
-	fmt.Println("Hello from repo")
 	var products []models.Product
 
 	Db.Find(&products)
-
-	fmt.Println(len(products))
 
 	return products
 }
