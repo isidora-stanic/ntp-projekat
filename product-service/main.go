@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
@@ -10,6 +11,7 @@ import (
 	gohandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	hclog "github.com/hashicorp/go-hclog"
+	"github.com/isidora-stanic/ntp-projekat/product-service/db"
 	"github.com/isidora-stanic/ntp-projekat/product-service/handlers"
 	"github.com/nicholasjackson/env"
 )
@@ -19,7 +21,11 @@ var logLevel = env.String("LOG_LEVEL", false, "debug", "Log output level for the
 var basePath = env.String("BASE_PATH", false, "/tmp/images", "Base path to save images")
 
 func main() {
+	fmt.Println("Hello there - this is changed version of service")
+	
 	env.Parse()
+
+	db.Init()
 
 	l := hclog.New(
 		&hclog.LoggerOptions{

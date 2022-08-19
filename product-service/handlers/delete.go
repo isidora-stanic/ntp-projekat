@@ -5,18 +5,24 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/isidora-stanic/ntp-projekat/product-service/data"
+	"github.com/isidora-stanic/ntp-projekat/product-service/db"
+	"github.com/isidora-stanic/ntp-projekat/product-service/exceptions"
 )
 
 func (p *Products) DeleteProduct(rw http.ResponseWriter, r *http.Request) {
+	p.l.Println("Handle DELETE Product - now with db...")
+
 	vars := mux.Vars(r)
-	Id, _ := strconv.Atoi(vars["id"])
+	id, err := strconv.ParseUint(vars["id"], 10, 32)//strconv.Atoi()
+	if err != nil {
+		http.Error(rw, "Unable to convert id", http.StatusBadRequest)
+		return
+	}
+	uid := uint32(id)
 
-	p.l.Println("Handle DELETE Product", Id)
+	err = db.Delete(uid)
 
-	err := data.DeleteProduct(Id)
-
-	if err == data.ErrProductNotFound {
+	if err == exceptions.ErrProductNotFound {
 		http.Error(rw, "Product not found", http.StatusNotFound)
 		return
 	}

@@ -5,12 +5,13 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/isidora-stanic/ntp-projekat/product-service/data"
+	"github.com/isidora-stanic/ntp-projekat/product-service/models"
 )
 
 func (p Products) MiddlewareValidateProduct(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-		prod := data.Product{}
+		p.l.Println("Hello form middleware")
+		prod := models.ProductDTO{}
 
 		err := prod.FromJSON(r.Body)
 		if err != nil {

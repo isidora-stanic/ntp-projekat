@@ -5,36 +5,48 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/isidora-stanic/ntp-projekat/product-service/data"
+	"github.com/isidora-stanic/ntp-projekat/product-service/db"
+	"github.com/isidora-stanic/ntp-projekat/product-service/exceptions"
+	"github.com/isidora-stanic/ntp-projekat/product-service/models"
+	"github.com/isidora-stanic/ntp-projekat/product-service/utils"
 )
 
 func (p *Products) GetProducts(rw http.ResponseWriter, r *http.Request) {
-	p.l.Println("Handle GET Products")
+	p.l.Println("Handle GET Products - now with db...")
 
-	lp := data.GetProducts()
+	lp := db.GetAll()//data.GetProducts()
 
-	err := lp.ToJSON(rw)
-	if err != nil {
-		http.Error(rw, "Unable to marshal json", http.StatusInternalServerError)
+	p.l.Println(lp[len(lp)-1].Name)
+
+	dlp := []models.ProductDTO{}
+	
+	for _, prod := range lp {
+		p.l.Println(prod.SKU)
+		dlp = append(dlp, prod.ToDTO())
 	}
+
+	utils.ReturnResponseAsJson(rw, dlp)
 }
 
 func (p *Products) GetProduct(rw http.ResponseWriter, r *http.Request) {
+	p.l.Println("Handle GET Product - now with db...")
+
 	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
+	id, err := strconv.ParseUint(vars["id"], 10, 32)//strconv.Atoi()
 	if err != nil {
 		http.Error(rw, "Unable to convert id", http.StatusBadRequest)
 		return
 	}
+	uid := uint32(id)
 
-	p.l.Println("[DEBUG] get record id", id)
+	p.l.Println("[DEBUG] get record id", uid)
 
-	prod, _, err := data.FindProduct(id)
+	prod, err := db.GetOne(uid)//data.FindProduct(id)
 
 	switch err {
 	case nil:
 
-	case data.ErrProductNotFound:
+	case exceptions.ErrProductNotFound:
 		p.l.Println("[ERROR] fetching product", err)
 		http.Error(rw, "Product not found", http.StatusNotFound)
 		return
@@ -44,8 +56,5 @@ func (p *Products) GetProduct(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = prod.ToJSON(rw)
-	if err != nil {
-		http.Error(rw, "Unable to marshal json", http.StatusInternalServerError)
-	}
+	utils.ReturnResponseAsJson(rw, prod.ToDTO())
 }
