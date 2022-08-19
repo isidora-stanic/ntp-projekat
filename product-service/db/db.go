@@ -37,7 +37,7 @@ var Db *gorm.DB
 var err error
 
 func Init() {
-	connectionString := "user=postgres password=password dbname=crud sslmode=disable port=5432 host=localhost"
+	connectionString := "user=postgres password=password dbname=product_db sslmode=disable port=5432 host=localhost"
 	dialect := "postgres"
 
 	Db, err = gorm.Open(dialect, connectionString)
@@ -48,7 +48,7 @@ func Init() {
 		fmt.Println("Connection to DB successfull.")
 	}
 
-	Db.DropTable("products")
+	Db.DropTableIfExists("products")
 	Db.AutoMigrate(&models.Product{})
 
 	for _, product := range products {

@@ -7,14 +7,16 @@ import (
 	"strings"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/isidora-stanic/ntp-projekat/user-service/data"
+	"github.com/isidora-stanic/ntp-projekat/user-service/db"
+	"github.com/isidora-stanic/ntp-projekat/user-service/exceptions"
+	"github.com/isidora-stanic/ntp-projekat/user-service/models"
 )
 
 func Authorize(r *http.Request) (*jwt.Token, error) {
 	cookie := r.Header.Values("Authorization")
 	tokenString := strings.Split(cookie[0], "Bearer ")[1]
 
-	claims := data.Claims{}
+	claims := models.Claims{}
 	token, err := jwt.ParseWithClaims(tokenString, &claims,
 		func(t *jwt.Token) (interface{}, error) {
 			return jwtKey, nil
@@ -27,12 +29,12 @@ func (u *Users) AuthorizeAdmin(rw http.ResponseWriter, req *http.Request) {
 
 	token, err := Authorize(req)
 
-	if err != nil || !token.Valid || token.Claims.(*data.Claims).Role != data.Admin {
+	if err != nil || !token.Valid || token.Claims.(*models.Claims).Role != models.ADMIN {
 		http.Error(rw, "Authorization has failed", http.StatusUnauthorized)
 		return
 	}
 
-	json.NewEncoder(rw).Encode(data.ResponseWithMessage{Message: "Authorization succeeded"})
+	json.NewEncoder(rw).Encode(models.ResponseWithMessage{Message: "Authorization succeeded"})
 }
 
 func (u *Users) AuthorizeRegUser(rw http.ResponseWriter, req *http.Request) {
@@ -40,25 +42,25 @@ func (u *Users) AuthorizeRegUser(rw http.ResponseWriter, req *http.Request) {
 
 	token, err := Authorize(req)
 
-	if err != nil || !token.Valid || token.Claims.(*data.Claims).Role != data.RegUser {
+	if err != nil || !token.Valid || token.Claims.(*models.Claims).Role != models.REGUSER {
 		http.Error(rw, "Authorization has failed", http.StatusUnauthorized)
 		return
 	}
 
-	json.NewEncoder(rw).Encode(data.ResponseWithMessage{Message: "Authorization succeeded"})
+	json.NewEncoder(rw).Encode(models.ResponseWithMessage{Message: "Authorization succeeded"})
 }
 
-func GetAuthenticatedUser(r *http.Request) (*data.User, error) {
+func GetAuthenticatedUser(r *http.Request) (*models.User, error) {
 	token, err := Authorize(r)
 	if err != nil || !token.Valid {
 		return nil, err
 	}
-	userId := token.Claims.(*data.Claims).ID
-	user, _, err := data.FindUser(userId)
+	userId := token.Claims.(*models.Claims).ID
+	user, err := db.GetOne(userId)
 	if err != nil {
-		return nil, data.ErrUserNotFound
+		return nil, exceptions.ErrUserNotFound
 	}
-	return user, nil
+	return &user, nil
 }
 
 // todo: authorization wrapper for handlers
@@ -99,7 +101,7 @@ func (ea *EnsureAuthAdmin) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
         return
     }
 
-	if user.Role != data.Admin {
+	if user.Role != models.ADMIN {
 		http.Error(rw, "Unatuhorised", http.StatusUnauthorized)
         return
 	}

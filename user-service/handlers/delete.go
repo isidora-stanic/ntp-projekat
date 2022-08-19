@@ -5,18 +5,24 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/isidora-stanic/ntp-projekat/user-service/data"
+	"github.com/isidora-stanic/ntp-projekat/user-service/db"
+	"github.com/isidora-stanic/ntp-projekat/user-service/exceptions"
 )
 
 func (p *Users) DeleteUser(rw http.ResponseWriter, r *http.Request) {
+	p.l.Println("Handle DELETE User - now with db...")
+
 	vars := mux.Vars(r)
-	Id, _ := strconv.Atoi(vars["id"])
+	id, err := strconv.ParseUint(vars["id"], 10, 32)//strconv.Atoi()
+	if err != nil {
+		http.Error(rw, "Unable to convert id", http.StatusBadRequest)
+		return
+	}
+	uid := uint32(id)
 
-	p.l.Println("Handle DELETE User", Id)
+	err = db.Delete(uid)
 
-	err := data.DeleteUser(Id)
-
-	if err == data.ErrUserNotFound {
+	if err == exceptions.ErrUserNotFound {
 		http.Error(rw, "User not found", http.StatusNotFound)
 		return
 	}

@@ -5,37 +5,48 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/isidora-stanic/ntp-projekat/user-service/data"
+	"github.com/isidora-stanic/ntp-projekat/user-service/db"
+	"github.com/isidora-stanic/ntp-projekat/user-service/exceptions"
+	"github.com/isidora-stanic/ntp-projekat/user-service/models"
+	"github.com/isidora-stanic/ntp-projekat/user-service/utils"
 )
 
 func (p *Users) GetUsers(rw http.ResponseWriter, r *http.Request) {
-	p.l.Println("Handle GET Users")
+	p.l.Println("Handle GET Users - now with db...")
 
-	lp := data.GetUsers()
+	lp := db.GetAll()//data.GetUsers()
 
-	err := lp.ToJSON(rw)
-	if err != nil {
-		http.Error(rw, "Unable to marshal json", http.StatusInternalServerError)
-		return
+	p.l.Println(lp[len(lp)-1].FirstName)
+
+	dlp := []models.UserDTO{}
+	
+	for _, prod := range lp {
+		p.l.Println(prod.FirstName)
+		dlp = append(dlp, prod.ToDTO())
 	}
+
+	utils.ReturnResponseAsJson(rw, dlp)
 }
 
 func (p *Users) GetUser(rw http.ResponseWriter, r *http.Request) {
+	p.l.Println("Handle GET User - now with db...")
+
 	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
+	id, err := strconv.ParseUint(vars["id"], 10, 32)//strconv.Atoi()
 	if err != nil {
 		http.Error(rw, "Unable to convert id", http.StatusBadRequest)
 		return
 	}
+	uid := uint32(id)
 
-	p.l.Println("[DEBUG] get record id", id)
+	p.l.Println("[DEBUG] get record id", uid)
 
-	prod, _, err := data.FindUser(id)
+	prod, err := db.GetOne(uid)//data.FindUser(id)
 
 	switch err {
 	case nil:
 
-	case data.ErrUserNotFound:
+	case exceptions.ErrUserNotFound:
 		p.l.Println("[ERROR] fetching User", err)
 		http.Error(rw, "User not found", http.StatusNotFound)
 		return
@@ -45,24 +56,23 @@ func (p *Users) GetUser(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = prod.ToJSON(rw)
-	if err != nil {
-		http.Error(rw, "Unable to marshal json", http.StatusInternalServerError)
-		return
-	}
+	utils.ReturnResponseAsJson(rw, prod.ToDTO())
 }
 
 func (p *Users) BanUser(rw http.ResponseWriter, r *http.Request) {
+	p.l.Println("Handle GET User [BAN] - now with db...")
+
 	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
+	id, err := strconv.ParseUint(vars["id"], 10, 32)//strconv.Atoi()
 	if err != nil {
 		http.Error(rw, "Unable to convert id", http.StatusBadRequest)
 		return
 	}
+	uid := uint32(id)
 
-	p.l.Println("[DEBUG] get record id", id)
+	p.l.Println("[DEBUG] get record id", uid)
 
-	prod, _, err := data.FindUser(id)
+	prod, err := db.GetOne(uid)//data.FindUser(id)
 
 	switch err {
 	case nil:
@@ -74,7 +84,7 @@ func (p *Users) BanUser(rw http.ResponseWriter, r *http.Request) {
 			return
 		}
 		break
-	case data.ErrUserNotFound:
+	case exceptions.ErrUserNotFound:
 		p.l.Println("[ERROR] fetching User", err)
 		http.Error(rw, "User not found", http.StatusNotFound)
 		return
@@ -84,24 +94,25 @@ func (p *Users) BanUser(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = prod.ToJSON(rw)
-	if err != nil {
-		http.Error(rw, "Unable to marshal json", http.StatusInternalServerError)
-		return
-	}
+	saved, err := db.Update(uid, prod)
+
+	utils.ReturnResponseAsJson(rw, saved.ToDTO())
 }
 
 func (p *Users) PermitUser(rw http.ResponseWriter, r *http.Request) {
+	p.l.Println("Handle GET User [PERMIT] - now with db...")
+
 	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
+	id, err := strconv.ParseUint(vars["id"], 10, 32)//strconv.Atoi()
 	if err != nil {
 		http.Error(rw, "Unable to convert id", http.StatusBadRequest)
 		return
 	}
+	uid := uint32(id)
 
-	p.l.Println("[DEBUG] get record id", id)
+	p.l.Println("[DEBUG] get record id", uid)
 
-	prod, _, err := data.FindUser(id)
+	prod, err := db.GetOne(uid)//data.FindUser(id)
 
 	switch err {
 	case nil:
@@ -113,7 +124,7 @@ func (p *Users) PermitUser(rw http.ResponseWriter, r *http.Request) {
 			return
 		}
 		break
-	case data.ErrUserNotFound:
+	case exceptions.ErrUserNotFound:
 		p.l.Println("[ERROR] fetching User", err)
 		http.Error(rw, "User not found", http.StatusNotFound)
 		return
@@ -123,9 +134,7 @@ func (p *Users) PermitUser(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = prod.ToJSON(rw)
-	if err != nil {
-		http.Error(rw, "Unable to marshal json", http.StatusInternalServerError)
-		return
-	}
+	saved, err := db.Update(uid, prod)
+
+	utils.ReturnResponseAsJson(rw, saved.ToDTO())
 }

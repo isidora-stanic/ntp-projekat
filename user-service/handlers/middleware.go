@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/isidora-stanic/ntp-projekat/user-service/data"
+	"github.com/isidora-stanic/ntp-projekat/user-service/models"
 )
 
 func (p Users) MiddlewareValidateUser(next http.Handler) http.Handler {
@@ -14,7 +14,7 @@ func (p Users) MiddlewareValidateUser(next http.Handler) http.Handler {
 		route := strings.TrimPrefix(r.URL.Path, "/api/users/")
 		if route == "login" {
 			p.l.Println("Handling credentials in the middleware")
-			cred := data.Credentials{}
+			cred := models.Credentials{}
 
 			err := cred.FromJSON(r.Body)
 			if err != nil {
@@ -40,7 +40,7 @@ func (p Users) MiddlewareValidateUser(next http.Handler) http.Handler {
 			return
 		} else {
 			p.l.Println("Handling user in the middleware")
-			prod := data.User{}
+			prod := models.UserDTO{}
 
 			err := prod.FromJSON(r.Body)
 			if err != nil {

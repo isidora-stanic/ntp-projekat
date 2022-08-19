@@ -10,6 +10,7 @@ import (
 	gohandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	hclog "github.com/hashicorp/go-hclog"
+	"github.com/isidora-stanic/ntp-projekat/user-service/db"
 	"github.com/isidora-stanic/ntp-projekat/user-service/handlers"
 	"github.com/nicholasjackson/env"
 )
@@ -20,6 +21,8 @@ var basePath = env.String("BASE_PATH", false, "/tmp/images", "Base path to save 
 
 func main() {
 	env.Parse()
+
+	db.Init()
 
 	l := hclog.New(
 		&hclog.LoggerOptions{
