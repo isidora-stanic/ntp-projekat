@@ -114,6 +114,44 @@ func (p *Products) DeleteProduct(rw http.ResponseWriter, r *http.Request) {
 	utils.DelegateResponse(response, rw)
 }
 
+func (p *Products) GetFilterOptions(rw http.ResponseWriter, r *http.Request) {
+	utils.SetupResponse(&rw, r)
+
+	response, err := http.Get(
+		utils.ProductServiceRoot.Next().Host + ProductService + "/filter-options")
+
+	if err != nil {
+		rw.WriteHeader(http.StatusGatewayTimeout)
+		return
+	}
+
+	utils.DelegateResponse(response, rw)
+}
+
+func (p *Products) GetFilteredPaginated(rw http.ResponseWriter, r *http.Request) {
+	utils.SetupResponse(&rw, r)
+
+	page := r.URL.Query().Get("page")
+	pageSize := r.URL.Query().Get("page_size")
+
+	req, _ := http.NewRequest(http.MethodPost,
+		utils.ProductServiceRoot.Next().Host + ProductService + "/filter?page="+page+"&page_size="+pageSize,
+		r.Body)
+
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	response, err := client.Do(req)
+
+	if err != nil {
+		rw.WriteHeader(http.StatusGatewayTimeout)
+		return
+	}
+
+	utils.DelegateResponse(response, rw)
+}
+
 func (p Products) MiddlewareInfo(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		p.l.Println("[INFO] ...redirecting to service for: " + strings.Split(r.URL.Path, "/api/")[1])

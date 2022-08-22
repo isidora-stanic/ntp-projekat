@@ -35,6 +35,7 @@ func main() {
 	ph := handlers.NewProducts(sl)
 	uh := handlers.NewUsers(sl)
 	eh := handlers.NewEmails(sl)
+	rh := handlers.NewReviews(sl)
 
 	sm := mux.NewRouter()
 
@@ -50,6 +51,8 @@ func main() {
 	// product-service routes
 	getRouter.HandleFunc("/api/products", ph.GetAllProducts)
 	getRouter.HandleFunc("/api/products/{id:[0-9]+}", ph.GetOneProduct)
+	getRouter.HandleFunc("/api/products/filter-options", ph.GetFilterOptions)
+	postRouter.HandleFunc("/api/products/filter", ph.GetFilteredPaginated)
 	postRouter.HandleFunc("/api/products", ph.AddProduct)
 	putRouter.HandleFunc("/api/products/{id:[0-9]+}", ph.UpdateProduct)
 	deleteRouter.HandleFunc("/api/products/{id:[0-9]+}", ph.DeleteProduct)
@@ -68,8 +71,21 @@ func main() {
 	// email-service routes
 	postRouter.HandleFunc("/api/email/send", eh.SendBasicEmail)
 
+	// review-service routes
+	getRouter.HandleFunc("/api/reviews", rh.GetAllReviews)
+	getRouter.HandleFunc("/api/reviews/product/{id:[0-9]+}", rh.GetReviewsForProduct)
+	getRouter.HandleFunc("/api/reviews/user/{id:[0-9]+}", rh.GetReviewsByUser)
+	getRouter.HandleFunc("/api/reviews/rating/{id:[0-9]+}", rh.GetRatingForProduct)
+	postRouter.HandleFunc("/api/reviews", rh.AddReview)
+	deleteRouter.HandleFunc("/api/reviews/{id:[0-9]+}", rh.DeleteReview)
+
+
 	// CORS
-	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"http://localhost:3000"}))
+	ch := gohandlers.CORS(
+		gohandlers.AllowedOrigins([]string{"http://localhost:3000", "*"}),
+		gohandlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
+		gohandlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS", "PATCH", "DELETE"}),
+	)
 
 	s := &http.Server{
 		Addr: *bindAddress,
