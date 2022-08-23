@@ -16,12 +16,12 @@ func (p *Users) GetUsers(rw http.ResponseWriter, r *http.Request) {
 
 	lp := db.GetAll()//data.GetUsers()
 
-	p.l.Println(lp[len(lp)-1].FirstName)
+	// p.l.Println(lp[len(lp)-1].FirstName)
 
 	dlp := []models.UserDTO{}
 	
 	for _, prod := range lp {
-		p.l.Println(prod.FirstName)
+		// p.l.Println(prod.FirstName)
 		dlp = append(dlp, prod.ToDTO())
 	}
 

@@ -1,14 +1,22 @@
 import React from 'react'
-import AllProducts from '../product/AllProducts'
-import Footer from './Footer'
+import StickyFooter from './StickyFooter'
 import Navbar from './Navbar'
+import Box from '@mui/material/Box';
 
-const Layout = () => {
+const Layout = ({children}) => {
   return (
     <div style={{minHeight: '100%', height: '100%'}}>
-      <Navbar />
-      <AllProducts />
-      <Footer />
+      {/* <Navbar /> */}
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: '100vh',
+        }}
+      >
+      {children}
+      <StickyFooter />
+      </Box>
     </div>
   )
 }

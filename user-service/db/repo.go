@@ -10,12 +10,28 @@ import (
 )
 
 func GetAll() ([]models.User) {
-	fmt.Println("Hello from repo")
 	var users []models.User
 
 	Db.Find(&users)
 
 	fmt.Println(len(users))
+
+	return users
+}
+
+func GetAllNotDeleted() ([]models.User) {
+	var users []models.User
+
+	Db.Table("users").Where("deleted_at IS NULL").Find(&users)
+
+	for _, u := range(users) {
+		if u.DeletedAt != nil {
+			panic("aaaaaaaaa")
+		}
+		fmt.Println(u.Email, u.DeletedAt)
+	}
+
+	fmt.Println(users)
 
 	return users
 }
@@ -63,12 +79,16 @@ func Update(id uint32, p models.User) (models.User, error) {
 
 func Delete(id uint32) (error) {
 	found, err := GetOne(id)
+	fmt.Println("found to delete", found)
 
 	if err != nil {
 		return err
 	}
 
-	Db.Delete(&found)
+	Db.Delete(&models.User{}, id)
+
+	fmt.Println("after delete", found)
+
 
 	return nil
 }

@@ -4,11 +4,11 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-type UserRole int
+type UserRole string
 
 const (
-	ADMIN UserRole = 1
-	REGUSER  UserRole = 2
+	ADMIN UserRole = "ADMIN"
+	REGUSER  UserRole = "REGUSER"
 )
 
 type User struct {

@@ -4,7 +4,6 @@ extern crate rocket;
 mod db;
 
 use rocket::{routes, Rocket, Build};
-// use rocket::response::content::{self};
 use rocket::serde::json::Json;
 use db::ReviewCreateRequest;
 use std::{thread};

@@ -1,0 +1,15 @@
+.paging {
+    color: red
+}
+
+.paging__link {
+    color: blue
+}
+
+.paging__link--disabled {
+    color: lightgray
+}
+
+.paging__link--active {
+    color: darkgray
+}

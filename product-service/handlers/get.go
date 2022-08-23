@@ -12,7 +12,7 @@ import (
 )
 
 func (p *Products) GetProducts(rw http.ResponseWriter, r *http.Request) {
-	p.l.Println("Handle GET Products - now with db...")
+	p.l.Println("Handle GET Products")
 
 	lp := db.GetAll()
 
@@ -26,7 +26,7 @@ func (p *Products) GetProducts(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Products) GetProduct(rw http.ResponseWriter, r *http.Request) {
-	p.l.Println("Handle GET Product - now with db...")
+	p.l.Println("Handle GET Product")
 
 	vars := mux.Vars(r)
 	id, err := strconv.ParseUint(vars["id"], 10, 32)
@@ -54,4 +54,16 @@ func (p *Products) GetProduct(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.ReturnResponseAsJson(rw, prod.ToDTO())
+}
+
+func (p*Products) GetFilterOptions(rw http.ResponseWriter, r *http.Request) {
+	p.l.Println("Handle GET Product Filter Options")
+
+	filters, err := db.GetFilterOptions()
+
+	if err != nil {
+		http.Error(rw, err.Error(), http.StatusInternalServerError)
+	}
+
+	utils.ReturnResponseAsJson(rw, filters)
 }

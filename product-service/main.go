@@ -43,12 +43,14 @@ func main() {
 	getRouter := sm.Methods(http.MethodGet).Subrouter()
 	getRouter.HandleFunc("/api/products", ph.GetProducts)
 	getRouter.HandleFunc("/api/products/{id:[0-9]+}", ph.GetProduct)
+	getRouter.HandleFunc("/api/products/filter-options", ph.GetFilterOptions)
 
 	putRouter := sm.Methods(http.MethodPut).Subrouter()
 	putRouter.HandleFunc("/api/products/{id:[0-9]+}", ph.UpdateProducts)
 	putRouter.Use(ph.MiddlewareValidateProduct)
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
+	postRouter.HandleFunc("/api/products/filter", ph.GetFilteredPaginated)
 	postRouter.HandleFunc("/api/products", ph.AddProduct)
 	postRouter.Use(ph.MiddlewareValidateProduct)
 
@@ -59,7 +61,11 @@ func main() {
 	getRouter.Handle("/images/default_tile.jpg", http.FileServer(http.Dir("./")))
 
 	// CORS
-	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"http://localhost:9091"}))
+	ch := gohandlers.CORS(
+		gohandlers.AllowedOrigins([]string{"http://localhost:9091"}),
+		gohandlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
+		gohandlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS", "PATCH", "DELETE"}),
+	)
 
 	s := &http.Server{
 		Addr: *bindAddress,

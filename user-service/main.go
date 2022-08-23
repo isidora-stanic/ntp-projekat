@@ -57,7 +57,11 @@ func main() {
 	deleteRouter.HandleFunc("/api/users/{id:[0-9]+}", uh.DeleteUser)
 
 	// CORS
-	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"http://localhost:9091"}))
+	ch := gohandlers.CORS(
+		gohandlers.AllowedOrigins([]string{"http://localhost:9091"}),
+		gohandlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
+		gohandlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS", "PATCH", "DELETE"}),
+	)
 
 	s := &http.Server{
 		Addr: *bindAddress,

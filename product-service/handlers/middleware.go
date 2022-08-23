@@ -4,12 +4,19 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/isidora-stanic/ntp-projekat/product-service/models"
 )
 
 func (p Products) MiddlewareValidateProduct(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+		if strings.Contains(r.URL.Path, "filter") {
+			p.l.Println("Hello form middleware")
+			p.l.Println("skipping check...")
+			next.ServeHTTP(rw, r)
+			return
+		}
 		p.l.Println("Hello form middleware")
 		prod := models.ProductDTO{}
 

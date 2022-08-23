@@ -1,14 +1,26 @@
 import React, { useEffect, useState } from 'react'
 import ProductShort from './ProductShort'
+import Pagination from '@mui/material/Pagination'
+import './ProductShortList.css'
+import { Grid, Container } from '@mui/material'
 
-const ProductShortList = ({products}) => {
+const ProductShortList = ({products, total, pageSize, pageNum, setPageNum}) => {
+  const totalPageNum = Math.ceil(total/pageSize)
   return (
-    <div style={{display: 'inline-block',
-      margin: '3rem', 
-      border: 'solid 0.2rem lightblue', borderRadius: '0.2rem', width: '50rem',
-      padding: '1rem', overflowWrap: 'break-word'}}>
-      {products.map(p => <ProductShort key={p.id} product={p}/>)}
+        <div>
+          <Grid item xs={8}>
+            {products.map(p => <ProductShort key={p.id} product={p}/>)}
+          </Grid>
+      <Pagination 
+        count={totalPageNum} 
+        page={pageNum} 
+        onChange={(e, v) => setPageNum(v)} 
+        shape="rounded" 
+        size="large" 
+        color='secondary' 
+        showFirstButton showLastButton />
     </div>
+    
   )
 }
 

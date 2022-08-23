@@ -3,11 +3,28 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { BrowserRouter } from 'react-router-dom';
+
+import axios from 'axios'
+import jwtDecode from 'jwt-decode';
+
+axios.interceptors.request.use(request => {
+        const token = localStorage.getItem('token')
+        const isLoggedIn = jwtDecode(token).email ? true : false;
+
+        if (isLoggedIn) {
+            request.headers.common.Authorization = `Bearer ${token}`;
+        }
+
+        return request;
+});
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </React.StrictMode>
 );
 
