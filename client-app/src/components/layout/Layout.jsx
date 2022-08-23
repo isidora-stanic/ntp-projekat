@@ -15,7 +15,7 @@ const Layout = ({children}) => {
         }}
       >
       {children}
-      <StickyFooter />
+      {/* <StickyFooter /> */}
       </Box>
     </div>
   )

@@ -13,14 +13,20 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useForm } from "../util/useForm";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { GridSaveAltIcon } from '@mui/x-data-grid';
 
 const ProductForm = () => {
     let navigate = useNavigate();
+    let {id} = useParams()
+    let isAddMode = !id
     
     const create = (e) => {
-        ProductService.create(values);
+      if (isAddMode) {
+        ProductService.create(values)
+      } else {
+        ProductService.update(id, values)
+      }
         navigate({
           pathname: "/products",
         });
@@ -29,7 +35,9 @@ const ProductForm = () => {
     const { values, setValues, onChange, onSubmit } = useForm(create, {});
 
     useEffect(() => {
-
+      if (!isAddMode) {
+        ProductService.getOne(id, setValues)
+      }
     },[])
 
 	//ImageSrc    string  `json:"image"`
@@ -83,6 +91,7 @@ const ProductForm = () => {
                 name="price"
                 label="Price"
                 id="price"
+                type="number"
                 autoComplete="price"
                 color="primary"
                 onChange={onChange}
@@ -181,6 +190,7 @@ const ProductForm = () => {
                 id="boxSize"
                 autoComplete="boxSize"
                 color="primary"
+                type="number"
                 onChange={onChange}
               />
             </Grid>
@@ -216,7 +226,7 @@ const ProductForm = () => {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            Add Product
+            Edit Product
           </Button>
         </Box>
       </Box>
