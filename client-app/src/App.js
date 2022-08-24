@@ -2,14 +2,14 @@ import './App.css';
 import Layout from './components/layout/Layout';
 import AllProducts from './components/product/AllProducts';
 import { Routes, Route } from "react-router-dom";
-import AllUsers from './components/user/AllUsers'
-import Register from './components/user/Register';
-import Login from './components/user/Login';
+import SignUp from './components/user/SignUp';
+import SignIn from './components/user/SignIn';
 import { CurrentUserProvider } from './contexts/CurrentUserContext';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ProductTable from './components/product/ProductTable';
 import UserTable from './components/user/UserTable';
 import ProductForm from './components/product/ProductForm';
+import UserForm from './components/user/UserForm';
 
 const theme = createTheme({palette: {
   type: 'light',
@@ -48,10 +48,13 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout><AllProducts /></Layout>} />
           <Route path="/users" element={<Layout><UserTable /></Layout>} />
+          <Route path="/users/edit/:id" element={<Layout><UserForm /></Layout>} />
+          <Route path="/users/new" element={<Layout><UserForm /></Layout>} />
           <Route path="/products" element={<Layout><ProductTable /></Layout>} />
           <Route path="/products/edit/:id" element={<Layout><ProductForm /></Layout>} />
-          <Route path="/register" element={<Layout><Register /></Layout>} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/products/new" element={<Layout><ProductForm /></Layout>} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/signin" element={<SignIn />} />
         </Routes>
       </CurrentUserProvider>
       </ThemeProvider>

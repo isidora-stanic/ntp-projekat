@@ -10,11 +10,11 @@ import jwtDecode from 'jwt-decode';
 
 axios.interceptors.request.use(request => {
         const token = localStorage.getItem('token')
-        const isLoggedIn = jwtDecode(token).email ? true : false;
+        // const isLoggedIn = jwtDecode(token).email ? true : false;
 
-        if (isLoggedIn) {
-            request.headers.common.Authorization = `Bearer ${token}`;
-        }
+        // if (isLoggedIn) {
+        //     request.headers.common.Authorization = `Bearer ${token}`;
+        // }
 
         return request;
 });

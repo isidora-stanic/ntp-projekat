@@ -5,7 +5,7 @@ const UserService = {
     getAll : (setUsers) => {
         axios.get("http://localhost:9091/api/users").then(
             r => {
-                setUsers(r.data.map(p => ({...p, delete_id: p.id, edit_id: p.id, banned_id: p.id})))
+                setUsers(r.data.map(p => ({...p, delete_id: p.id, edit_id: p.id, banned_id: !p.banned ? p.id : null})))
                 console.log(r.data)
             }
         ).catch(err => console.error(err))
@@ -14,6 +14,7 @@ const UserService = {
     getOne : (id, setUser) => {
         axios.get("http://localhost:9091/api/users/"+id).then(
             r => {
+                console.log(r.data)
                 setUser(r.data)
             }
         ).catch(err => console.error(err))

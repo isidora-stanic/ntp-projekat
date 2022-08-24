@@ -18,7 +18,7 @@ export default function StickyFooter() {
         >
           <Container maxWidth="sm">
             <Typography variant="body1">
-              My sticky footer can be found here.
+            &copy; My sticky footer can be found here.
             </Typography>
           </Container>
         </Box>

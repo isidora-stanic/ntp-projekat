@@ -14,7 +14,7 @@ import Container from '@mui/material/Container';
 import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const SignIn = () => {
   const {getCurrentUser} = useCurrentUser()
   let navigate = useNavigate()
     
@@ -87,9 +87,14 @@ const Login = () => {
               Sign In
             </Button>
             <Grid container>
-              <Grid item xs>
-                <Link href="/register" variant="body2" color='secondary'>
-                  {"Don't have an account? Sign Up"}
+              <Grid item xs={12}>
+                <Link href="/signup" variant="body2" color='secondary'>
+                  Don't have an account? Sign Up
+                </Link>
+              </Grid>
+              <Grid item xs={12}>
+                <Link href="/" variant="body2" color='secondary'>
+                  Continue as guest
                 </Link>
               </Grid>
             </Grid>
@@ -99,4 +104,4 @@ const Login = () => {
   );
 }
 
-export default Login
+export default SignIn

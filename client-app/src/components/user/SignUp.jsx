@@ -3,8 +3,6 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -15,13 +13,13 @@ import { useForm } from "../util/useForm";
 import { useNavigate } from "react-router-dom";
 import UserService from '../../services/UserService';
 
-const Register = () => {
+const SignUp = () => {
   let navigate = useNavigate();
 
   const regiter = (e) => {
     UserService.register(values);
     navigate({
-      pathname: "/login",
+      pathname: "/signin",
     });
   };
 
@@ -36,10 +34,14 @@ const Register = () => {
       <CssBaseline />
       <Box
         sx={{
-          marginTop: 8,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
+          marginTop: 25,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center', 
+          border: 'solid 1px lightgray', 
+          borderRadius: '5px',
+          padding: '20px',
+          backgroundColor: 'white'
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
@@ -110,10 +112,15 @@ const Register = () => {
             Sign Up
           </Button>
           <Grid container justifyContent="flex-end">
-            <Grid item>
-              <Link href="/login" variant="body2" color="secondary">
+            <Grid item xs={12}>
+              <Link href="/signin" variant="body2" color="secondary">
                 Already have an account? Sign in
               </Link>
+            </Grid>
+            <Grid item xs={12}>
+            <Link href="/" variant="body2" color="secondary">
+                Continue as guest
+            </Link>
             </Grid>
           </Grid>
         </Box>
@@ -122,4 +129,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default SignUp;

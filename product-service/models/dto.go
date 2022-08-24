@@ -13,7 +13,7 @@ type ProductDTO struct {
 	Name        string  `json:"name" validate:"required"`
 	Description string  `json:"description"`
 	ImageSrc    string  `json:"image"`
-	Price       float32 `json:"price" validate:"gt=0"`
+	Price       float32 `json:"price" validate:"required,gt=0"`
 	SKU         string  `json:"sku" validate:"required,sku"`
 	Producer	string	`json:"producer"`
 	Brand		string	`json:"brand"`

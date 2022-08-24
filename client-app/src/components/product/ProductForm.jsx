@@ -4,17 +4,14 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useForm } from "../util/useForm";
 import { useNavigate, useParams } from "react-router-dom";
-import { GridSaveAltIcon } from '@mui/x-data-grid';
+import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 
 const ProductForm = () => {
     let navigate = useNavigate();
@@ -23,16 +20,37 @@ const ProductForm = () => {
     
     const create = (e) => {
       if (isAddMode) {
-        ProductService.create(values)
+        console.log('sending', {...values, price: parseFloat(values.price)})
+        ProductService.create({...values, 
+          price: parseFloat(values.price), 
+          boxSize: parseFloat(values.boxSize)})
       } else {
-        ProductService.update(id, values)
+        console.log('sending', {...values, price: parseFloat(values.price)})
+        ProductService.update(id, {...values, 
+          price: parseFloat(values.price), 
+          boxSize: parseFloat(values.boxSize)})
       }
-        navigate({
-          pathname: "/products",
-        });
+        // navigate({
+        //   pathname: "/products",
+        // });
+        navigate(-1)
       };
     
-    const { values, setValues, onChange, onSubmit } = useForm(create, {});
+    const { values, setValues, onChange, onSubmit } = useForm(create, {
+      name: '',
+      description: '',
+      price: 0.0,
+      sku: '',
+      producer: '',
+      brand: '',
+      color: '',
+      serie: '',
+      finish: '',
+      type: '',
+      boxSize: 0.0,
+      purpose: '',
+      dimensions: ''
+    });
 
     useEffect(() => {
       if (!isAddMode) {
@@ -42,7 +60,7 @@ const ProductForm = () => {
 
 	//ImageSrc    string  `json:"image"`
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component="main" maxWidth="lg">
       <CssBaseline />
       <Box
         sx={{
@@ -53,14 +71,28 @@ const ProductForm = () => {
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
-          <GridSaveAltIcon />
+          {isAddMode ? <AddOutlinedIcon /> : <CreateOutlinedIcon />}
         </Avatar>
         <Typography component="h1" variant="h5" color="primary">
-          Edit Product
+          {isAddMode ? 'Add Product' : 'Edit Product'}
         </Typography>
-        <Box component="form" noValidate onSubmit={onSubmit} sx={{ mt: 3 }}>
+        
+        <Box component="form" noValidate onSubmit={onSubmit} sx={{ mt: 3 }} autoComplete="off">
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+          <Grid item xs={2}>
+              <TextField
+                required
+                fullWidth
+                name="sku"
+                label="SKU"
+                id="sku"
+                autoComplete="sku"
+                color="primary"
+                onChange={onChange}
+                value={values.sku}
+              />
+            </Grid>
+            <Grid item xs={8}>
               <TextField
                 required
                 fullWidth
@@ -70,21 +102,73 @@ const ProductForm = () => {
                 autoComplete="name"
                 color="primary"
                 onChange={onChange}
+                value={values.name}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12}></Grid>
+            <Grid item xs={6}>
               <TextField
-                required
                 fullWidth
-                name="description"
-                label="Description"
-                id="description"
-                autoComplete="description"
+                name="producer"
+                label="Producer"
+                id="producer"
+                autoComplete="producer"
                 color="primary"
                 onChange={onChange}
+                value={values.producer}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={3}>
+              <TextField
+                fullWidth
+                name="brand"
+                label="Brand"
+                id="brand"
+                autoComplete="brand"
+                color="primary"
+                onChange={onChange}
+                value={values.brand}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <TextField
+                fullWidth
+                name="serie"
+                label="Serie"
+                id="serie"
+                autoComplete="serie"
+                color="primary"
+                onChange={onChange}
+                value={values.serie}
+              />
+            </Grid>
+            <Grid item xs={12}></Grid>
+            <Grid item xs={2}>
+              <TextField
+                fullWidth
+                name="dimensions"
+                label="Dimensions"
+                id="dimensions"
+                autoComplete="dimensions"
+                color="primary"
+                onChange={onChange}
+                value={values.dimensions}
+              />
+            </Grid>
+            <Grid item xs={2}>
+              <TextField
+                fullWidth
+                name="boxSize"
+                label="Box size"
+                id="boxSize"
+                autoComplete="boxSize"
+                color="primary"
+                type="number"
+                onChange={onChange}
+                value={values.boxSize}
+              />
+            </Grid>
+            <Grid item xs={2}>
               <TextField
                 required
                 fullWidth
@@ -95,83 +179,12 @@ const ProductForm = () => {
                 autoComplete="price"
                 color="primary"
                 onChange={onChange}
+                value={values.price}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12}></Grid>
+            <Grid item xs={2}>
               <TextField
-                required
-                fullWidth
-                name="sku"
-                label="SKU"
-                id="sku"
-                autoComplete="sku"
-                color="primary"
-                onChange={onChange}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                name="producer"
-                label="Producer"
-                id="producer"
-                autoComplete="producer"
-                color="primary"
-                onChange={onChange}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                name="brand"
-                label="Brand"
-                id="brand"
-                autoComplete="brand"
-                color="primary"
-                onChange={onChange}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                name="color"
-                label="Color"
-                id="color"
-                autoComplete="color"
-                color="primary"
-                onChange={onChange}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                name="serie"
-                label="Serie"
-                id="serie"
-                autoComplete="serie"
-                color="primary"
-                onChange={onChange}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                name="finish"
-                label="Finish"
-                id="finish"
-                autoComplete="finish"
-                color="primary"
-                onChange={onChange}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
                 fullWidth
                 name="type"
                 label="Type"
@@ -179,24 +192,12 @@ const ProductForm = () => {
                 autoComplete="type"
                 color="primary"
                 onChange={onChange}
+                value={values.type}
               />
             </Grid>
-            <Grid item xs={12}>
+            
+            <Grid item xs={2}>
               <TextField
-                required
-                fullWidth
-                name="boxSize"
-                label="Box size"
-                id="boxSize"
-                autoComplete="boxSize"
-                color="primary"
-                type="number"
-                onChange={onChange}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
                 fullWidth
                 name="purpose"
                 label="Purpose"
@@ -204,20 +205,56 @@ const ProductForm = () => {
                 autoComplete="purpose"
                 color="primary"
                 onChange={onChange}
+                value={values.purpose}
               />
             </Grid>
-            <Grid item xs={12}>
+            
+            <Grid item xs={4}></Grid>
+
+            <Grid item xs={2}>
               <TextField
-                required
                 fullWidth
-                name="dimensions"
-                label="Dimensions"
-                id="dimensions"
-                autoComplete="dimensions"
+                name="color"
+                label="Color"
+                id="color"
+                autoComplete="color"
                 color="primary"
                 onChange={onChange}
+                value={values.color}
               />
             </Grid>
+            <Grid item xs={2}>
+              <TextField
+                fullWidth
+                name="finish"
+                label="Finish"
+                id="finish"
+                autoComplete="finish"
+                color="primary"
+                onChange={onChange}
+                value={values.finish}
+              />
+            </Grid>
+            
+            <Grid item xs={12}></Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                multiline
+                minRows={3}
+                inputProps={{ textarea: {
+                  resize: "both"
+                } }}
+                name="description"
+                label="Description"
+                id="description"
+                autoComplete="description"
+                color="primary"
+                onChange={onChange}
+                value={values.description}
+              />
+            </Grid>
+            
 
           </Grid>
           <Button
@@ -226,8 +263,9 @@ const ProductForm = () => {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            Edit Product
+            {isAddMode ? 'Add Product' : 'Edit Product'}
           </Button>
+          <Button fullWidth variant="outlined" type='button' onClick={() => navigate(-1)} >Back</Button>
         </Box>
       </Box>
     </Container>
