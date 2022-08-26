@@ -199,6 +199,30 @@ pub fn get_all_for_user(id: i32) -> Result<String, Error> {
     Ok(serde_json::to_string(&ret).unwrap())
 }
 
+pub fn get_for_user_and_product(uid: i32, pid: i32) -> Result<String, Error> {
+    let mut client = Client::connect(
+        "postgresql://postgres:password@localhost:5432/review_db",
+        NoTls,
+    )?;
+
+    let mut ret: Vec<ReviewDTO> = vec![];
+    for row in client.query("SELECT id, user_id, product_id, rate, review_comment, timestamp, user_info, product FROM public.reviews WHERE user_id = $1 and product_id = $2 and deleted = false", &[&uid, &pid])? {
+        let id: i32 = row.get(0);
+        let user_id: i32 = row.get(1);
+        let product_id: i32 = row.get(2);
+        let rate: i32 = row.get(3);
+        let comment: &str = row.get(4);
+        let timestamp_str: &str = row.get(5);
+        let user: &str = row.get(6);
+        let product: &str = row.get(7);
+        
+        ret.push(ReviewDTO { id: (id), user_id: (user_id), product_id: (product_id), rate: (rate), comment: (comment.to_string()), timestamp: (timestamp_str.to_string()), user: (user.to_string()), product: (product.to_string())});
+    }
+    client.close()?;
+
+    Ok(serde_json::to_string(&ret).unwrap())
+}
+
 pub fn get_rating_for_product(id_product: i32) -> Result<String, Error> {
     let mut client = Client::connect(
         "postgresql://postgres:password@localhost:5432/review_db",

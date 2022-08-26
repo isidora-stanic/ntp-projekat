@@ -36,6 +36,7 @@ type Credentials struct {
 
 type Claims struct {
 	ID    uint32     `json:"id"`
+	Name  string	`json:"name"`
 	Email string   `json:"email"`
 	Role  UserRole `json:"role"`
 	jwt.StandardClaims

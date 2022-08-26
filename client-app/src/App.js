@@ -10,6 +10,7 @@ import ProductTable from './components/product/ProductTable';
 import UserTable from './components/user/UserTable';
 import ProductForm from './components/product/ProductForm';
 import UserForm from './components/user/UserForm';
+import ProductDetails from './components/product/ProductDetails';
 
 const theme = createTheme({palette: {
   type: 'light',
@@ -50,6 +51,7 @@ function App() {
           <Route path="/users" element={<Layout><UserTable /></Layout>} />
           <Route path="/users/edit/:id" element={<Layout><UserForm /></Layout>} />
           <Route path="/users/new" element={<Layout><UserForm /></Layout>} />
+          <Route path="/product/:id" element={<Layout><ProductDetails /></Layout>} />
           <Route path="/products" element={<Layout><ProductTable /></Layout>} />
           <Route path="/products/edit/:id" element={<Layout><ProductForm /></Layout>} />
           <Route path="/products/new" element={<Layout><ProductForm /></Layout>} />

@@ -11,7 +11,8 @@ import (
 var ProductServiceRoot, _ = roundrobin.New(&url.URL{Host: "http://localhost:9090"})
 var UserServiceRoot, _ = roundrobin.New(&url.URL{Host: "http://localhost:9092"})
 var EmailServiceRoot, _ = roundrobin.New(&url.URL{Host: "http://localhost:9093"})
-var ReviewServiceRoot, _ = roundrobin.New(&url.URL{Host: "http://localhost:8000"}) // todo: change port for rust services
+var ReviewServiceRoot, _ = roundrobin.New(&url.URL{Host: "http://localhost:9081"})
+var StatisticsServiceRoot, _ = roundrobin.New(&url.URL{Host: "http://localhost:9082"})
 
 func DelegateResponse(r *http.Response, rw http.ResponseWriter) {
 	rw.Header().Set("Content-Type", r.Header.Get("Content-Type"))

@@ -25,6 +25,20 @@ struct Response {
     message: String
 }
 
+#[derive(Serialize, Deserialize)]
+struct StatsCount {
+    product_id: i32,
+    log_type: String,
+    stat_count: String,
+}
+
+#[derive(Serialize, Deserialize)]
+struct StatsCountAllResponse {
+    visits: Vec<StatsCount>,
+    comments: Vec<StatsCount>,
+    saves: Vec<StatsCount>,
+}
+
 // init db
 pub fn seed_db() -> Result<(), Error> {
     let mut client = Client::connect(
@@ -180,3 +194,46 @@ pub fn create_log(log: rocket::serde::json::Json<LogCreateRequest>, log_type: St
 
     Ok(serde_json::to_string(&Response{message: "Log successfull.".to_string()}).unwrap())
 }
+
+// actual statistics
+pub fn get_count_for_type_product(log_type: String) -> Result<String, Error> {
+    let mut client = Client::connect(
+        "postgresql://postgres:password@localhost:5432/statistics_db",
+        NoTls,
+    )?;
+
+    let mut ret: Vec<StatsCount> = vec![];
+    for row in client.query("SELECT product_id, COUNT(*) FROM public.logs WHERE log_type = $1 GROUP BY product_id", &[&log_type])? {
+        let product_id: i32 = row.get(0);
+        let count: i64 = row.get(1);
+        ret.push(StatsCount {
+            product_id: (product_id),
+            log_type: (log_type.to_string()),
+            stat_count: (count.to_string()),
+        });
+    }
+
+    client.close()?;
+    Ok(serde_json::to_string(&ret).unwrap())
+}
+
+// pub fn get_statistics_for_all() -> Result<String, Error> {
+//     let mut client = Client::connect(
+//         "postgresql://postgres:password@localhost:5432/statistics_db",
+//         NoTls,
+//     )?;
+
+//     let mut retV = get_count_for_type_product("VISIT".to_string())
+//     let mut retC = get_count_for_type_product("COMMENT".to_string())
+//     let mut retS = get_count_for_type_product("SAVE".to_string())
+
+//     let mut ret: StatsCountAllResponse = {
+//         visits: retV,
+//         comments: retC,
+//         saves: retS,
+//     }
+    
+//     client.close()?;
+
+//     Ok(serde_json::to_string(&ret).unwrap())
+// }

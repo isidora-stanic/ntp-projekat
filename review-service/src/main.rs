@@ -29,6 +29,13 @@ fn get_all_for_user(id: i32) -> Json<String> {
     }).join().unwrap()
 }
 
+#[get("/user/<uid>/product/<pid>")]
+fn get_for_user_and_product(uid: i32, pid: i32) -> Json<String> {
+    thread::spawn(move || {
+        Json(db::get_for_user_and_product(uid, pid).unwrap())
+    }).join().unwrap()
+}
+
 #[get("/rating/<id>")]
 fn get_rating_for_product(id: i32) -> Json<String> {
     thread::spawn(move || {
@@ -58,5 +65,5 @@ fn rocket() -> Rocket<Build> {
     }).join().expect("Thread panicked");
 
     rocket::build()
-    .mount("/api/reviews", routes![get_all, get_all_for_product, get_all_for_user, delete_review, create_review, get_rating_for_product])
+    .mount("/api/reviews", routes![get_all, get_all_for_product, get_all_for_user, delete_review, create_review, get_rating_for_product, get_for_user_and_product])
 }

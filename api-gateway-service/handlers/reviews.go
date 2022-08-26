@@ -68,6 +68,24 @@ func (p *Reviews) GetReviewsByUser(rw http.ResponseWriter, r *http.Request) {
 	utils.DelegateResponse(response, rw)
 }
 
+func (p *Reviews) GetReviewByUserForProduct(rw http.ResponseWriter, r *http.Request) {
+	utils.SetupResponse(&rw, r)
+
+	vars := mux.Vars(r)
+	uid := vars["uid"]
+	pid := vars["pid"]
+
+	response, err := http.Get(
+		utils.ReviewServiceRoot.Next().Host + ReviewService + "/user/" + uid + "/product/" + pid)
+
+	if err != nil {
+		rw.WriteHeader(http.StatusGatewayTimeout)
+		return
+	}
+
+	utils.DelegateResponse(response, rw)
+}
+
 func (p *Reviews) GetRatingForProduct(rw http.ResponseWriter, r *http.Request) {
 	utils.SetupResponse(&rw, r)
 

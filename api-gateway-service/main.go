@@ -36,6 +36,7 @@ func main() {
 	uh := handlers.NewUsers(sl)
 	eh := handlers.NewEmails(sl)
 	rh := handlers.NewReviews(sl)
+	sh := handlers.NewStatistics(sl)
 
 	sm := mux.NewRouter()
 
@@ -75,9 +76,23 @@ func main() {
 	getRouter.HandleFunc("/api/reviews", rh.GetAllReviews)
 	getRouter.HandleFunc("/api/reviews/product/{id:[0-9]+}", rh.GetReviewsForProduct)
 	getRouter.HandleFunc("/api/reviews/user/{id:[0-9]+}", rh.GetReviewsByUser)
+	getRouter.HandleFunc("/api/reviews/user/{uid:[0-9]+}/product/{pid:[0-9]+}", rh.GetReviewByUserForProduct)
 	getRouter.HandleFunc("/api/reviews/rating/{id:[0-9]+}", rh.GetRatingForProduct)
 	postRouter.HandleFunc("/api/reviews", rh.AddReview)
 	deleteRouter.HandleFunc("/api/reviews/{id:[0-9]+}", rh.DeleteReview)
+
+	//statistics-service routes
+	getRouter.HandleFunc("/api/statistics", sh.GetAllLogs)
+	getRouter.HandleFunc("/api/statistics/visits", sh.GetAllVisits)
+	getRouter.HandleFunc("/api/statistics/comments", sh.GetAllComments)
+	getRouter.HandleFunc("/api/statistics/saves", sh.GetAllSaves)
+	getRouter.HandleFunc("/api/statistics/visits/{id:[0-9]+}", sh.GetVisitsForProduct)
+	getRouter.HandleFunc("/api/statistics/comments/{id:[0-9]+}", sh.GetCommentsForProduct)
+	getRouter.HandleFunc("/api/statistics/saves/{id:[0-9]+}", sh.GetSavesForProduct)
+	postRouter.HandleFunc("/api/statistics/visit", sh.AddVisit)
+	postRouter.HandleFunc("/api/statistics/comment", sh.AddComment)
+	postRouter.HandleFunc("/api/statistics/save", sh.AddSave)
+
 
 
 	// CORS

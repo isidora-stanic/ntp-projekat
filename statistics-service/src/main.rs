@@ -15,6 +15,13 @@ fn get_all() -> Json<String> {
     }).join().unwrap()
 }
 
+#[get("/statistics-for-all")]
+fn get_statistics_for_all() -> Json<String> {
+    thread::spawn(move || {
+        Json(db::get_count_for_type_product("VISIT".to_string()).unwrap())
+    }).join().unwrap()
+}
+
 #[get("/visits")]
 fn get_all_product_visits() -> Json<String> {
     thread::spawn(move || {
@@ -89,5 +96,6 @@ fn rocket() -> Rocket<Build> {
     .mount("/api/statistics", routes![get_all, 
     get_all_product_visits, get_all_product_comments, get_all_product_saves, 
     get_product_visits, get_product_comments, get_product_saves,
-    add_visit, add_comment, add_save])
+    add_visit, add_comment, add_save,
+    get_statistics_for_all])
 }
