@@ -15,7 +15,7 @@ func (p *Users) AddUser(rw http.ResponseWriter, r *http.Request) {
 	p.l.Println("Handle POST User - now with db...")
 
 	prod := r.Context().Value(KeyUser{}).(models.UserDTO)
-	modelProd := prod.ToUser()
+	modelProd := prod.ToUserWithoutBan()
 	hashedPass, err := db.HashPassword(prod.Password)
 	if err != nil {
 		http.Error(rw, "Cannot hash password", http.StatusInternalServerError)
@@ -37,7 +37,7 @@ func (p *Users) Register(rw http.ResponseWriter, r *http.Request) {
 	p.l.Println("Handle POST User - registration - now with db...")
 
 	prod := r.Context().Value(KeyUser{}).(models.UserDTO)
-	modelProd := prod.ToUser()
+	modelProd := prod.ToUserWithoutBan()
 	hashedPass, err := db.HashPassword(prod.Password)
 	if err != nil {
 		http.Error(rw, "Cannot hash password", http.StatusInternalServerError)
@@ -63,6 +63,8 @@ func (p *Users) Login(rw http.ResponseWriter, r *http.Request) {
 
 	cred := r.Context().Value(KeyCredentials{}).(models.Credentials)
 
+	p.l.Println("email", cred.Email)
+
 	user, err := db.CheckCredentials(cred)
 
 	if err != nil {
@@ -70,7 +72,7 @@ func (p *Users) Login(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if user.Banned {
+	if user.BannedUntil.After(time.Now()) {
 		http.Error(rw, "User is banned", http.StatusUnauthorized)
 		return
 	}

@@ -43,10 +43,12 @@ func main() {
 	getRouter := sm.Methods(http.MethodGet).Subrouter()
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	putRouter := sm.Methods(http.MethodPut).Subrouter()
+	patchRouter := sm.Methods(http.MethodPatch).Subrouter()
 	deleteRouter := sm.Methods(http.MethodDelete).Subrouter()
 	getRouter.Use(ph.MiddlewareInfo)
 	postRouter.Use(ph.MiddlewareInfo)
 	putRouter.Use(ph.MiddlewareInfo)
+	patchRouter.Use(ph.MiddlewareInfo)
 	deleteRouter.Use(ph.MiddlewareInfo)
 
 	// product-service routes
@@ -61,12 +63,11 @@ func main() {
 	// user-service routes
 	getRouter.HandleFunc("/api/users", uh.GetAllUsers)
 	getRouter.HandleFunc("/api/users/{id:[0-9]+}", uh.GetOneUser)
-	getRouter.HandleFunc("/api/users/{id:[0-9]+}/ban", uh.BanUser)
-	getRouter.HandleFunc("/api/users/{id:[0-9]+}/permit", uh.PermitUser)
 	postRouter.HandleFunc("/api/users/login", uh.Login)
 	postRouter.HandleFunc("/api/users/register", uh.Register)
 	postRouter.HandleFunc("/api/users", uh.CreateUser)
 	putRouter.HandleFunc("/api/users/{id:[0-9]+}", uh.UpdateUser)
+	patchRouter.HandleFunc("/api/users/{id:[0-9]+}/ban", uh.BanUser)
 	deleteRouter.HandleFunc("/api/users/{id:[0-9]+}", uh.DeleteUser)
 
 	// email-service routes

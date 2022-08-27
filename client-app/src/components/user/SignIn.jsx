@@ -15,15 +15,10 @@ import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import { useNavigate } from "react-router-dom";
 
 const SignIn = () => {
-  const {getCurrentUser} = useCurrentUser()
   let navigate = useNavigate()
     
   const login = (e) => {
-      UserService.login(values)
-      console.log(getCurrentUser())
-      navigate({
-        pathname: '/'
-      })
+      UserService.login(values, navigate)
   }
 
   const {values, setValues, onChange, onSubmit} = useForm(login, {email: '', password: ''})

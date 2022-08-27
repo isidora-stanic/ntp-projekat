@@ -11,7 +11,7 @@ import (
 	"github.com/isidora-stanic/ntp-projekat/user-service/utils"
 )
 
-func (p *Users) UpdateUsers(rw http.ResponseWriter, r *http.Request) {
+func (p *Users) UpdateUser(rw http.ResponseWriter, r *http.Request) {
 	p.l.Println("Handle PUT User - now with db...")
 	
 	vars := mux.Vars(r)

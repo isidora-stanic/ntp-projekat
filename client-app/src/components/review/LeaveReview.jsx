@@ -20,7 +20,7 @@ const LeaveReview = ({product} ) => {
         comment: "",
         timestamp: new Date().toISOString(),
         user: user.name,
-        product: product.name
+        product: "SKU: " + product.sku + " " + product.name
     })
 
   return (

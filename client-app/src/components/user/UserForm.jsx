@@ -27,9 +27,6 @@ const UserForm = () => {
       console.log("sending", { ...values });
       UserService.update(id, { ...values });
     }
-    // navigate({
-    //   pathname: "/users",
-    // });
     navigate(-1)
   };
 
@@ -38,8 +35,7 @@ const UserForm = () => {
     lastName: '',
     email: '',
     password: '',
-    role: '',
-    banned: false
+    role: ''
   });
 
   useEffect(() => {
@@ -71,7 +67,7 @@ const UserForm = () => {
           onSubmit={onSubmit}
           sx={{ mt: 3 }}
           autoComplete="off"
-        ></Box>
+        >
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
             <TextField
@@ -158,6 +154,7 @@ const UserForm = () => {
         </Button>
         <Button fullWidth variant="outlined" type='button' onClick={() => navigate(-1)} >Back</Button>
         <Grid container justifyContent="flex-end"></Grid>
+        </Box>
       </Box>
     </Container>
   );

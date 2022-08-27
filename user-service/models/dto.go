@@ -3,6 +3,7 @@ package models
 import (
 	"encoding/json"
 	"io"
+	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-playground/validator"
@@ -15,7 +16,7 @@ type UserDTO struct {
 	Password  string   `json:"password"`
 	Email     string   `json:"email" validate:"email,required"`
 	Role      UserRole `json:"role"`
-	Banned    bool     `json:"banned"`
+	BannedUntil    time.Time     `json:"bannedUntil"`
 }
 
 func (p *UserDTO) ToUser() User {
@@ -25,8 +26,23 @@ func (p *UserDTO) ToUser() User {
 		Password:  p.Password,
 		Email:     p.Email,
 		Role:      p.Role,
-		Banned:    p.Banned,
+		BannedUntil:    p.BannedUntil,
 	}
+}
+
+func (p *UserDTO) ToUserWithoutBan() User {
+	return User{
+		FirstName: p.FirstName,
+		LastName:  p.LastName,
+		Password:  p.Password,
+		Email:     p.Email,
+		Role:      p.Role,
+		BannedUntil:    time.Now(),
+	}
+}
+
+type BanRequest struct {
+	Until	 string `json:"until"`
 }
 
 type Credentials struct {
@@ -78,4 +94,9 @@ func (p *Credentials) FromJSON(r io.Reader) error {
 func (p *LoginResponse) ToJSON(w io.Writer) error {
 	e := json.NewEncoder(w)
 	return e.Encode(p)
+}
+
+func (p *BanRequest) FromJSON(r io.Reader) error {
+	d := json.NewDecoder(r)
+	return d.Decode(p)
 }

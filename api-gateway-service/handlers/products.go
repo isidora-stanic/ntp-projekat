@@ -21,6 +21,8 @@ func NewProducts(l*log.Logger) *Products {
 type KeyProduct struct{}
 
 func (p *Products) GetAllProducts(rw http.ResponseWriter, r *http.Request) {
+	AuthAdmin(rw, r)
+	
 	utils.SetupResponse(&rw, r)
 
 	response, err := http.Get(
@@ -52,6 +54,8 @@ func (p *Products) GetOneProduct(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Products) AddProduct(rw http.ResponseWriter, r *http.Request) {
+	AuthAdmin(rw, r)
+	
 	utils.SetupResponse(&rw, r)
 
 	req, _ := http.NewRequest(http.MethodPost,
@@ -71,6 +75,8 @@ func (p *Products) AddProduct(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Products) UpdateProduct(rw http.ResponseWriter, r *http.Request) {
+	AuthAdmin(rw, r)
+	
 	utils.SetupResponse(&rw, r)
 
 	vars := mux.Vars(r)
@@ -93,6 +99,8 @@ func (p *Products) UpdateProduct(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Products) DeleteProduct(rw http.ResponseWriter, r *http.Request) {
+	AuthAdmin(rw, r)
+	
 	utils.SetupResponse(&rw, r)
 
 	vars := mux.Vars(r)

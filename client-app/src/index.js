@@ -10,13 +10,22 @@ import jwtDecode from 'jwt-decode';
 
 axios.interceptors.request.use(request => {
         const token = localStorage.getItem('token')
-        // const isLoggedIn = jwtDecode(token).email ? true : false;
+        const isApiUrl = request.url.startsWith("http://localhost:9091")
+        console.log(token)
 
-        // if (isLoggedIn) {
-        //     request.headers.common.Authorization = `Bearer ${token}`;
-        // }
+        try {
+          // const isLoggedIn = jwtDecode(token).email ? true : false;
 
-        return request;
+          // if (isLoggedIn) {
+              request.headers.common.Authorization = `Bearer ${token}`;
+          // }
+  
+          return request;
+        } catch {
+          return request;
+        }
+        
+        
 });
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

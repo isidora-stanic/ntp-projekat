@@ -7,8 +7,12 @@ export const CurrentUserProvider = ({ children }) => {
 
   const getCurrentUser = () => {
     let token = localStorage.getItem('token')
-    let decoded = jwt_decode(token)
-    return decoded
+    try {
+      let decoded = jwt_decode(token)
+      return decoded
+    } catch {
+      return null
+    }
   }
 
   return (

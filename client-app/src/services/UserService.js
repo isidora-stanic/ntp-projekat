@@ -63,17 +63,18 @@ const UserService = {
         ).catch(err => console.error(err))
     },
 
-    login : (data, setToken) => {
+    login : (data, navigate) => {
         axios.post("http://localhost:9091/api/users/login", data).then(
             r => {
-                // console.log(r.data)
+                console.log(r)
                 localStorage.setItem('token', r.data.token)
+                navigate(-1)
             }
         ).catch(err => console.error(err))
     },
 
-    ban : (id) => {
-        axios.get("http://localhost:9091/api/users/"+id+"/ban").then(
+    ban : (id, endDate) => {
+        axios.patch("http://localhost:9091/api/users/"+id+"/ban", { until: endDate }).then(
             r => {
                 console.log(r)
             }

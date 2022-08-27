@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	"github.com/jinzhu/gorm"
 )
 
@@ -14,12 +16,12 @@ const (
 type User struct {
 	gorm.Model
 
-	FirstName   string   `json:"firstName" gorm:"not null;default:null"`
-	LastName    string   `json:"lastName" gorm:"not null;default:null"`
-	Password 	string   `json:"password"`
-	Email    	string   `json:"email" gorm:"not null;default:null;unique"`
-	Role        UserRole `json:"role" gorm:"not null;default:null"`
-	Banned		bool	 `json:"banned"`
+	FirstName   string   	`json:"firstName" gorm:"not null;default:null"`
+	LastName    string   	`json:"lastName" gorm:"not null;default:null"`
+	Password 	string   	`json:"password"`
+	Email    	string   	`json:"email" gorm:"not null;default:null;unique"`
+	Role        UserRole 	`json:"role" gorm:"not null;default:null"`
+	BannedUntil time.Time	`json:"bannedUntil"`
 }
 
 func (p*User) ToDTO() UserDTO {
@@ -29,6 +31,6 @@ func (p*User) ToDTO() UserDTO {
 		LastName:  p.LastName,
 		Email: 	   p.Email, 
 		Role: 	   p.Role, 
-		Banned:    p.Banned,
+		BannedUntil:    p.BannedUntil,
 	}
 }

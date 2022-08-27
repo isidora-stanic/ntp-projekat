@@ -3,6 +3,7 @@ package db
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/isidora-stanic/ntp-projekat/user-service/exceptions"
 	"github.com/isidora-stanic/ntp-projekat/user-service/models"
@@ -69,7 +70,7 @@ func Update(id uint32, p models.User) (models.User, error) {
 	found.LastName = p.LastName
 	found.Email = p.Email
 	found.Password = p.Password
-	found.Banned = p.Banned
+	found.BannedUntil = p.BannedUntil
 	found.Role = p.Role
 
 	res := Db.Save(&found)
@@ -120,10 +121,25 @@ func CheckCredentials(c models.Credentials) (*models.User, error) {
 		return &user, errors.New("Invalid username or password.")
 	}
 
-	if user.Banned {
+	if user.BannedUntil.After(time.Now()) {
 		return &user, exceptions.ErrUserBanned
 	}
 
 	return &user, nil
 
+}
+
+func BanUser(uid uint32, banEnd time.Time) error {
+	var user models.User
+
+	Db.First(&user, uid)
+
+	if user.ID == 0 {
+		return exceptions.ErrUserNotFound
+	}
+
+	user.BannedUntil = banEnd
+	err := Db.Save(user).Error
+
+	return err
 }

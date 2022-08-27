@@ -11,6 +11,8 @@ import UserTable from './components/user/UserTable';
 import ProductForm from './components/product/ProductForm';
 import UserForm from './components/user/UserForm';
 import ProductDetails from './components/product/ProductDetails';
+import RequireAuthAdmin from './contexts/RequireAuthAdmin';
+import ReviewTable from './components/review/ReviewTable';
 
 const theme = createTheme({palette: {
   type: 'light',
@@ -48,13 +50,14 @@ function App() {
       <CurrentUserProvider>
         <Routes>
           <Route path="/" element={<Layout><AllProducts /></Layout>} />
-          <Route path="/users" element={<Layout><UserTable /></Layout>} />
-          <Route path="/users/edit/:id" element={<Layout><UserForm /></Layout>} />
-          <Route path="/users/new" element={<Layout><UserForm /></Layout>} />
+          <Route path="/users" element={<RequireAuthAdmin><Layout><UserTable /></Layout></RequireAuthAdmin>} />
+          <Route path="/users/edit/:id" element={<RequireAuthAdmin><Layout><UserForm /></Layout></RequireAuthAdmin>} />
+          <Route path="/users/new" element={<RequireAuthAdmin><Layout><UserForm /></Layout></RequireAuthAdmin>} />
           <Route path="/product/:id" element={<Layout><ProductDetails /></Layout>} />
-          <Route path="/products" element={<Layout><ProductTable /></Layout>} />
-          <Route path="/products/edit/:id" element={<Layout><ProductForm /></Layout>} />
-          <Route path="/products/new" element={<Layout><ProductForm /></Layout>} />
+          <Route path="/products" element={<RequireAuthAdmin><Layout><ProductTable /></Layout></RequireAuthAdmin>} />
+          <Route path="/products/edit/:id" element={<RequireAuthAdmin><Layout><ProductForm /></Layout></RequireAuthAdmin>} />
+          <Route path="/products/new" element={<RequireAuthAdmin><Layout><ProductForm /></Layout></RequireAuthAdmin>} />
+          <Route path="/reviews" element={<RequireAuthAdmin><Layout><ReviewTable /></Layout></RequireAuthAdmin>} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
         </Routes>

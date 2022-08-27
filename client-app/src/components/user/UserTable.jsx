@@ -5,21 +5,30 @@ import { useNavigate } from 'react-router-dom'
 import { DataGrid, GridRowsProp, GridColDef, GridToolbar } from '@mui/x-data-grid';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import Avatar from "@mui/material/Avatar";
+import BanFormDialog from './BanFormDialog';
 
 const UserTable = () => {
     const [users, setUsers] = useState([])
+    const [open, setOpen] = useState(false)
+    const [selected, setSelected] = useState(0)
+
     useEffect(() => {
         UserService.getAll(setUsers)
     }, [])
 
     const navigate = useNavigate()
 
+    const handleBan = (value) => {
+      setSelected(value);
+      setOpen(true);
+    }
+
     const columns = [
         { field: 'firstName', headerName: 'First Name', width: 200 },
         { field: 'lastName', headerName: 'Last Name', width: 200 },
         { field: 'role', headerName: 'Role', width: 200 },
         { field: 'email', headerName: 'Email', width: 200 },
-        { field: 'banned', headerName: 'Banned', width: 200 },
+        { field: 'bannedUntil', headerName: 'Banned Until', width: 200, renderCell: (params) => (params.value.split('T')[0]) },
         {
             field: 'edit_id',
             headerName: 'Edit',
@@ -49,7 +58,7 @@ const UserTable = () => {
                   style={{ marginLeft: 16 }}
                   tabIndex={params.hasFocus ? 0 : -1}
                   disabled={params.value ? false : true}
-                  onClick={(e) => UserService.ban(params.value)}
+                  onClick={e => handleBan(params.value)}
                 >
                   Ban
                 </Button>
@@ -100,6 +109,7 @@ const UserTable = () => {
           />
         </Grid>
         <Grid item xs={12}></Grid>
+        <BanFormDialog selected={selected} open={open} setOpen={setOpen} />
       </Grid>
         )
 }

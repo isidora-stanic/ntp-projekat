@@ -155,10 +155,12 @@ func (u *Users) DeleteUser(rw http.ResponseWriter, r *http.Request) {
 func (u *Users) BanUser(rw http.ResponseWriter, r *http.Request) {
 	utils.SetupResponse(&rw, r)
 
+	u.l.Println("USLA U BANOVANJE")
+
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	req, _ := http.NewRequest(http.MethodGet,
+	req, _ := http.NewRequest(http.MethodPatch,
 		utils.UserServiceRoot.Next().Host+UserService+"/" + id +"/ban",
 		r.Body)
 	req.Header.Set("Accept", "application/json")

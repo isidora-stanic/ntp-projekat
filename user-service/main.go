@@ -40,12 +40,16 @@ func main() {
 	getRouter := sm.Methods(http.MethodGet).Subrouter()
 	getRouter.HandleFunc("/api/users", uh.GetUsers)
 	getRouter.HandleFunc("/api/users/{id:[0-9]+}", uh.GetUser)
-	getRouter.HandleFunc("/api/users/{id:[0-9]+}/ban", uh.BanUser)
-	getRouter.HandleFunc("/api/users/{id:[0-9]+}/permit", uh.PermitUser)
+	getRouter.HandleFunc("/api/users/authorize/ADMIN", uh.AuthorizeAdmin)
+	getRouter.HandleFunc("/api/users/authorize/REGUSER", uh.AuthorizeRegUser)
+	
 
 	putRouter := sm.Methods(http.MethodPut).Subrouter()
-	putRouter.HandleFunc("/api/users/{id:[0-9]+}", uh.UpdateUsers)
+	putRouter.HandleFunc("/api/users/{id:[0-9]+}", uh.UpdateUser)
 	putRouter.Use(uh.MiddlewareValidateUser)
+
+	patchRouter := sm.Methods(http.MethodPatch).Subrouter()
+	patchRouter.HandleFunc("/api/users/{id:[0-9]+}/ban", uh.BanUserOnSomeTime)
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/api/users", uh.AddUser)

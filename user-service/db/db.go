@@ -3,6 +3,7 @@ package db
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/isidora-stanic/ntp-projekat/user-service/models"
 	"github.com/jinzhu/gorm"
@@ -16,7 +17,7 @@ var	users = []models.User{
 		Password:       "$2a$14$oYrDY4gbNnmCokRpY5xzPe3/8qa0yKwSJqUXsuVLL/eicZ5lEjtoO", // 'password'
 		Email:          "admin@mail.com",
 		Role: 			models.ADMIN,
-		Banned: 		false,
+		BannedUntil: 	time.Now(),
 	},
 	{
 		FirstName:      "User1",
@@ -24,7 +25,7 @@ var	users = []models.User{
 		Password:       "$2a$14$oYrDY4gbNnmCokRpY5xzPe3/8qa0yKwSJqUXsuVLL/eicZ5lEjtoO",
 		Email:          "user1@mail.com",
 		Role: 			models.REGUSER,
-		Banned:			false,
+		BannedUntil: 	time.Now(),
 	},
 	{
 		FirstName:      "User2",
@@ -32,7 +33,7 @@ var	users = []models.User{
 		Password:       "$2a$14$oYrDY4gbNnmCokRpY5xzPe3/8qa0yKwSJqUXsuVLL/eicZ5lEjtoO",
 		Email:          "user2@mail.com",
 		Role: 			models.REGUSER,
-		Banned:			false,
+		BannedUntil: 	time.Now(),
 	},
 }
 
@@ -55,7 +56,6 @@ func Init() {
 	Db.AutoMigrate(&models.User{})
 
 	for _, user := range users {
-		fmt.Println("Adding User: ", user.Banned)
 		Db.Create(&user)
 	}
 }

@@ -21,6 +21,8 @@ func NewReviews(l *log.Logger) *Reviews {
 type KeyReview struct{}
 
 func (p *Reviews) GetAllReviews(rw http.ResponseWriter, r *http.Request) {
+	AuthAdmin(rw, r)
+
 	utils.SetupResponse(&rw, r)
 
 	response, err := http.Get(
@@ -52,6 +54,7 @@ func (p *Reviews) GetReviewsForProduct(rw http.ResponseWriter, r *http.Request) 
 }
 
 func (p *Reviews) GetReviewsByUser(rw http.ResponseWriter, r *http.Request) {
+	AuthAnyRole(rw, r)
 	utils.SetupResponse(&rw, r)
 
 	vars := mux.Vars(r)
@@ -69,6 +72,8 @@ func (p *Reviews) GetReviewsByUser(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Reviews) GetReviewByUserForProduct(rw http.ResponseWriter, r *http.Request) {
+	AuthAnyRole(rw, r)
+
 	utils.SetupResponse(&rw, r)
 
 	vars := mux.Vars(r)
@@ -104,6 +109,8 @@ func (p *Reviews) GetRatingForProduct(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Reviews) AddReview(rw http.ResponseWriter, r *http.Request) {
+	AuthRegUser(rw, r)
+
 	utils.SetupResponse(&rw, r)
 
 	req, _ := http.NewRequest(http.MethodPost,
@@ -123,6 +130,8 @@ func (p *Reviews) AddReview(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Reviews) DeleteReview(rw http.ResponseWriter, r *http.Request) {
+	AuthAdmin(rw, r)
+	
 	utils.SetupResponse(&rw, r)
 
 	vars := mux.Vars(r)

@@ -50,6 +50,19 @@ func (u *Users) AuthorizeRegUser(rw http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(rw).Encode(models.ResponseWithMessage{Message: "Authorization succeeded"})
 }
 
+func (u *Users) AuthorizeAny(rw http.ResponseWriter, req *http.Request) {
+	rw.Header().Set("Content-Type", "application/json")
+
+	token, err := Authorize(req)
+
+	if err != nil || !token.Valid || (token.Claims.(*models.Claims).Role != models.REGUSER && token.Claims.(*models.Claims).Role != models.ADMIN) {
+		http.Error(rw, "Authorization has failed", http.StatusUnauthorized)
+		return
+	}
+
+	json.NewEncoder(rw).Encode(models.ResponseWithMessage{Message: "Authorization succeeded"})
+}
+
 func GetAuthenticatedUser(r *http.Request) (*models.User, error) {
 	token, err := Authorize(r)
 	if err != nil || !token.Valid {

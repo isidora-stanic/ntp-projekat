@@ -21,6 +21,8 @@ func NewStatistics(l *log.Logger) *Statistics {
 type KeyStatistics struct{}
 
 func (p *Statistics) GetAllLogs(rw http.ResponseWriter, r *http.Request) {
+	AuthAdmin(rw, r)
+	
 	utils.SetupResponse(&rw, r)
 
 	response, err := http.Get(
@@ -35,6 +37,8 @@ func (p *Statistics) GetAllLogs(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Statistics) GetAllVisits(rw http.ResponseWriter, r *http.Request) {
+	AuthAdmin(rw, r)
+	
 	utils.SetupResponse(&rw, r)
 
 	response, err := http.Get(
@@ -49,6 +53,8 @@ func (p *Statistics) GetAllVisits(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Statistics) GetAllComments(rw http.ResponseWriter, r *http.Request) {
+	AuthAdmin(rw, r)
+	
 	utils.SetupResponse(&rw, r)
 
 	response, err := http.Get(
@@ -63,6 +69,8 @@ func (p *Statistics) GetAllComments(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Statistics) GetAllSaves(rw http.ResponseWriter, r *http.Request) {
+	AuthAdmin(rw, r)
+	
 	utils.SetupResponse(&rw, r)
 
 	response, err := http.Get(
@@ -77,6 +85,8 @@ func (p *Statistics) GetAllSaves(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Statistics) GetVisitsForProduct(rw http.ResponseWriter, r *http.Request) {
+	AuthAdmin(rw, r)
+	
 	utils.SetupResponse(&rw, r)
 
 	vars := mux.Vars(r)
@@ -94,6 +104,8 @@ func (p *Statistics) GetVisitsForProduct(rw http.ResponseWriter, r *http.Request
 }
 
 func (p *Statistics) GetCommentsForProduct(rw http.ResponseWriter, r *http.Request) {
+	AuthAdmin(rw, r)
+	
 	utils.SetupResponse(&rw, r)
 
 	vars := mux.Vars(r)
@@ -111,6 +123,8 @@ func (p *Statistics) GetCommentsForProduct(rw http.ResponseWriter, r *http.Reque
 }
 
 func (p *Statistics) GetSavesForProduct(rw http.ResponseWriter, r *http.Request) {
+	AuthAdmin(rw, r)
+
 	utils.SetupResponse(&rw, r)
 
 	vars := mux.Vars(r)
