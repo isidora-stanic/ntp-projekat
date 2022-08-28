@@ -13,6 +13,8 @@ import UserForm from './components/user/UserForm';
 import ProductDetails from './components/product/ProductDetails';
 import RequireAuthAdmin from './contexts/RequireAuthAdmin';
 import ReviewTable from './components/review/ReviewTable';
+import { WishlistProvider } from './contexts/WishListContext';
+import CanvasV3D from './components/v3d/CanvasV3D';
 
 const theme = createTheme({palette: {
   type: 'light',
@@ -48,6 +50,7 @@ function App() {
       {/* <Layout /> */}
       <ThemeProvider theme={theme}>
       <CurrentUserProvider>
+        <WishlistProvider>
         <Routes>
           <Route path="/" element={<Layout><AllProducts /></Layout>} />
           <Route path="/users" element={<RequireAuthAdmin><Layout><UserTable /></Layout></RequireAuthAdmin>} />
@@ -60,7 +63,9 @@ function App() {
           <Route path="/reviews" element={<RequireAuthAdmin><Layout><ReviewTable /></Layout></RequireAuthAdmin>} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
+          <Route path="/v3d" element={<Layout><CanvasV3D /></Layout>} />
         </Routes>
+        </WishlistProvider>
       </CurrentUserProvider>
       </ThemeProvider>
     </div>
