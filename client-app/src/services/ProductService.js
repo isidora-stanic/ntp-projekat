@@ -5,7 +5,7 @@ const ProductService = {
     getAll : (setProducts) => {
         axios.get("http://localhost:9091/api/products").then(
             r => {
-                setProducts(r.data.map(p => ({...p, delete_id: p.id, edit_id: p.id})))
+                setProducts(r.data.map(p => ({...p, delete_id: p.id, edit_id: p.id, edit_img_id: p.id})))
             }
         ).catch(err => console.error(err))
     },

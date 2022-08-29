@@ -11,7 +11,7 @@ import jwtDecode from 'jwt-decode';
 axios.interceptors.request.use(request => {
         const token = localStorage.getItem('token')
         const isApiUrl = request.url.startsWith("http://localhost:9091")
-        console.log(token)
+        // console.log(token)
 
         try {
           // const isLoggedIn = jwtDecode(token).email ? true : false;

@@ -6,13 +6,15 @@ import Tile from './Tile';
 import Point from './Point';
 import { height } from '@mui/system';
 import Grout from './Grout';
+import { ErrorBoundary } from 'react-error-boundary';
+import ErrorFallback from '../util/ErrorFallback';
 
 const Room = ({urls, a, b, c, selectedFace, setSelectedFace, meshRef}) => {
-    const [texture1, texture2] = useLoader(THREE.TextureLoader, [...urls]);
+    // const [texture1, texture2] = useLoader(THREE.TextureLoader, [...urls]);
 
         useEffect(() => {
             console.log(selectedFace)
-            console.log('Zid',selectedFace.materialIndex)
+            console.log('selektovan zid', selectedFace.materialIndex)
             // console.log('Mesh dots',meshRef.current.geometry.attributes.position.array)           
         }, [selectedFace])
 
@@ -49,17 +51,17 @@ const Room = ({urls, a, b, c, selectedFace, setSelectedFace, meshRef}) => {
     
 
         let oneTile={
-            size:[20,10],
-            bumpUrl:'http://localhost:9090/images/black_metro_bump.png',
-            roughUrl:"http://localhost:9090/images/black_metro_roughness.png",
-            imageUrl:"http://localhost:9090/images/black_metro_diffuse.png",
+            size:[50,60],
+            bumpUrl:"http://localhost:9098/images/1/black_metro_bump.png",
+            roughUrl:"http://localhost:9098/images/1/black_metro_roughness.png",
+            imageUrl:"http://localhost:9098/images/1/black_metro_diffuse.png",
             wallSize:[a,b]
         }
         let otherTile={
-            size:[20,10],
-            bumpUrl:'http://localhost:9090/images/chocolate_metro_bump.jpg',
-            roughUrl:"http://localhost:9090/images/chocolate_metro_roughness.jpg",
-            imageUrl:"http://localhost:9090/images/chocolate_metro_diffuse.jpg",
+            size:[60,50],
+            bumpUrl:"http://localhost:9098/images/1/black_metro_bump.png",
+            roughUrl:"http://localhost:9098/images/1/black_metro_roughness.png",
+            imageUrl:"http://localhost:9098/images/2/chocolate_metro_diffuse.jpg",
             wallSize:[a,b]
         }
 
@@ -117,11 +119,13 @@ const Room = ({urls, a, b, c, selectedFace, setSelectedFace, meshRef}) => {
             <Grout {...oneGrout} index='4' color='blue' />
             <Grout {...oneGrout} index='5' color='blue' /> */}
 
-            <Tile {...oneTile} index='0'/>
-            <Tile {...otherTile} index='1'/>
-            <Tile {...oneTile} index='3'/>
-            <Tile {...oneTile} index='4'/>
-            <Tile {...oneTile} index='5'/>
+            <ErrorBoundary FallbackComponent={ErrorFallback}>
+                <Tile {...oneTile} index='0'/>
+                <Tile {...oneTile} index='1'/>
+                <Tile {...otherTile} index='3'/>
+                <Tile {...otherTile} index='4'/>
+                <Tile {...otherTile} index='5'/>
+            </ErrorBoundary>
         
         
         </mesh>

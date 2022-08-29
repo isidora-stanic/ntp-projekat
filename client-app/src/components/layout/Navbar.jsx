@@ -14,7 +14,7 @@ import Logo from './Logo';
 import Logo2 from './Logo2';
 import { Button } from '@mui/material';
 
-const pages = ['Products', 'Users', 'Reviews', 'Sign In'];
+const pages = ['Products', 'Users', 'Reviews', 'Sign In', 'V3D'];
 const settings = ['Sign Out'];
 
 const Navbar = () => {

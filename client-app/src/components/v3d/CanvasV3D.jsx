@@ -32,6 +32,7 @@ const CanvasV3D = () => {
 
     useEffect(() => {
         setSliced(getVertices())
+        setLoaded(true)
     }, [])
 
     function getVertices() {
@@ -64,11 +65,11 @@ const CanvasV3D = () => {
         {/* <Wall position={[abc.a/2, abc.b/2, abc.c/2]} hight={abc.b} width={abc.a} rotate={Math.PI/4} /> */}
         {/* <Wall position={[b/2, 0, 0]} hight={c} width={b} rotate={-Math.PI/4} /> */}
         {/* <Floor position={[0, -1/2, Math.PI/8]} hight={a} width={b} rotatey={0} rotatex={-Math.PI/2} rotatez={Math.PI/4} /> */}
-        <Room meshRef={meshRef} selectedFace={selectedFace} setSelectedFace={setSelectedFace} {...abc} urls={['http://localhost:9090/images/default_tile.jpg', 'http://localhost:9090/images/default_tile2.jpg']}/>
+        <Room meshRef={meshRef} selectedFace={selectedFace} setSelectedFace={setSelectedFace} {...abc} urls={['', '']}/>
         <Suspense fallback={null}>
-            {loaded ? sliced.map(p => 
+            {/* {loaded ? sliced.map(p => 
                 (<Point key={"p"+p[0]+p[1]+p[2]} position={p} rotate={0}/>)
-            ) : <></>}
+            ) : <></>} */}
         </Suspense>
         {/* <Point position={[125,100,90]} rotate={0}/> */}
         <primitive object={new THREE.AxesHelper(2000)} />

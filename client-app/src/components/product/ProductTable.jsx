@@ -4,6 +4,7 @@ import ProductService from '../../services/ProductService';
 import { Avatar, Button, Fab, Grid, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom'
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 
 const ProductTable = () => {
     const [products, setProducts] = useState([])
@@ -33,7 +34,23 @@ const ProductTable = () => {
         { field: 'finish', headerName: 'Finish', width: 100 },
 
         // { field: 'description', headerName: 'Description', width: 150 },
-
+        {
+          field: 'edit_img_id',
+          headerName: 'Images',
+          headerAlign: 'center',
+          renderCell: (params) => (
+              <Button
+                variant="outlined"
+                size="small"
+                style={{ marginLeft: 16 }}
+                tabIndex={params.hasFocus ? 0 : -1}
+                name={params.value}
+                onClick={(e) => navigate('/products/edit/images/'+params.value)}
+              >
+                <AddPhotoAlternateIcon/>
+              </Button>
+          ),
+        },
         {
             field: 'edit_id',
             headerName: 'Edit',

@@ -12,6 +12,8 @@ import { useForm } from "../util/useForm";
 import { useNavigate, useParams } from "react-router-dom";
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import ImageUpload from '../image-upload/ImageUpload';
 
 const ProductForm = () => {
     let navigate = useNavigate();
@@ -71,7 +73,7 @@ const ProductForm = () => {
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
-          {isAddMode ? <AddOutlinedIcon /> : <CreateOutlinedIcon />}
+          {isAddMode ? <AddOutlinedIcon /> : <ModeEditIcon />}
         </Avatar>
         <Typography component="h1" variant="h5" color="primary">
           {isAddMode ? 'Add Product' : 'Edit Product'}
@@ -257,6 +259,7 @@ const ProductForm = () => {
             
 
           </Grid>
+          {/* {!isAddMode ? <ImageUpload id={id}/> : <></>} */}
           <Button
             type="submit"
             fullWidth

@@ -15,6 +15,7 @@ import RequireAuthAdmin from './contexts/RequireAuthAdmin';
 import ReviewTable from './components/review/ReviewTable';
 import { WishlistProvider } from './contexts/WishListContext';
 import CanvasV3D from './components/v3d/CanvasV3D';
+import EditImages from './components/image-upload/EditImages';
 
 const theme = createTheme({palette: {
   type: 'light',
@@ -59,6 +60,7 @@ function App() {
           <Route path="/product/:id" element={<Layout><ProductDetails /></Layout>} />
           <Route path="/products" element={<RequireAuthAdmin><Layout><ProductTable /></Layout></RequireAuthAdmin>} />
           <Route path="/products/edit/:id" element={<RequireAuthAdmin><Layout><ProductForm /></Layout></RequireAuthAdmin>} />
+          <Route path="/products/edit/images/:id" element={<RequireAuthAdmin><Layout><EditImages /></Layout></RequireAuthAdmin>} />
           <Route path="/products/new" element={<RequireAuthAdmin><Layout><ProductForm /></Layout></RequireAuthAdmin>} />
           <Route path="/reviews" element={<RequireAuthAdmin><Layout><ReviewTable /></Layout></RequireAuthAdmin>} />
           <Route path="/signup" element={<SignUp />} />

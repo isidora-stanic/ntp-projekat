@@ -10,7 +10,7 @@ const Point = (props) => {
   // Subscribe this component to the render-loop, rotate the mesh every frame
   useFrame((state, delta) => (ref.current.rotation.x += props.rotate))
   // Return the view, these are regular Threejs elements expressed in JSX
-    console.log('point ', props)
+    // console.log('point ', props)
   useEffect(() => {
     console.log('point ', props.position)
   }, [])

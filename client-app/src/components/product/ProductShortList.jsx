@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import ProductShort from './ProductShort'
 import Pagination from '@mui/material/Pagination'
-import './ProductShortList.css'
 import { Grid, Container } from '@mui/material'
 
 const ProductShortList = ({products, total, pageSize, pageNum, setPageNum}) => {
