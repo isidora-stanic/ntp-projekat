@@ -7,35 +7,35 @@ const TechInfo = ({brand, dimensions, color, type, serie, producer, purpose, box
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableBody>
           <TableRow>
-            <TableCell variant='head'>Brand</TableCell>
+            <TableCell variant='head'><b>Brand</b></TableCell>
             <TableCell>{brand}</TableCell>
           </TableRow>
           <TableRow>
-            <TableCell variant='head'>Dimensions</TableCell>
+            <TableCell variant='head'><b>Dimensions</b></TableCell>
             <TableCell>{dimensions}</TableCell>
           </TableRow>
           <TableRow>
-            <TableCell variant='head'>Color</TableCell>
+            <TableCell variant='head'><b>Color</b></TableCell>
             <TableCell>{color}</TableCell>
           </TableRow>
           <TableRow>
-            <TableCell variant='head'>Type and model</TableCell>
+            <TableCell variant='head'><b>Type and model</b></TableCell>
             <TableCell>{type}</TableCell>
           </TableRow>
           <TableRow>
-            <TableCell variant='head'>Purpose</TableCell>
+            <TableCell variant='head'><b>Purpose</b></TableCell>
             <TableCell>{purpose}</TableCell>
           </TableRow>
           <TableRow>
-            <TableCell variant='head'>Producer</TableCell>
+            <TableCell variant='head'><b>Producer</b></TableCell>
             <TableCell>{producer}</TableCell>
           </TableRow>
           <TableRow>
-            <TableCell variant='head'>Series</TableCell>
+            <TableCell variant='head'><b>Series</b></TableCell>
             <TableCell>{serie}</TableCell>
           </TableRow>
           <TableRow>
-            <TableCell variant='head'>Box Size</TableCell>
+            <TableCell variant='head'><b>Box Size</b></TableCell>
             <TableCell>{boxSize}</TableCell>
           </TableRow>
         </TableBody>

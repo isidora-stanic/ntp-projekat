@@ -21,7 +21,15 @@ func NewProducts(l*log.Logger) *Products {
 type KeyProduct struct{}
 
 func (p *Products) GetAllProducts(rw http.ResponseWriter, r *http.Request) {
-	AuthAdmin(rw, r)
+	err := AuthAdmin(rw, r)
+	if err == utils.ErrUnauthorized {
+		http.Error(rw, err.Error(), 401)
+		return
+	}
+	if err != nil {
+		http.Error(rw, err.Error(), 500)
+		return
+	}
 	
 	utils.SetupResponse(&rw, r)
 
@@ -54,7 +62,15 @@ func (p *Products) GetOneProduct(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Products) AddProduct(rw http.ResponseWriter, r *http.Request) {
-	AuthAdmin(rw, r)
+	err := AuthAdmin(rw, r)
+	if err == utils.ErrUnauthorized {
+		http.Error(rw, err.Error(), 401)
+		return
+	}
+	if err != nil {
+		http.Error(rw, err.Error(), 500)
+		return
+	}
 	
 	utils.SetupResponse(&rw, r)
 
@@ -75,7 +91,15 @@ func (p *Products) AddProduct(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Products) UpdateProduct(rw http.ResponseWriter, r *http.Request) {
-	AuthAdmin(rw, r)
+	err := AuthAdmin(rw, r)
+	if err == utils.ErrUnauthorized {
+		http.Error(rw, err.Error(), 401)
+		return
+	}
+	if err != nil {
+		http.Error(rw, err.Error(), 500)
+		return
+	}
 	
 	utils.SetupResponse(&rw, r)
 
@@ -99,7 +123,15 @@ func (p *Products) UpdateProduct(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Products) DeleteProduct(rw http.ResponseWriter, r *http.Request) {
-	AuthAdmin(rw, r)
+	err := AuthAdmin(rw, r)
+	if err == utils.ErrUnauthorized {
+		http.Error(rw, err.Error(), 401)
+		return
+	}
+	if err != nil {
+		http.Error(rw, err.Error(), 500)
+		return
+	}
 	
 	utils.SetupResponse(&rw, r)
 
@@ -127,6 +159,20 @@ func (p *Products) GetFilterOptions(rw http.ResponseWriter, r *http.Request) {
 
 	response, err := http.Get(
 		utils.ProductServiceRoot.Next().Host + ProductService + "/filter-options")
+
+	if err != nil {
+		rw.WriteHeader(http.StatusGatewayTimeout)
+		return
+	}
+
+	utils.DelegateResponse(response, rw)
+}
+
+func (p *Products) GetImages(rw http.ResponseWriter, r *http.Request) {
+	utils.SetupResponse(&rw, r)
+
+	response, err := http.Get(
+		utils.ProductServiceRoot.Next().Host + "/images/default_tile.jpg")
 
 	if err != nil {
 		rw.WriteHeader(http.StatusGatewayTimeout)

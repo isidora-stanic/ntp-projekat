@@ -1,16 +1,17 @@
 import { Typography } from '@mui/material'
 import React from 'react'
 import AdbIcon from '@mui/icons-material/Adb';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Logo2 = () => {
+  let navigate = useNavigate()
   return (
     <>
       <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
-            component="a"
-            href=""
+            onClick={() => navigate('/')}
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },

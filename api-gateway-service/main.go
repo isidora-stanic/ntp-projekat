@@ -55,6 +55,7 @@ func main() {
 	getRouter.HandleFunc("/api/products", ph.GetAllProducts)
 	getRouter.HandleFunc("/api/products/{id:[0-9]+}", ph.GetOneProduct)
 	getRouter.HandleFunc("/api/products/filter-options", ph.GetFilterOptions)
+	getRouter.HandleFunc("/images/{name}", ph.GetImages)
 	postRouter.HandleFunc("/api/products/filter", ph.GetFilteredPaginated)
 	postRouter.HandleFunc("/api/products", ph.AddProduct)
 	putRouter.HandleFunc("/api/products/{id:[0-9]+}", ph.UpdateProduct)
@@ -84,6 +85,9 @@ func main() {
 
 	//statistics-service routes
 	getRouter.HandleFunc("/api/statistics", sh.GetAllLogs)
+	getRouter.HandleFunc("/api/statistics/statistics-for-all/{logtype:[A-Z]+}", sh.GetAllLogsByTypeProduct)
+	getRouter.HandleFunc("/api/statistics/statistics-for-all-interval/{logtype:[A-Z]+}/{t1}/{t2}", sh.GetAllLogsByTypeProductInterval)
+
 	getRouter.HandleFunc("/api/statistics/visits", sh.GetAllVisits)
 	getRouter.HandleFunc("/api/statistics/comments", sh.GetAllComments)
 	getRouter.HandleFunc("/api/statistics/saves", sh.GetAllSaves)

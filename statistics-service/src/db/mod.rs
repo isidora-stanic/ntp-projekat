@@ -30,6 +30,7 @@ struct StatsCount {
     product_id: i32,
     log_type: String,
     stat_count: String,
+    product: String,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -66,7 +67,7 @@ pub fn seed_db() -> Result<(), Error> {
             &"COMMENT", 
             &2.to_owned(), 
             &str::replace(&Utc.ymd(2022, 3, 5).to_string(), "UTC", ""), 
-            &"Zorka blue smoot", 
+            &"[ZOR01027] ZORKA Architect KDS - 02 (light blue smoot)", 
         ],
     )?;
 
@@ -76,7 +77,7 @@ pub fn seed_db() -> Result<(), Error> {
             &"VISIT", 
             &2.to_owned(),
             &str::replace(&Utc.ymd(2022, 3, 5).to_string(), "UTC", ""), 
-            &"Zorka blue smoot", 
+            &"[ZOR01027] ZORKA Architect KDS - 02 (light blue smoot)", 
         ],
     )?;
 
@@ -86,7 +87,7 @@ pub fn seed_db() -> Result<(), Error> {
             &"SAVE",
             &2.to_owned(), 
             &str::replace(&Utc.ymd(2022, 3, 5).to_string(), "UTC", ""), 
-            &"Zorka blue smoot"
+            &"[ZOR01027] ZORKA Architect KDS - 02 (light blue smoot)"
         ],
     )?;
 
@@ -203,11 +204,37 @@ pub fn get_count_for_type_product(log_type: String) -> Result<String, Error> {
     )?;
 
     let mut ret: Vec<StatsCount> = vec![];
-    for row in client.query("SELECT product_id, COUNT(*) FROM public.logs WHERE log_type = $1 GROUP BY product_id", &[&log_type])? {
+    for row in client.query("SELECT product_id, product, COUNT(*) FROM public.logs WHERE log_type = $1 GROUP BY product_id, product", &[&log_type])? {
         let product_id: i32 = row.get(0);
-        let count: i64 = row.get(1);
+        let product: &str = row.get(1);
+        let count: i64 = row.get(2);
         ret.push(StatsCount {
             product_id: (product_id),
+            product: (product.to_string()),
+            log_type: (log_type.to_string()),
+            stat_count: (count.to_string()),
+        });
+    }
+
+    client.close()?;
+    Ok(serde_json::to_string(&ret).unwrap())
+}
+
+// actual statistics interval
+pub fn get_count_for_type_product_interval(log_type: String, t1: String, t2: String) -> Result<String, Error> {
+    let mut client = Client::connect(
+        "postgresql://postgres:password@localhost:5432/statistics_db",
+        NoTls,
+    )?;
+
+    let mut ret: Vec<StatsCount> = vec![];
+    for row in client.query("SELECT product_id, product, COUNT(*) FROM public.logs WHERE log_type = $1 and timestamp >= $2 and timestamp <= $3  GROUP BY product_id, product", &[&log_type, &t1, &t2])? {
+        let product_id: i32 = row.get(0);
+        let product: &str = row.get(1);
+        let count: i64 = row.get(2);
+        ret.push(StatsCount {
+            product_id: (product_id),
+            product: (product.to_string()),
             log_type: (log_type.to_string()),
             stat_count: (count.to_string()),
         });

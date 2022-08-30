@@ -58,6 +58,16 @@ func (u *Users) Register(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (u *Users) GetAllUsers(rw http.ResponseWriter, r *http.Request) {
+	err := AuthAdmin(rw, r)
+	if err == utils.ErrUnauthorized {
+		http.Error(rw, err.Error(), 401)
+		return
+	}
+	if err != nil {
+		http.Error(rw, err.Error(), 500)
+		return
+	}
+
 	utils.SetupResponse(&rw, r)
 
 	response, err := http.Get(
@@ -89,6 +99,16 @@ func (u *Users) GetOneUser(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (u *Users) CreateUser(rw http.ResponseWriter, r *http.Request) {
+	err := AuthAdmin(rw, r)
+	if err == utils.ErrUnauthorized {
+		http.Error(rw, err.Error(), 401)
+		return
+	}
+	if err != nil {
+		http.Error(rw, err.Error(), 500)
+		return
+	}
+
 	utils.SetupResponse(&rw, r)
 
 	req, _ := http.NewRequest(http.MethodPost,
@@ -108,6 +128,16 @@ func (u *Users) CreateUser(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (u *Users) UpdateUser(rw http.ResponseWriter, r *http.Request) {
+	err := AuthAdmin(rw, r)
+	if err == utils.ErrUnauthorized {
+		http.Error(rw, err.Error(), 401)
+		return
+	}
+	if err != nil {
+		http.Error(rw, err.Error(), 500)
+		return
+	}
+
 	utils.SetupResponse(&rw, r)
 
 	vars := mux.Vars(r)
@@ -130,6 +160,16 @@ func (u *Users) UpdateUser(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (u *Users) DeleteUser(rw http.ResponseWriter, r *http.Request) {
+	err := AuthAdmin(rw, r)
+	if err == utils.ErrUnauthorized {
+		http.Error(rw, err.Error(), 401)
+		return
+	}
+	if err != nil {
+		http.Error(rw, err.Error(), 500)
+		return
+	}
+
 	utils.SetupResponse(&rw, r)
 
 	vars := mux.Vars(r)
@@ -153,6 +193,16 @@ func (u *Users) DeleteUser(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (u *Users) BanUser(rw http.ResponseWriter, r *http.Request) {
+	err := AuthAdmin(rw, r)
+	if err == utils.ErrUnauthorized {
+		http.Error(rw, err.Error(), 401)
+		return
+	}
+	if err != nil {
+		http.Error(rw, err.Error(), 500)
+		return
+	}
+
 	utils.SetupResponse(&rw, r)
 
 	u.l.Println("USLA U BANOVANJE")
@@ -178,6 +228,16 @@ func (u *Users) BanUser(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (u *Users) PermitUser(rw http.ResponseWriter, r *http.Request) {
+	err := AuthAdmin(rw, r)
+	if err == utils.ErrUnauthorized {
+		http.Error(rw, err.Error(), 401)
+		return
+	}
+	if err != nil {
+		http.Error(rw, err.Error(), 500)
+		return
+	}
+	
 	utils.SetupResponse(&rw, r)
 
 	vars := mux.Vars(r)

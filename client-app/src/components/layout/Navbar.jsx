@@ -12,9 +12,12 @@ import { useCurrentUser } from '../../contexts/CurrentUserContext';
 import ProfileSettings from './ProfileSettings';
 import Logo from './Logo';
 import Logo2 from './Logo2';
-import { Button } from '@mui/material';
+import { Avatar, Badge, Button } from '@mui/material';
+import ViewInArIcon from '@mui/icons-material/ViewInAr';
+import { useWishlist } from '../../contexts/WishListContext';
 
-const pages = ['Products', 'Users', 'Reviews', 'Sign In', 'V3D'];
+const pagesAdmin = ['Products', 'Users', 'Reviews', 'Statistics', 'Sign In'];
+const pagesUnauth = ['Sign In'];
 const settings = ['Sign Out'];
 
 const Navbar = () => {
@@ -31,6 +34,8 @@ const Navbar = () => {
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
+
+  let {wishlist, setWishlist, addProduct, removeProduct, checkIfProductInWishlist} = useWishlist()
 
   return (
     <AppBar position="static" >
@@ -67,7 +72,19 @@ const Navbar = () => {
                 display: { xs: 'block', md: 'none'},
               }}
             >
-              {pages.map((page) => (
+              {user ? pagesAdmin.map((page) => (
+                <MenuItem key={page} onClick={() => navigate('/'+page.toLowerCase().replace(/\s/g, ""))}>
+                  <Button
+                key={page}
+                disableRipple 
+                sx={{ my: 0, color: 'primary', display: 'flex', "&:hover": {backgroundColor: 'transparent'} }}
+                fullWidth
+              >
+                {page}
+              </Button>
+                </MenuItem>
+              )): 
+              pagesUnauth.map((page) => (
                 <MenuItem key={page} onClick={() => navigate('/'+page.toLowerCase().replace(/\s/g, ""))}>
                   <Button
                 key={page}
@@ -83,7 +100,16 @@ const Navbar = () => {
           </Box>
           <Logo2 />
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
+            {user ? pagesAdmin.map((page) => (
+              <Button
+                key={page}
+                onClick={() => navigate('/'+page.toLowerCase().replace(/\s/g, ""))}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                {page}
+              </Button>
+            )) : 
+            pagesUnauth.map((page) => (
               <Button
                 key={page}
                 onClick={() => navigate('/'+page.toLowerCase().replace(/\s/g, ""))}
@@ -93,7 +119,13 @@ const Navbar = () => {
               </Button>
             ))}
           </Box>
-
+              <IconButton onClick={() => navigate('/v3d')} sx={{ p: 0 }}>
+              <Badge badgeContent={wishlist.length} color="warning" sx={{mx:3}}>
+                <Avatar variant='circular' sx={{ m: -1, bgcolor: "secondary.main" }}>
+                  <ViewInArIcon  />
+                </Avatar>
+                </Badge>
+              </IconButton>
           {user ? <ProfileSettings user={user}/> : <></>}
           
         </Toolbar>

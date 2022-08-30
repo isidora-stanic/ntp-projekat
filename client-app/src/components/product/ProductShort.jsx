@@ -4,6 +4,7 @@ import { Card, CardMedia, CardContent, Typography, CardActions, Button } from '@
 import { useNavigate } from 'react-router-dom'
 import ImageService from '../../services/ImageService'
 import { useWishlist } from '../../contexts/WishListContext'
+import StatisticsService from '../../services/StatisticsService'
 
 
 const ProductShort = ({product}) => {
@@ -21,6 +22,15 @@ const ProductShort = ({product}) => {
   let {wishlist, setWishlist, addProduct, removeProduct, checkIfProductInWishlist} = useWishlist()
 
     const handleWishlistAdd = (e) => {
+      if (product.id) {
+        console.log(product.id)
+        StatisticsService.postLog({
+          log_type: 'SAVE',
+          product_id: Number.parseInt(product.id),
+          timestamp: new Date().toISOString(),
+          product: "[" + product.sku + "] " + product.name
+        }, 'SAVE')
+      }
       addProduct(product)
     }
 

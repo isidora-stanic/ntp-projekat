@@ -8,6 +8,7 @@ import ProductTabs from './ProductTabs'
 import Carousel from 'react-material-ui-carousel'
 import ImageService from '../../services/ImageService'
 import { useWishlist } from '../../contexts/WishListContext'
+import StatisticsService from '../../services/StatisticsService'
 
 
 const ProductDetails = () => {
@@ -21,9 +22,30 @@ const ProductDetails = () => {
         ImageService.getNormal(id, setImages)
     }, [])
 
+    useEffect(() => {
+      if (product.id) {
+        console.log(product.id)
+        StatisticsService.postLog({
+          log_type: 'VISIT',
+          product_id: Number.parseInt(id),
+          timestamp: new Date().toISOString(),
+          product: "[" + product.sku + "] " + product.name
+        }, 'VISIT')
+      }
+    }, [product])
+
     let {wishlist, setWishlist, addProduct, removeProduct, checkIfProductInWishlist} = useWishlist()
 
     const handleWishlistAdd = () => {
+      if (product.id) {
+        console.log(product.id)
+        StatisticsService.postLog({
+          log_type: 'SAVE',
+          product_id: Number.parseInt(product.id),
+          timestamp: new Date().toISOString(),
+          product: "[" + product.sku + "] " + product.name
+        }, 'SAVE')
+      }
       addProduct(product)
     }
 

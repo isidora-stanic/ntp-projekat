@@ -21,7 +21,15 @@ func NewReviews(l *log.Logger) *Reviews {
 type KeyReview struct{}
 
 func (p *Reviews) GetAllReviews(rw http.ResponseWriter, r *http.Request) {
-	AuthAdmin(rw, r)
+	err := AuthAdmin(rw, r)
+	if err == utils.ErrUnauthorized {
+		http.Error(rw, err.Error(), 401)
+		return
+	}
+	if err != nil {
+		http.Error(rw, err.Error(), 500)
+		return
+	}
 
 	utils.SetupResponse(&rw, r)
 
@@ -54,7 +62,16 @@ func (p *Reviews) GetReviewsForProduct(rw http.ResponseWriter, r *http.Request) 
 }
 
 func (p *Reviews) GetReviewsByUser(rw http.ResponseWriter, r *http.Request) {
-	AuthAnyRole(rw, r)
+	err := AuthAnyRole(rw, r)
+	if err == utils.ErrUnauthorized {
+		http.Error(rw, err.Error(), 401)
+		return
+	}
+	if err != nil {
+		http.Error(rw, err.Error(), 500)
+		return
+	}
+
 	utils.SetupResponse(&rw, r)
 
 	vars := mux.Vars(r)
@@ -72,7 +89,16 @@ func (p *Reviews) GetReviewsByUser(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Reviews) GetReviewByUserForProduct(rw http.ResponseWriter, r *http.Request) {
-	AuthAnyRole(rw, r)
+	err := AuthAnyRole(rw, r)
+	if err == utils.ErrUnauthorized {
+		http.Error(rw, err.Error(), 401)
+		return
+	}
+	if err != nil {
+		http.Error(rw, err.Error(), 500)
+		return
+	}
+	
 
 	utils.SetupResponse(&rw, r)
 
@@ -109,7 +135,16 @@ func (p *Reviews) GetRatingForProduct(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Reviews) AddReview(rw http.ResponseWriter, r *http.Request) {
-	AuthRegUser(rw, r)
+	err := AuthRegUser(rw, r)
+	if err == utils.ErrUnauthorized {
+		http.Error(rw, err.Error(), 401)
+		return
+	}
+	if err != nil {
+		http.Error(rw, err.Error(), 500)
+		return
+	}
+	
 
 	utils.SetupResponse(&rw, r)
 
@@ -130,7 +165,15 @@ func (p *Reviews) AddReview(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Reviews) DeleteReview(rw http.ResponseWriter, r *http.Request) {
-	AuthAdmin(rw, r)
+	err := AuthAdmin(rw, r)
+	if err == utils.ErrUnauthorized {
+		http.Error(rw, err.Error(), 401)
+		return
+	}
+	if err != nil {
+		http.Error(rw, err.Error(), 500)
+		return
+	}
 	
 	utils.SetupResponse(&rw, r)
 

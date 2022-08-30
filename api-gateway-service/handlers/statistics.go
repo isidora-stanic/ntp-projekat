@@ -8,7 +8,7 @@ import (
 	"github.com/isidora-stanic/ntp-projekat/api-gateway-service/utils"
 )
 
-const StatisticsService string = "/api/reviews"
+const StatisticsService string = "/api/statistics"
 
 type Statistics struct {
 	l *log.Logger
@@ -21,7 +21,15 @@ func NewStatistics(l *log.Logger) *Statistics {
 type KeyStatistics struct{}
 
 func (p *Statistics) GetAllLogs(rw http.ResponseWriter, r *http.Request) {
-	AuthAdmin(rw, r)
+	err := AuthAdmin(rw, r)
+	if err == utils.ErrUnauthorized {
+		http.Error(rw, err.Error(), 401)
+		return
+	}
+	if err != nil {
+		http.Error(rw, err.Error(), 500)
+		return
+	}
 	
 	utils.SetupResponse(&rw, r)
 
@@ -36,8 +44,72 @@ func (p *Statistics) GetAllLogs(rw http.ResponseWriter, r *http.Request) {
 	utils.DelegateResponse(response, rw)
 }
 
+func (p *Statistics) GetAllLogsByTypeProduct(rw http.ResponseWriter, r *http.Request) {
+	err := AuthAdmin(rw, r)
+	if err == utils.ErrUnauthorized {
+		http.Error(rw, err.Error(), 401)
+		return
+	}
+	if err != nil {
+		http.Error(rw, err.Error(), 500)
+		return
+	}
+	
+	utils.SetupResponse(&rw, r)
+
+	vars := mux.Vars(r)
+	logtype := vars["logtype"]
+
+	response, err := http.Get(
+		utils.StatisticsServiceRoot.Next().Host + StatisticsService + "/statistics-for-all/" + logtype)
+
+	if err != nil {
+		rw.WriteHeader(http.StatusGatewayTimeout)
+		return
+	}
+
+	utils.DelegateResponse(response, rw)
+}
+
+func (p *Statistics) GetAllLogsByTypeProductInterval(rw http.ResponseWriter, r *http.Request) {
+	err := AuthAdmin(rw, r)
+	if err == utils.ErrUnauthorized {
+		http.Error(rw, err.Error(), 401)
+		return
+	}
+	if err != nil {
+		http.Error(rw, err.Error(), 500)
+		return
+	}
+	
+	utils.SetupResponse(&rw, r)
+
+	vars := mux.Vars(r)
+	logtype := vars["logtype"]
+	t1 := vars["t1"]
+	t2:= vars["t2"]
+
+	response, err := http.Get(
+		utils.StatisticsServiceRoot.Next().Host + StatisticsService + "/statistics-for-all-interval/" + logtype + "/" + t1 + "/" + t2)
+
+	if err != nil {
+		rw.WriteHeader(http.StatusGatewayTimeout)
+		return
+	}
+
+	utils.DelegateResponse(response, rw)
+}
+
 func (p *Statistics) GetAllVisits(rw http.ResponseWriter, r *http.Request) {
-	AuthAdmin(rw, r)
+	err := AuthAdmin(rw, r)
+	if err == utils.ErrUnauthorized {
+		http.Error(rw, err.Error(), 401)
+		return
+	}
+	if err != nil {
+		http.Error(rw, err.Error(), 500)
+		return
+	}
 	
 	utils.SetupResponse(&rw, r)
 
@@ -53,7 +125,15 @@ func (p *Statistics) GetAllVisits(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Statistics) GetAllComments(rw http.ResponseWriter, r *http.Request) {
-	AuthAdmin(rw, r)
+	err := AuthAdmin(rw, r)
+	if err == utils.ErrUnauthorized {
+		http.Error(rw, err.Error(), 401)
+		return
+	}
+	if err != nil {
+		http.Error(rw, err.Error(), 500)
+		return
+	}
 	
 	utils.SetupResponse(&rw, r)
 
@@ -69,7 +149,15 @@ func (p *Statistics) GetAllComments(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Statistics) GetAllSaves(rw http.ResponseWriter, r *http.Request) {
-	AuthAdmin(rw, r)
+	err := AuthAdmin(rw, r)
+	if err == utils.ErrUnauthorized {
+		http.Error(rw, err.Error(), 401)
+		return
+	}
+	if err != nil {
+		http.Error(rw, err.Error(), 500)
+		return
+	}
 	
 	utils.SetupResponse(&rw, r)
 
@@ -85,7 +173,15 @@ func (p *Statistics) GetAllSaves(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Statistics) GetVisitsForProduct(rw http.ResponseWriter, r *http.Request) {
-	AuthAdmin(rw, r)
+	err := AuthAdmin(rw, r)
+	if err == utils.ErrUnauthorized {
+		http.Error(rw, err.Error(), 401)
+		return
+	}
+	if err != nil {
+		http.Error(rw, err.Error(), 500)
+		return
+	}
 	
 	utils.SetupResponse(&rw, r)
 
@@ -104,7 +200,15 @@ func (p *Statistics) GetVisitsForProduct(rw http.ResponseWriter, r *http.Request
 }
 
 func (p *Statistics) GetCommentsForProduct(rw http.ResponseWriter, r *http.Request) {
-	AuthAdmin(rw, r)
+	err := AuthAdmin(rw, r)
+	if err == utils.ErrUnauthorized {
+		http.Error(rw, err.Error(), 401)
+		return
+	}
+	if err != nil {
+		http.Error(rw, err.Error(), 500)
+		return
+	}
 	
 	utils.SetupResponse(&rw, r)
 
@@ -123,7 +227,15 @@ func (p *Statistics) GetCommentsForProduct(rw http.ResponseWriter, r *http.Reque
 }
 
 func (p *Statistics) GetSavesForProduct(rw http.ResponseWriter, r *http.Request) {
-	AuthAdmin(rw, r)
+	err := AuthAdmin(rw, r)
+	if err == utils.ErrUnauthorized {
+		http.Error(rw, err.Error(), 401)
+		return
+	}
+	if err != nil {
+		http.Error(rw, err.Error(), 500)
+		return
+	}
 
 	utils.SetupResponse(&rw, r)
 
