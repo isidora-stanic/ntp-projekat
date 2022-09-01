@@ -62,6 +62,7 @@ func Update(id uint32, p models.Product) (models.Product, error) {
 	found.Dimensions = p.Dimensions
 	found.Finish = p.Finish
 	found.Serie = p.Serie
+	found.Material = p.Material
 
 	res := Db.Save(&found)
 
@@ -97,6 +98,7 @@ func GetFilterOptions() (*models.FilterOptions, error) {
 	var purpose []string
 	var color []string
 	var series []string
+	var material []string
 
 	for _, p := range all {
 		brand = append(brand, p.Brand)
@@ -106,6 +108,7 @@ func GetFilterOptions() (*models.FilterOptions, error) {
 		purpose = append(purpose, p.Purpose)
 		color = append(color, p.Color)
 		series = append(series, p.Serie)
+		material = append(material, p.Material)
 	}
 
 	filters := models.FilterOptions{}
@@ -116,6 +119,7 @@ func GetFilterOptions() (*models.FilterOptions, error) {
 	filters.List = append(filters.List, models.FilterOption{Name: "Purpose" , Options: unique(purpose)})
 	filters.List = append(filters.List, models.FilterOption{Name: "Color" , Options: unique(color)})
 	filters.List = append(filters.List, models.FilterOption{Name: "Series" , Options: unique(series)})
+	filters.List = append(filters.List, models.FilterOption{Name: "Material" , Options: unique(material)})
 
 	fmt.Println(brand)
 
@@ -168,26 +172,78 @@ func contains(s []string, str string) bool {
 	return false
 }
 
-func GetFilteredProducts(r *http.Request, products []models.Product) ([]models.Product) {
+// func GetFilteredProducts(r *http.Request, products []models.Product) ([]models.Product) {
+// 	var filterDto models.FilterDTO
+
+// 	json.NewDecoder(r.Body).Decode(&filterDto)
+	
+// 	result := []models.Product{}
+
+// 	for _, p := range(products) {
+// 		if contains(filterDto.Brand, p.Brand) && 
+// 		contains(filterDto.Dimensions, p.Dimensions) &&
+// 		contains(filterDto.Type, p.Type) &&
+// 		contains(filterDto.Color, p.Color) &&
+// 		contains(filterDto.Finish, p.Finish) &&
+// 		contains(filterDto.Purpose, p.Purpose) &&
+// 		contains(filterDto.Serie, p.Serie) &&
+// 		contains(filterDto.Material, p.Material) &&
+// 		p.Price >= filterDto.LowerPrice && p.Price <= filterDto.UpperPrice {
+// 			result = append(result, p)
+// 		}
+// 	}
+// 	return result
+// }
+
+func GetHasAnyOfTheFilters(uid uint32, r *http.Request) ([]models.Product, error) {
 	var filterDto models.FilterDTO
 
-	json.NewDecoder(r.Body).Decode(&filterDto)
-	
-	result := []models.Product{}
-
-	for _, p := range(products) {
-		if contains(filterDto.Brand, p.Brand) && 
-		contains(filterDto.Dimensions, p.Dimensions) &&
-		contains(filterDto.Type, p.Type) &&
-		contains(filterDto.Color, p.Color) &&
-		contains(filterDto.Finish, p.Finish) &&
-		contains(filterDto.Purpose, p.Purpose) &&
-		contains(filterDto.Serie, p.Serie) &&
-		p.Price >= filterDto.LowerPrice && p.Price <= filterDto.UpperPrice {
-			result = append(result, p)
-		}
+	err := json.NewDecoder(r.Body).Decode(&filterDto)
+	if err != nil {
+		return nil, err
 	}
-	return result
+
+	materialOpts := strings.Join(filterDto.Material, "|")
+	finishOpts := strings.Join(filterDto.Finish, "|")
+	purposeOpts := strings.Join(filterDto.Purpose, "|")
+	colorOpts := strings.Join(filterDto.Color, "|")
+
+	var result []models.Product
+
+	err1 := Db.Table("products").Where("(products.color ~* ? OR products.finish ~* ? OR "+
+	"products.material ~* ?) AND products.purpose ~* ? AND deleted_at IS NULL AND products.id != ?",
+	colorOpts, finishOpts,
+	materialOpts, purposeOpts, uid,
+	).Find(&result).Error
+
+	if err1 != nil {
+		return nil, err1
+	}
+
+	return result, nil
+}
+
+func GetSimilarProductsSamePurpose(id uint32) ([]models.Product, error) {
+	product, err := GetOne(id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var result []models.Product
+	
+
+	err1 := Db.Table("products").Where("(products.brand ~* ? OR products.producer ~* ? OR "+
+	"products.serie ~* ? OR products.material ~* ?) AND products.purpose ~* ? AND deleted_at IS NULL AND products.id != ?",
+	product.Brand, product.Producer,
+	product.Serie, product.Material, product.Purpose, id,
+	).Find(&result).Error
+
+	if err1 != nil {
+		return nil, err1
+	}
+
+	return result, nil
 }
 
 func GetFilteredProductsPaginated(r *http.Request) ([]models.Product, int, error) {
@@ -210,6 +266,7 @@ func GetFilteredProductsPaginated(r *http.Request) ([]models.Product, int, error
 	purposeOpts := strings.Join(filterDto.Purpose, "|")
 	colorOpts := strings.Join(filterDto.Color, "|")
 	serieOpts := strings.Join(filterDto.Serie, "|")
+	materialOpts := strings.Join(filterDto.Material, "|")
 
 	fmt.Println("Got: ", brandOpts, dimOpts, typeOpts, finishOpts, purposeOpts, colorOpts, serieOpts)
 
@@ -217,20 +274,20 @@ func GetFilteredProductsPaginated(r *http.Request) ([]models.Product, int, error
 
 	err1 := Db.Scopes(Paginate(r)).Table("products").Where("(products.price BETWEEN ? AND ?) AND "+
 	"products.brand ~* ? AND products.dimensions ~* ? AND products.type ~* ? AND "+
-	"products.finish ~* ? AND products.purpose ~* ? AND products.color ~* ? AND products.serie ~* ? AND deleted_at IS NULL",
+	"products.finish ~* ? AND products.purpose ~* ? AND products.color ~* ? AND products.serie ~* ? AND products.material ~* ? AND deleted_at IS NULL",
 	filterDto.LowerPrice, filterDto.UpperPrice,
 	brandOpts, dimOpts, typeOpts,
 	finishOpts, purposeOpts, colorOpts,
-	serieOpts,
+	serieOpts, materialOpts,
 	).Find(&resultPage).Error
 
 	err2 := Db.Table("products").Where("(products.price BETWEEN ? AND ?) AND "+
 	"products.brand ~* ? AND products.dimensions ~* ? AND products.type ~* ? AND "+
-	"products.finish ~* ? AND products.purpose ~* ? AND products.color ~* ? AND products.serie ~* ? AND deleted_at IS NULL",
+	"products.finish ~* ? AND products.purpose ~* ? AND products.color ~* ? AND products.serie ~* ? AND products.material ~* ? AND deleted_at IS NULL",
 	filterDto.LowerPrice, filterDto.UpperPrice,
 	brandOpts, dimOpts, typeOpts,
 	finishOpts, purposeOpts, colorOpts,
-	serieOpts,
+	serieOpts, materialOpts,
 	).Select("COUNT(*)").Row().Scan(&totalRes)
 
 	if err1 != nil {

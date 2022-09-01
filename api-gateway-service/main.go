@@ -35,8 +35,9 @@ func main() {
 	ph := handlers.NewProducts(sl)
 	uh := handlers.NewUsers(sl)
 	eh := handlers.NewEmails(sl)
-	rh := handlers.NewReviews(sl)
+	rvwh := handlers.NewReviews(sl)
 	sh := handlers.NewStatistics(sl)
+	rcmdh := handlers.NewRecommendations(sl)
 
 	sm := mux.NewRouter()
 
@@ -75,15 +76,15 @@ func main() {
 	postRouter.HandleFunc("/api/email/send", eh.SendBasicEmail)
 
 	// review-service routes
-	getRouter.HandleFunc("/api/reviews", rh.GetAllReviews)
-	getRouter.HandleFunc("/api/reviews/product/{id:[0-9]+}", rh.GetReviewsForProduct)
-	getRouter.HandleFunc("/api/reviews/user/{id:[0-9]+}", rh.GetReviewsByUser)
-	getRouter.HandleFunc("/api/reviews/user/{uid:[0-9]+}/product/{pid:[0-9]+}", rh.GetReviewByUserForProduct)
-	getRouter.HandleFunc("/api/reviews/rating/{id:[0-9]+}", rh.GetRatingForProduct)
-	postRouter.HandleFunc("/api/reviews", rh.AddReview)
-	deleteRouter.HandleFunc("/api/reviews/{id:[0-9]+}", rh.DeleteReview)
+	getRouter.HandleFunc("/api/reviews", rvwh.GetAllReviews)
+	getRouter.HandleFunc("/api/reviews/product/{id:[0-9]+}", rvwh.GetReviewsForProduct)
+	getRouter.HandleFunc("/api/reviews/user/{id:[0-9]+}", rvwh.GetReviewsByUser)
+	getRouter.HandleFunc("/api/reviews/user/{uid:[0-9]+}/product/{pid:[0-9]+}", rvwh.GetReviewByUserForProduct)
+	getRouter.HandleFunc("/api/reviews/rating/{id:[0-9]+}", rvwh.GetRatingForProduct)
+	postRouter.HandleFunc("/api/reviews", rvwh.AddReview)
+	deleteRouter.HandleFunc("/api/reviews/{id:[0-9]+}", rvwh.DeleteReview)
 
-	//statistics-service routes
+	// statistics-service routes
 	getRouter.HandleFunc("/api/statistics", sh.GetAllLogs)
 	getRouter.HandleFunc("/api/statistics/statistics-for-all/{logtype:[A-Z]+}", sh.GetAllLogsByTypeProduct)
 	getRouter.HandleFunc("/api/statistics/statistics-for-all-interval/{logtype:[A-Z]+}/{t1}/{t2}", sh.GetAllLogsByTypeProductInterval)
@@ -98,6 +99,12 @@ func main() {
 	postRouter.HandleFunc("/api/statistics/comment", sh.AddComment)
 	postRouter.HandleFunc("/api/statistics/save", sh.AddSave)
 
+	// recomendation-service routes
+	getRouter.HandleFunc("/api/recommendations", rcmdh.GetAllRecommendations)
+	postRouter.HandleFunc("/api/recommendations/recommend", rcmdh.GetRecommendationsForAProduct)
+	postRouter.HandleFunc("/api/recommendations", rcmdh.AddRecommendation)
+	putRouter.HandleFunc("/api/recomendations/{id:[0-9]+}", rcmdh.UpdateRecommendation)
+	deleteRouter.HandleFunc("/api/recomendations/{id:[0-9]+}", rcmdh.DeleteRecommendation)
 
 
 	// CORS

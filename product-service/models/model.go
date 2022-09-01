@@ -15,12 +15,13 @@ type Product struct {
 	Producer	string	`json:"producer" gorm:"column:producer;default:null"`
 	Brand		string	`json:"brand" gorm:"column:brand;default:null"`
 	Dimensions  string  `json:"dimensions" gorm:"column:dimensions;default:null"`
-	Type        string  `json:"type" gorm:"column:type;default:null"`
+	Type        string  `json:"p_type" gorm:"column:type;default:null"`
 	Finish		string	`json:"finish" gorm:"column:finish;default:null"`
 	Purpose		string	`json:"purpose" gorm:"column:purpose;default:null"`
 	Color		string	`json:"color" gorm:"column:color;default:null"`
 	Serie		string	`json:"serie" gorm:"column:serie;default:null"`
-	BoxSize		float32	`json:"boxSize" gorm:"column:box_size;default:null"`
+	BoxSize		float32	`json:"box_size" gorm:"column:box_size;default:null"`
+	Material	string	`json:"material" gorm:"column:material;default:null"`
 }
 
 func (p*Product) ToDTO() ProductDTO {
@@ -40,5 +41,6 @@ func (p*Product) ToDTO() ProductDTO {
 		Color: p.Color,
 		Serie: p.Serie,
 		BoxSize: p.BoxSize,
+		Material: p.Material,
 	}
 }

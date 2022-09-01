@@ -13,6 +13,7 @@ var UserServiceRoot, _ = roundrobin.New(&url.URL{Host: "http://localhost:9092"})
 var EmailServiceRoot, _ = roundrobin.New(&url.URL{Host: "http://localhost:9093"})
 var ReviewServiceRoot, _ = roundrobin.New(&url.URL{Host: "http://localhost:9081"})
 var StatisticsServiceRoot, _ = roundrobin.New(&url.URL{Host: "http://localhost:9082"})
+var RecommendationServiceRoot, _ = roundrobin.New(&url.URL{Host: "http://localhost:9083"})
 
 func DelegateResponse(r *http.Response, rw http.ResponseWriter) {
 	rw.Header().Set("Content-Type", r.Header.Get("Content-Type"))

@@ -44,6 +44,7 @@ func main() {
 	getRouter.HandleFunc("/api/products", ph.GetProducts)
 	getRouter.HandleFunc("/api/products/{id:[0-9]+}", ph.GetProduct)
 	getRouter.HandleFunc("/api/products/filter-options", ph.GetFilterOptions)
+	getRouter.HandleFunc("/api/products/similar/{id:[0-9]+}", ph.GetSimilarProductsSamePurpose)
 
 	putRouter := sm.Methods(http.MethodPut).Subrouter()
 	putRouter.HandleFunc("/api/products/{id:[0-9]+}", ph.UpdateProducts)
@@ -51,6 +52,7 @@ func main() {
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/api/products/filter", ph.GetFilteredPaginated)
+	postRouter.HandleFunc("/api/products/filter/any/{id:[0-9]+}", ph.GetHasAnyOfTheFilters)
 	postRouter.HandleFunc("/api/products", ph.AddProduct)
 	postRouter.Use(ph.MiddlewareValidateProduct)
 

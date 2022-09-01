@@ -24,6 +24,7 @@ var	products = []models.Product{
 		Color: 			"Plava",
 		Purpose: 		"Kupatilo",
 		Serie: 			"Avalon",
+		Material:		"Keramika",
 		BoxSize: 		0.36,
 	},
 	{
@@ -40,6 +41,7 @@ var	products = []models.Product{
 		Color: 			"Plava",
 		Purpose: 		"Kupatilo",
 		Serie: 			"Avalon",
+		Material:		"Keramika",
 		BoxSize: 		0.36,
 	},
 	{
@@ -55,6 +57,7 @@ var	products = []models.Product{
 		Finish: 		"Mat",
 		Color: 			"Plava",
 		Purpose: 		"Kupatilo",
+		Material:		"Keramika",
 		Serie: 			"Avalon",
 		BoxSize: 		0.36,
 	},

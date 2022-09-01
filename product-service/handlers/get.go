@@ -67,3 +67,25 @@ func (p*Products) GetFilterOptions(rw http.ResponseWriter, r *http.Request) {
 
 	utils.ReturnResponseAsJson(rw, filters)
 }
+
+func (p*Products) GetSimilarProductsSamePurpose(rw http.ResponseWriter, r *http.Request) {
+	p.l.Println("Handle GET Filtered Products")
+
+	vars := mux.Vars(r)
+	id, err := strconv.ParseUint(vars["id"], 10, 32)
+	if err != nil {
+		http.Error(rw, "Unable to convert id", http.StatusBadRequest)
+		return
+	}
+	uid := uint32(id)
+
+	res, err := db.GetSimilarProductsSamePurpose(uid)
+
+	resDto := []models.ProductDTO{}
+
+	for _, p := range(res) {
+		resDto = append(resDto, p.ToDTO())
+	}
+
+	utils.ReturnResponseAsJson(rw, resDto)
+}

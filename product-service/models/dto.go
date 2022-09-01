@@ -18,12 +18,13 @@ type ProductDTO struct {
 	Producer	string	`json:"producer"`
 	Brand		string	`json:"brand"`
 	Dimensions  string  `json:"dimensions"`
-	Type        string  `json:"type"`
+	Type        string  `json:"p_type"`
 	Finish		string	`json:"finish"`
 	Purpose		string	`json:"purpose"`
 	Color		string	`json:"color"`
 	Serie		string	`json:"serie"`
-	BoxSize		float32	`json:"boxSize"`
+	BoxSize		float32	`json:"box_size"`
+	Material	string	`json:"material"`
 }
 
 type FilterOptions struct {
@@ -40,11 +41,12 @@ type FilterDTO struct {
 	UpperPrice	float32		`json:"upperPrice"`
 	Brand		[]string	`json:"brand"`
 	Dimensions  []string  	`json:"dimensions"`
-	Type        []string  	`json:"type"`
+	Type        []string  	`json:"p_type"`
 	Finish		[]string	`json:"finish"`
 	Purpose		[]string	`json:"purpose"`
 	Color		[]string	`json:"color"`
 	Serie		[]string	`json:"serie"`
+	Material	[]string	`json:"material"`
 }
 
 type PageResponse struct {
@@ -68,6 +70,7 @@ func (p *ProductDTO) ToProduct() Product {
 		Color: p.Color,
 		Serie: p.Serie,
 		BoxSize: p.BoxSize,
+		Material: p.Material,
 	}
 }
 
