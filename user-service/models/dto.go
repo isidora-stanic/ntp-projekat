@@ -43,6 +43,7 @@ func (p *UserDTO) ToUserWithoutBan() User {
 
 type BanRequest struct {
 	Until	 string `json:"until"`
+	Reason	 string	`json:"reason"`
 }
 
 type Credentials struct {

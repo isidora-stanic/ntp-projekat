@@ -24,6 +24,13 @@ type Product struct {
 	Material	string	`json:"material" gorm:"column:material;default:null"`
 }
 
+type Subscription struct {
+	gorm.Model
+
+	ProductId	uint	`json:"product_id" gorm:"column:product_id;not null;default:null"`
+	Email		string	`json:"email" gorm:"column:email;not null;default:null"`
+}
+
 func (p*Product) ToDTO() ProductDTO {
 	return ProductDTO{
 		ID: p.ID,

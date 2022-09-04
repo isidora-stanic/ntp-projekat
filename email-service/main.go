@@ -38,7 +38,11 @@ func main() {
 	postRouter.HandleFunc("/api/email/send", eh.SendBasicEmail)
 
 	// CORS
-	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"http://localhost:9091"}))
+	ch := gohandlers.CORS(
+		gohandlers.AllowedOrigins([]string{"http://localhost:9091", "http://localhost:3000", "*"}),
+		gohandlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
+		gohandlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS", "PATCH", "DELETE"}),
+	)
 
 	s := &http.Server{
 		Addr: *bindAddress,

@@ -39,3 +39,43 @@ func (p *Products) UpdateProducts(rw http.ResponseWriter, r *http.Request) {
 
 	utils.ReturnResponseAsJson(rw, uprod.ToDTO())
 }
+
+func (p *Products) Subscribe(rw http.ResponseWriter, r *http.Request) {
+	p.l.Println("Handle Sub - now with db...")
+	
+	vars := mux.Vars(r)
+	email := vars["email"]
+
+	pId, err := strconv.ParseUint(vars["product_id"], 10, 32)
+
+	if err != nil {
+		http.Error(rw, "Unable to convert product id", http.StatusBadRequest)
+		return
+	}
+
+	err = db.SubscribeUser(email, uint(pId))
+	if err != nil {
+		http.Error(rw, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func (p *Products) Unsubscribe(rw http.ResponseWriter, r *http.Request) {
+	p.l.Println("Handle Unsub - now with db...")
+
+	vars := mux.Vars(r)
+	id, err := strconv.ParseUint(vars["id"], 10, 32)//strconv.Atoi()
+	if err != nil {
+		http.Error(rw, "Unable to convert id", http.StatusBadRequest)
+		return
+	}
+	uid := uint(id)
+
+	err = db.UnsubscribeUser(uid)
+
+	if err != nil {
+		http.Error(rw, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+}

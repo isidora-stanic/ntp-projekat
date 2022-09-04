@@ -48,6 +48,8 @@ func main() {
 
 	putRouter := sm.Methods(http.MethodPut).Subrouter()
 	putRouter.HandleFunc("/api/products/{id:[0-9]+}", ph.UpdateProducts)
+	putRouter.HandleFunc("/api/products/sub/{product_id:[0-9]+}/{email}", ph.Subscribe)
+	putRouter.HandleFunc("/api/products/unsub/{id:[0-9]+}", ph.Unsubscribe)
 	putRouter.Use(ph.MiddlewareValidateProduct)
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()

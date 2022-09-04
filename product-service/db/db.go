@@ -63,6 +63,33 @@ var	products = []models.Product{
 	},
 }
 
+var	subscriptions = []models.Subscription{
+	{
+		ProductId: 		1,
+		Email:			"admin@mail.com",
+	},
+	{
+		ProductId: 		1,
+		Email:			"user1@mail.com",
+	},
+	{
+		ProductId: 		1,
+		Email:			"user2@mail.com",
+	},
+	{
+		ProductId: 		2,
+		Email:			"admin@mail.com",
+	},
+	{
+		ProductId: 		2,
+		Email:			"user1@mail.com",
+	},
+	{
+		ProductId: 		2,
+		Email:			"user2@mail.com",
+	},
+}
+
 var Db *gorm.DB
 var err error
 
@@ -79,9 +106,15 @@ func Init() {
 	}
 
 	Db.DropTableIfExists("products")
+	Db.DropTableIfExists("subscriptions")
 	Db.AutoMigrate(&models.Product{})
+	Db.AutoMigrate(&models.Subscription{})
 
 	for _, product := range products {
 		Db.Create(&product)
+	}
+
+	for _, sub := range subscriptions {
+		Db.Create(&sub)
 	}
 }

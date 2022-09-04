@@ -47,6 +47,8 @@ type FilterDTO struct {
 	Color		[]string	`json:"color"`
 	Serie		[]string	`json:"serie"`
 	Material	[]string	`json:"material"`
+	SearchQuery string		`json:"search_query"`
+	SortBy 		string		`json:"sort_by"`
 }
 
 type PageResponse struct {

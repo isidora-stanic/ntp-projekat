@@ -7,6 +7,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/isidora-stanic/ntp-projekat/user-service/db"
+	"github.com/isidora-stanic/ntp-projekat/user-service/email"
 	"github.com/isidora-stanic/ntp-projekat/user-service/exceptions"
 	"github.com/isidora-stanic/ntp-projekat/user-service/models"
 )
@@ -36,13 +37,20 @@ func (p *Users) BanUserOnSomeTime(rw http.ResponseWriter, r *http.Request) {
 
 	p.l.Println("[DEBUG] get record id", uid)
 
-	// prod, err := db.GetOne(uid) //data.FindUser(id)
+	user, err := db.GetOne(uid) //data.FindUser(id)
+	if err != nil {
+		p.l.Println("[ERROR] fetching User", err)
+		http.Error(rw, "User not found", http.StatusNotFound)
+		return
+	}
+	userEmail := user.Email
 
 	err = db.BanUser(uid, banEnd)
 
 	switch err {
 		case nil:
 			p.l.Println("[SUCCESS] User banned until "+banReq.Until)
+			email.SendEmail("admin@mail.com", userEmail, "Ban", "You've been banned until " + banReq.Until + ".\nReason for ban is: \n" + banReq.Reason)
 			return
 		case exceptions.ErrUserNotFound:
 			p.l.Println("[ERROR] fetching User", err)

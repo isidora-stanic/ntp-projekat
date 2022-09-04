@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/isidora-stanic/ntp-projekat/product-service/email"
 	"github.com/isidora-stanic/ntp-projekat/product-service/exceptions"
 	"github.com/isidora-stanic/ntp-projekat/product-service/models"
 	"github.com/jinzhu/gorm"
@@ -49,6 +50,10 @@ func Update(id uint32, p models.Product) (models.Product, error) {
 		return found, err
 	}
 
+	priceChanged := (found.Price != p.Price)
+	oldPrice := found.Price
+	newPrice := p.Price
+
 	found.ImageSrc = p.ImageSrc
 	found.Name = p.Name
 	found.Price = p.Price
@@ -66,8 +71,13 @@ func Update(id uint32, p models.Product) (models.Product, error) {
 
 	res := Db.Save(&found)
 
+	if priceChanged {
+		SendEmailsToSubs(id, oldPrice, newPrice, found.Name)
+	}
+
 	return found, res.Error
 }
+
 
 func Delete(id uint32) (error) {
 	found, err := GetOne(id)
@@ -172,29 +182,6 @@ func contains(s []string, str string) bool {
 	return false
 }
 
-// func GetFilteredProducts(r *http.Request, products []models.Product) ([]models.Product) {
-// 	var filterDto models.FilterDTO
-
-// 	json.NewDecoder(r.Body).Decode(&filterDto)
-	
-// 	result := []models.Product{}
-
-// 	for _, p := range(products) {
-// 		if contains(filterDto.Brand, p.Brand) && 
-// 		contains(filterDto.Dimensions, p.Dimensions) &&
-// 		contains(filterDto.Type, p.Type) &&
-// 		contains(filterDto.Color, p.Color) &&
-// 		contains(filterDto.Finish, p.Finish) &&
-// 		contains(filterDto.Purpose, p.Purpose) &&
-// 		contains(filterDto.Serie, p.Serie) &&
-// 		contains(filterDto.Material, p.Material) &&
-// 		p.Price >= filterDto.LowerPrice && p.Price <= filterDto.UpperPrice {
-// 			result = append(result, p)
-// 		}
-// 	}
-// 	return result
-// }
-
 func GetHasAnyOfTheFilters(uid uint32, r *http.Request) ([]models.Product, error) {
 	var filterDto models.FilterDTO
 
@@ -274,20 +261,20 @@ func GetFilteredProductsPaginated(r *http.Request) ([]models.Product, int, error
 
 	err1 := Db.Scopes(Paginate(r)).Table("products").Where("(products.price BETWEEN ? AND ?) AND "+
 	"products.brand ~* ? AND products.dimensions ~* ? AND products.type ~* ? AND "+
-	"products.finish ~* ? AND products.purpose ~* ? AND products.color ~* ? AND products.serie ~* ? AND products.material ~* ? AND deleted_at IS NULL",
+	"products.finish ~* ? AND products.purpose ~* ? AND products.color ~* ? AND products.serie ~* ? AND products.material ~* ? AND products.name ILIKE ? AND deleted_at IS NULL",
 	filterDto.LowerPrice, filterDto.UpperPrice,
 	brandOpts, dimOpts, typeOpts,
 	finishOpts, purposeOpts, colorOpts,
-	serieOpts, materialOpts,
-	).Find(&resultPage).Error
+	serieOpts, materialOpts, "%"+filterDto.SearchQuery+"%",
+	).Order(filterDto.SortBy).Find(&resultPage).Error
 
 	err2 := Db.Table("products").Where("(products.price BETWEEN ? AND ?) AND "+
 	"products.brand ~* ? AND products.dimensions ~* ? AND products.type ~* ? AND "+
-	"products.finish ~* ? AND products.purpose ~* ? AND products.color ~* ? AND products.serie ~* ? AND products.material ~* ? AND deleted_at IS NULL",
+	"products.finish ~* ? AND products.purpose ~* ? AND products.color ~* ? AND products.serie ~* ? AND products.material ~* ? AND products.name LIKE ? AND deleted_at IS NULL",
 	filterDto.LowerPrice, filterDto.UpperPrice,
 	brandOpts, dimOpts, typeOpts,
 	finishOpts, purposeOpts, colorOpts,
-	serieOpts, materialOpts,
+	serieOpts, materialOpts, "%"+filterDto.SearchQuery+"%",
 	).Select("COUNT(*)").Row().Scan(&totalRes)
 
 	if err1 != nil {
@@ -298,4 +285,57 @@ func GetFilteredProductsPaginated(r *http.Request) ([]models.Product, int, error
 	}
 
 	return resultPage, totalRes, nil
+}
+
+func GetSubsForProducts(id uint32) ([]models.Subscription, error)  {
+	var subs []models.Subscription
+
+	err := Db.Table("subscriptions").Where("subscriptions.product_id = ? AND subscriptions.deleted_at IS NULL", id).Find(&subs).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Println(subs)
+
+	return subs, nil
+}
+
+
+func SendEmailsToSubs(id uint32, oldPrice float32, newPrice float32, pName string) {
+	subs, err := GetSubsForProducts(id)
+
+	if err != nil {
+		return
+	}
+
+	for _, sub := range subs {
+		email.SendEmail("admin@mail.com", sub.Email, "Price for " + pName + " changed", "Old price was " + strconv.FormatFloat(float64(oldPrice), 'f', 2, 32) + "RSD. Now it's " + strconv.FormatFloat(float64(newPrice), 'f', 2, 32) + "RSD. <br/> <a href='http://localhost:3000/product/"+strconv.FormatUint(uint64(id), 10)+"'>View product</a>")
+	}
+}
+
+func SubscribeUser(email string, prodId uint) (error) {
+	// todo impl
+	err := Db.Create(&models.Subscription{Email: email, ProductId: prodId}).Error
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func UnsubscribeUser(id uint) (error) {
+	// todo impl
+	var sub models.Subscription
+
+	Db.First(&sub, id)
+
+	if sub.ID == 0 {
+		return exceptions.ErrProductNotFound
+	}
+
+	Db.Delete(&sub)
+
+	return nil
 }
