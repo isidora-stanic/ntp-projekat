@@ -61,6 +61,24 @@ func (p *Products) GetOneProduct(rw http.ResponseWriter, r *http.Request) {
 	utils.DelegateResponse(response, rw)
 }
 
+func (p *Products) GetSubscription(rw http.ResponseWriter, r *http.Request) {
+	utils.SetupResponse(&rw, r)
+
+	vars := mux.Vars(r)
+	id := vars["id"]
+	email := vars["email"]
+
+	response, err := http.Get(
+		utils.ProductServiceRoot.Next().Host + ProductService + "/sub/" + id + "/"+email)
+
+	if err != nil {
+		rw.WriteHeader(http.StatusGatewayTimeout)
+		return
+	}
+
+	utils.DelegateResponse(response, rw)
+}
+
 func (p *Products) AddProduct(rw http.ResponseWriter, r *http.Request) {
 	err := AuthAdmin(rw, r)
 	if err == utils.ErrUnauthorized {
@@ -108,6 +126,71 @@ func (p *Products) UpdateProduct(rw http.ResponseWriter, r *http.Request) {
 
 	req, _ := http.NewRequest(http.MethodPut,
 		utils.ProductServiceRoot.Next().Host+ProductService+"/"+id, r.Body)
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	response, err := client.Do(req)
+
+	if err != nil {
+		rw.WriteHeader(http.StatusGatewayTimeout)
+		return
+	}
+
+	utils.DelegateResponse(response, rw)
+}
+
+func (p *Products) Subscribe(rw http.ResponseWriter, r *http.Request) {
+	err := AuthAdmin(rw, r)
+	if err == utils.ErrUnauthorized {
+		http.Error(rw, err.Error(), 401)
+		return
+	}
+	if err != nil {
+		http.Error(rw, err.Error(), 500)
+		return
+	}
+	
+	utils.SetupResponse(&rw, r)
+
+	vars := mux.Vars(r)
+	id := vars["id"]
+	email := vars["email"]
+
+	req, _ := http.NewRequest(http.MethodPut,
+		utils.ProductServiceRoot.Next().Host+ProductService+"/sub/"+id+"/"+email, r.Body)
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	response, err := client.Do(req)
+
+	if err != nil {
+		rw.WriteHeader(http.StatusGatewayTimeout)
+		return
+	}
+
+	utils.DelegateResponse(response, rw)
+}
+
+func (p *Products) Unsubscribe(rw http.ResponseWriter, r *http.Request) {
+	err := AuthAdmin(rw, r)
+	if err == utils.ErrUnauthorized {
+		http.Error(rw, err.Error(), 401)
+		return
+	}
+	if err != nil {
+		http.Error(rw, err.Error(), 500)
+		return
+	}
+	
+	utils.SetupResponse(&rw, r)
+
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	req, _ := http.NewRequest(http.MethodPut,
+		utils.ProductServiceRoot.Next().Host+ProductService+"/unsub/"+id, r.Body)
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("Content-Type", "application/json")
 

@@ -7,7 +7,7 @@ import (
 
 func ReturnResponseAsJson(rw http.ResponseWriter, respDTO any) {
 	err := json.NewEncoder(rw).Encode(respDTO) //dlp.ToJSON(rw)
-	println(rw)
+	// println(rw)
 	if err != nil {
 		http.Error(rw, "Unable to marshal json", http.StatusInternalServerError)
 		return

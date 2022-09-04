@@ -51,3 +51,11 @@ func (p*Product) ToDTO() ProductDTO {
 		Material: p.Material,
 	}
 }
+
+func (p*Subscription) ToDTO() SubscriptionDTO {
+	return SubscriptionDTO{
+		ID: p.ID,
+		Email: p.Email,
+		ProductId: p.ProductId,
+	}
+}

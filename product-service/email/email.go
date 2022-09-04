@@ -3,7 +3,7 @@ package email
 import (
 	"bytes"
 	"encoding/json"
-	"log"
+	"fmt"
 	"net/http"
 )
 
@@ -13,14 +13,16 @@ func SendEmail(from string, to string, subject string, message string) {
 	json_data, err := json.Marshal(values)
 
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err.Error())
+		return
 	}
 
 	resp, err := http.Post("http://localhost:9093/api/email/send", "application/json",
 		bytes.NewBuffer(json_data))
 
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err.Error())
+		return
 	}
 
 	var res map[string]interface{}

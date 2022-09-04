@@ -27,6 +27,12 @@ type ProductDTO struct {
 	Material	string	`json:"material"`
 }
 
+type SubscriptionDTO struct {
+	ID          uint    `json:"id"`
+	ProductId   uint    `json:"product_id"`
+	Email		string	`json:"email"`
+}
+
 type FilterOptions struct {
 	List		[]FilterOption	`json:"list"`
 }

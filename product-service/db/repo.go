@@ -301,6 +301,20 @@ func GetSubsForProducts(id uint32) ([]models.Subscription, error)  {
 	return subs, nil
 }
 
+func GetSubForProductAndUser(id uint32, email string) (models.Subscription, error)  {
+	var sub models.Subscription
+
+	err := Db.Table("subscriptions").Where("subscriptions.product_id = ? AND subscriptions.email = ? AND subscriptions.deleted_at IS NULL", id, email).First(&sub).Error
+
+	if err != nil {
+		return sub, err
+	}
+
+	fmt.Println(sub)
+
+	return sub, nil
+}
+
 
 func SendEmailsToSubs(id uint32, oldPrice float32, newPrice float32, pName string) {
 	subs, err := GetSubsForProducts(id)

@@ -11,7 +11,7 @@ import (
 
 func (p Products) MiddlewareValidateProduct(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-		if strings.Contains(r.URL.Path, "filter") {
+		if strings.Contains(r.URL.Path, "filter") || strings.Contains(r.URL.Path, "/sub/") || strings.Contains(r.URL.Path, "/unsub/") {
 			p.l.Println("Hello form middleware")
 			p.l.Println("skipping check...")
 			next.ServeHTTP(rw, r)

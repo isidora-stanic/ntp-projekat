@@ -45,6 +45,7 @@ func main() {
 	getRouter.HandleFunc("/api/products/{id:[0-9]+}", ph.GetProduct)
 	getRouter.HandleFunc("/api/products/filter-options", ph.GetFilterOptions)
 	getRouter.HandleFunc("/api/products/similar/{id:[0-9]+}", ph.GetSimilarProductsSamePurpose)
+	getRouter.HandleFunc("/api/products/sub/{product_id:[0-9]+}/{email}", ph.GetSubscription)
 
 	putRouter := sm.Methods(http.MethodPut).Subrouter()
 	putRouter.HandleFunc("/api/products/{id:[0-9]+}", ph.UpdateProducts)

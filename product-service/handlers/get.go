@@ -89,3 +89,27 @@ func (p*Products) GetSimilarProductsSamePurpose(rw http.ResponseWriter, r *http.
 
 	utils.ReturnResponseAsJson(rw, resDto)
 }
+
+func (p*Products) GetSubscription(rw http.ResponseWriter, r *http.Request) {
+	p.l.Println("Handle GET Subscription by product and email")
+
+	vars := mux.Vars(r)
+	id, err := strconv.ParseUint(vars["product_id"], 10, 32)
+	if err != nil {
+		http.Error(rw, "Unable to convert id", http.StatusBadRequest)
+		return
+	}
+	uid := uint32(id)
+
+	email := vars["email"]
+
+	sub, err := db.GetSubForProductAndUser(uid, email)
+
+	if err != nil {
+		p.l.Println(err.Error())
+		http.Error(rw, err.Error(), http.StatusNotFound)
+		return
+	}
+
+	utils.ReturnResponseAsJson(rw, sub.ToDTO())
+}
