@@ -26,7 +26,7 @@ struct Response {
 }
 
 #[derive(Serialize, Deserialize)]
-struct StatsCount {
+pub struct StatsCount {
     product_id: i32,
     log_type: String,
     stat_count: String,
@@ -34,7 +34,7 @@ struct StatsCount {
 }
 
 #[derive(Serialize, Deserialize)]
-struct StatsCountAllResponse {
+pub struct StatsCountAllResponse {
     visits: Vec<StatsCount>,
     comments: Vec<StatsCount>,
     saves: Vec<StatsCount>,
@@ -97,7 +97,7 @@ pub fn seed_db() -> Result<(), Error> {
 }
 
 // repo
-pub fn get_all() -> Result<String, Error> {
+pub fn get_all() -> Result<Vec<Log>, Error> {
     let mut client = Client::connect(
         "postgresql://postgres:password@localhost:5432/statistics_db",
         NoTls,
@@ -121,10 +121,10 @@ pub fn get_all() -> Result<String, Error> {
     }
     client.close()?;
 
-    Ok(serde_json::to_string(&ret).unwrap())
+    Ok(ret)
 }
 
-pub fn get_all_product_logs_of_type(log_type: String) -> Result<String, Error> {
+pub fn get_all_product_logs_of_type(log_type: String) -> Result<Vec<Log>, Error> {
     let mut client = Client::connect(
         "postgresql://postgres:password@localhost:5432/statistics_db",
         NoTls,
@@ -147,10 +147,10 @@ pub fn get_all_product_logs_of_type(log_type: String) -> Result<String, Error> {
     }
     client.close()?;
 
-    Ok(serde_json::to_string(&ret).unwrap())
+    Ok(ret)
 }
 
-pub fn get_product_logs_of_type(product_id: i32, log_type: String) -> Result<String, Error> {
+pub fn get_product_logs_of_type(product_id: i32, log_type: String) -> Result<Vec<Log>, Error> {
     let mut client = Client::connect(
         "postgresql://postgres:password@localhost:5432/statistics_db",
         NoTls,
@@ -172,10 +172,10 @@ pub fn get_product_logs_of_type(product_id: i32, log_type: String) -> Result<Str
     }
     client.close()?;
 
-    Ok(serde_json::to_string(&ret).unwrap())
+    Ok(ret)
 }
 
-pub fn create_log(log: rocket::serde::json::Json<LogCreateRequest>, log_type: String) -> Result<String, Error> {
+pub fn create_log(log: LogCreateRequest, log_type: String) -> Result<String, Error> {
     let mut client = Client::connect(
         "postgresql://postgres:password@localhost:5432/statistics_db",
         NoTls,
@@ -193,11 +193,11 @@ pub fn create_log(log: rocket::serde::json::Json<LogCreateRequest>, log_type: St
 
     client.close()?;
 
-    Ok(serde_json::to_string(&Response{message: "Log successfull.".to_string()}).unwrap())
+    Ok("Log successfuly added.".to_string())
 }
 
 // actual statistics
-pub fn get_count_for_type_product(log_type: String) -> Result<String, Error> {
+pub fn get_count_for_type_product(log_type: String) -> Result<Vec<StatsCount>, Error> {
     let mut client = Client::connect(
         "postgresql://postgres:password@localhost:5432/statistics_db",
         NoTls,
@@ -217,11 +217,11 @@ pub fn get_count_for_type_product(log_type: String) -> Result<String, Error> {
     }
 
     client.close()?;
-    Ok(serde_json::to_string(&ret).unwrap())
+    Ok(ret)
 }
 
 // actual statistics interval
-pub fn get_count_for_type_product_interval(log_type: String, t1: String, t2: String) -> Result<String, Error> {
+pub fn get_count_for_type_product_interval(log_type: String, t1: String, t2: String) -> Result<Vec<StatsCount>, Error> {
     let mut client = Client::connect(
         "postgresql://postgres:password@localhost:5432/statistics_db",
         NoTls,
@@ -241,26 +241,5 @@ pub fn get_count_for_type_product_interval(log_type: String, t1: String, t2: Str
     }
 
     client.close()?;
-    Ok(serde_json::to_string(&ret).unwrap())
+    Ok(ret)
 }
-
-// pub fn get_statistics_for_all() -> Result<String, Error> {
-//     let mut client = Client::connect(
-//         "postgresql://postgres:password@localhost:5432/statistics_db",
-//         NoTls,
-//     )?;
-
-//     let mut retV = get_count_for_type_product("VISIT".to_string())
-//     let mut retC = get_count_for_type_product("COMMENT".to_string())
-//     let mut retS = get_count_for_type_product("SAVE".to_string())
-
-//     let mut ret: StatsCountAllResponse = {
-//         visits: retV,
-//         comments: retC,
-//         saves: retS,
-//     }
-    
-//     client.close()?;
-
-//     Ok(serde_json::to_string(&ret).unwrap())
-// }

@@ -253,7 +253,7 @@ pub fn delete(id: i32) -> Result<String, Error> {
 // e2e
 
 pub fn get_all_for_attribute(attribute: String, value: String) -> Result<Vec<RecommendationParamDTO>, Error> {
-    println!("{:#?} {:#?}", attribute, value);
+    // println!("{:#?} {:#?}", attribute, value);
     let mut client = Client::connect(
         "postgresql://postgres:password@localhost:5432/recommendation_db",
         NoTls,
@@ -273,7 +273,7 @@ pub fn get_all_for_attribute(attribute: String, value: String) -> Result<Vec<Rec
             value2: (value2.to_string())
         });
 
-        println!("{:#?} {:#?} {:#?}", based_on, value1, value2);
+        // println!("{:#?} {:#?} {:#?}", based_on, value1, value2);
         
     }
 

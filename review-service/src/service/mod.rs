@@ -125,14 +125,14 @@ pub fn seed_db() -> Result<(), Error> {
 
 
 // repo
-pub fn get_all() -> Result<String, Error> {
+pub fn get_all() -> Result<Vec<ReviewDTO>, Error> {
     let mut client = Client::connect(
         "postgresql://postgres:password@localhost:5432/review_db",
         NoTls,
     )?;
 
     let mut ret: Vec<ReviewDTO> = vec![];
-    for row in client.query("SELECT id, user_id, product_id, rate, review_comment, timestamp, user_info, product FROM public.reviews WHERE deleted = $1", &[&false])? {
+    for row in client.query("SELECT id, user_id, product_id, rate, review_comment, timestamp, user_info, product FROM public.reviews WHERE deleted = false", &[])? {
         let id: i32 = row.get(0);
         let user_id: i32 = row.get(1);
         let product_id: i32 = row.get(2);
@@ -147,10 +147,10 @@ pub fn get_all() -> Result<String, Error> {
     }
     client.close()?;
 
-    Ok(serde_json::to_string(&ret).unwrap())
+    Ok(ret)
 }
 
-pub fn get_all_for_product(id: i32) -> Result<String, Error> {
+pub fn get_all_for_product(id: i32) -> Result<Vec<ReviewDTO>, Error> {
     let mut client = Client::connect(
         "postgresql://postgres:password@localhost:5432/review_db",
         NoTls,
@@ -172,10 +172,10 @@ pub fn get_all_for_product(id: i32) -> Result<String, Error> {
     }
     client.close()?;
 
-    Ok(serde_json::to_string(&ret).unwrap())
+    Ok(ret)
 }
 
-pub fn get_all_for_user(id: i32) -> Result<String, Error> {
+pub fn get_all_for_user(id: i32) -> Result<Vec<ReviewDTO>, Error> {
     let mut client = Client::connect(
         "postgresql://postgres:password@localhost:5432/review_db",
         NoTls,
@@ -196,10 +196,10 @@ pub fn get_all_for_user(id: i32) -> Result<String, Error> {
     }
     client.close()?;
 
-    Ok(serde_json::to_string(&ret).unwrap())
+    Ok(ret)
 }
 
-pub fn get_for_user_and_product(uid: i32, pid: i32) -> Result<String, Error> {
+pub fn get_for_user_and_product(uid: i32, pid: i32) -> Result<Vec<ReviewDTO>, Error> {
     let mut client = Client::connect(
         "postgresql://postgres:password@localhost:5432/review_db",
         NoTls,
@@ -220,10 +220,10 @@ pub fn get_for_user_and_product(uid: i32, pid: i32) -> Result<String, Error> {
     }
     client.close()?;
 
-    Ok(serde_json::to_string(&ret).unwrap())
+    Ok(ret)
 }
 
-pub fn get_rating_for_product(id_product: i32) -> Result<String, Error> {
+pub fn get_rating_for_product(id_product: i32) -> Result<f32, Error> {
     let mut client = Client::connect(
         "postgresql://postgres:password@localhost:5432/review_db",
         NoTls,
@@ -238,9 +238,9 @@ pub fn get_rating_for_product(id_product: i32) -> Result<String, Error> {
     }
     client.close()?;
 
-    let mut rating: f32 = sum as f32/count as f32;
+    let rating: f32 = sum as f32/count as f32;
 
-    Ok(rating.to_string())
+    Ok(rating)
 }
 
 pub fn delete_review(id: i32) -> Result<String, Error> {
@@ -256,7 +256,7 @@ pub fn delete_review(id: i32) -> Result<String, Error> {
 
     client.close()?;
 
-    Ok(serde_json::to_string(&Response{message: "OK".to_string()}).unwrap())
+    Ok("Successfuly deleted review".to_string())
 }
 
 pub fn create_review(review: rocket::serde::json::Json<ReviewCreateRequest>) -> Result<String, Error> {
@@ -271,7 +271,7 @@ pub fn create_review(review: rocket::serde::json::Json<ReviewCreateRequest>) -> 
         let uid: i32 = row.get(1);
         if (pid == review.product_id) && (uid > review.user_id) {
             client.close()?;
-            return Ok(serde_json::to_string(&Response{message: "Review overlaps with another review of the same product by the same user.".to_string()}).unwrap());
+            return Ok("Review overlaps with another review of the same product by the same user.".to_string());
         }
     }
     
@@ -291,5 +291,5 @@ pub fn create_review(review: rocket::serde::json::Json<ReviewCreateRequest>) -> 
 
     client.close()?;
 
-    Ok(serde_json::to_string(&Response{message: "Review successfull.".to_string()}).unwrap())
+    Ok("Review successfull.".to_string())
 }
