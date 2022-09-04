@@ -73,8 +73,8 @@ const UserService = {
         ).catch(err => console.error(err))
     },
 
-    ban : (id, endDate) => {
-        axios.patch("http://localhost:9091/api/users/"+id+"/ban", { until: endDate }).then(
+    ban : (id, endDate, reason) => {
+        axios.patch("http://localhost:9091/api/users/"+id+"/ban", { until: endDate, reason: reason }).then(
             r => {
                 console.log(r)
             }

@@ -99,8 +99,9 @@ const UserForm = () => {
           <Grid item xs={2}>
           <FormControl sx={{ minWidth: 175 }}>
             <InputLabel id='lbl'>Role *</InputLabel>
-            <Select
+            <TextField
               labelId="lbl"
+              select
               id="role"
               value={values.role || ''}
               label="Role *"
@@ -113,7 +114,7 @@ const UserForm = () => {
             >
               <MenuItem value={'ADMIN'}>Admin</MenuItem>
               <MenuItem value={'REGUSER'}>User</MenuItem>
-            </Select>
+            </TextField>
             </FormControl>
           </Grid>
           <Grid item xs={10}>

@@ -18,6 +18,21 @@ const ProductService = {
         ).catch(err => console.error(err))
     },
 
+    getSubscription : (pid, email, setSub) => {
+        axios.get("http://localhost:9091/api/products/sub/"+pid+"/"+email).then(
+            r => {
+                setSub(r.data)
+                // console.log(r.data)
+            }
+        ).catch(
+            err => {
+                if (err.response.status == 404) {
+                    return
+                }
+                console.error(err)
+        })
+    },
+
     create : (product) => {
         axios.post("http://localhost:9091/api/products", product).then(
             r => {
@@ -34,6 +49,24 @@ const ProductService = {
         ).catch(err => console.error(err))
     },
 
+    subscribe : (pid, email, getSub) => {
+        axios.put("http://localhost:9091/api/products/sub/"+pid + "/"+email, {}).then(
+            r => {
+                console.log(r)
+                getSub()
+            }
+        ).catch(err => console.error(err))
+    },
+
+    unsubscribe : (sid, getSub) => {
+        axios.put("http://localhost:9091/api/products/unsub/"+sid, {}).then(
+            r => {
+                console.log(r)
+                getSub()
+            }
+        ).catch(err => console.error(err))
+    },
+
     delete : (id) => {
         axios.delete("http://localhost:9091/api/products/"+id).then(
             r => {
@@ -42,9 +75,11 @@ const ProductService = {
         ).catch(err => console.error(err))
     },
 
-    getFilteredPaginated : (pageNum, pageSize, setProducts, setTotal, filters) => {
+    getFilteredPaginated : (pageNum, pageSize, setProducts, setTotal, filters, searchQuery, sortBy, prices) => {
         console.log(pageSize, pageNum)
-        axios.post("http://localhost:9091/api/products/filter", filters, {params: {page: pageNum, page_size: pageSize}}).then(
+        let newFilters = {...filters, search_query: searchQuery, sort_by: sortBy, lowerPrice: prices[0], upperPrice: prices[1]}
+        console.log('sending...', (newFilters))
+        axios.post("http://localhost:9091/api/products/filter", newFilters, {params: {page: pageNum, page_size: pageSize}}).then(
             r => {
                 console.log(r.data)
                 setProducts(r.data.list)
@@ -62,9 +97,12 @@ export const getFilterOptions = (setFilterOptions, products) => {
         {name: "Dimensions", opts: products.map(p => p.dimensions).filter((value, index, self) => {
             return self.indexOf(value) === index;
           })},
-        {name: "Type", opts: products.map(p => p.type).filter((value, index, self) => {
+        {name: "Type", opts: products.map(p => p.p_type).filter((value, index, self) => {
             return self.indexOf(value) === index;
           })},
+        {name: "Material", opts: products.map(p => p.material).filter((value, index, self) => {
+            return self.indexOf(value) === index;
+        })},
         {name: "Finish", opts: products.map(p => p.finish).filter((value, index, self) => {
             return self.indexOf(value) === index;
           })},
@@ -77,6 +115,8 @@ export const getFilterOptions = (setFilterOptions, products) => {
         {name: "Series", opts: products.map(p => p.serie).filter((value, index, self) => {
             return self.indexOf(value) === index;
           })},
+        // {name: "Sort By", opts: [{label: "Name", value: "name"}, {label: "Price", value: "price"}, {label: "Brand", value: "brand"}, {label: "Color", value: "color"}]},
+        // {name: "Search", opts: [""]},
     ]
 
     setFilterOptions(filters)

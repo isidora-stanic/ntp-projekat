@@ -1,7 +1,7 @@
 import { Paper, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material'
 import React from 'react'
 
-const TechInfo = ({brand, dimensions, color, type, serie, producer, purpose, boxSize}) => {
+const TechInfo = ({brand, dimensions, color, p_type, serie, producer, purpose, material, box_size}) => {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -20,7 +20,7 @@ const TechInfo = ({brand, dimensions, color, type, serie, producer, purpose, box
           </TableRow>
           <TableRow>
             <TableCell variant='head'><b>Type and model</b></TableCell>
-            <TableCell>{type}</TableCell>
+            <TableCell>{p_type}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell variant='head'><b>Purpose</b></TableCell>
@@ -36,7 +36,11 @@ const TechInfo = ({brand, dimensions, color, type, serie, producer, purpose, box
           </TableRow>
           <TableRow>
             <TableCell variant='head'><b>Box Size</b></TableCell>
-            <TableCell>{boxSize}</TableCell>
+            <TableCell>{box_size}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell variant='head'><b>Material</b></TableCell>
+            <TableCell>{material}</TableCell>
           </TableRow>
         </TableBody>
       </Table>

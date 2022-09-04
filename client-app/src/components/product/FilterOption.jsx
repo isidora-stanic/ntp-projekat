@@ -18,7 +18,7 @@ const FilterOption = ({filtername, option, selectedOptions, setSelectedOptions})
                     break;
                 case 'Type':
                     setSelectedOptions((previos) => ({
-                        ...previos, type: [...previos.type, option]
+                        ...previos, p_type: [...previos.p_type, option]
                     }))
                     break;
                 case 'Finish':
@@ -41,17 +41,12 @@ const FilterOption = ({filtername, option, selectedOptions, setSelectedOptions})
                         ...previos, serie: [...previos.serie, option]
                     }))
                     break;
-                ///////////////////////////////////////////////////////////
-                case 'Role':
+                case 'Material':
                     setSelectedOptions((previos) => ({
-                        ...previos, role: [...previos.role, option]
+                        ...previos, material: [...previos.material, option]
                     }))
                     break;
-                case 'Banned':
-                    setSelectedOptions((previos) => ({
-                        ...previos, banned: [...previos.banned, option]
-                    }))
-                    break;
+                
                 default:
                   console.log('dont know what filter you selected')
             } 
@@ -70,7 +65,7 @@ const FilterOption = ({filtername, option, selectedOptions, setSelectedOptions})
                     break;
                 case 'Type':
                     setSelectedOptions((previos) => ({
-                        ...previos, type: previos.type.filter(i => i !== option)
+                        ...previos, p_type: previos.p_type.filter(i => i !== option)
                     }))
                     break;
                 case 'Finish':
@@ -93,17 +88,12 @@ const FilterOption = ({filtername, option, selectedOptions, setSelectedOptions})
                         ...previos, serie: previos.serie.filter(i => i !== option)
                     }))
                     break;
-                ////////////////////////////////////////////////////////////////////
-                case 'Role':
+                case 'Material':
                     setSelectedOptions((previos) => ({
-                        ...previos, role: previos.role.filter(i => i !== option)
+                        ...previos, material: previos.material.filter(i => i !== option)
                     }))
                     break;
-                case 'Banned':
-                    setSelectedOptions((previos) => ({
-                        ...previos, banned: previos.banned.filter(i => i !== option)
-                    }))
-                    break;
+                
                 default:
                   console.log('dont know what filter you selected')
             } 

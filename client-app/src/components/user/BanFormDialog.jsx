@@ -12,9 +12,10 @@ import { Box } from '@mui/system';
 export default function BanFormDialog({selected, open, setOpen}) {
 
   const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0])
+  const [reason, setReason] = useState("")
 
   const handleBan = () => {
-    UserService.ban(selected, endDate)
+    UserService.ban(selected, endDate, reason)
     setOpen(false)
   };
 
@@ -30,7 +31,7 @@ export default function BanFormDialog({selected, open, setOpen}) {
         <DialogTitle>Ban User</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            To ban this user {selected}, please enter the end date of ban.
+            To ban this user {selected}, please enter the reason and end date of ban.
           </DialogContentText>
           <Box
           component="form"
@@ -40,6 +41,21 @@ export default function BanFormDialog({selected, open, setOpen}) {
           sx={{mt: 2}}
         >
           <TextField
+            autoComplete="reason"
+            required
+            autoFocus
+            id="reason"
+            label="Ban Reason"
+            type="text"
+            fullWidth
+            multiline
+            color="primary"
+            variant="outlined"
+            value={reason || ''}
+            onChange={e => setReason(e.target.value)}
+          />
+          <TextField
+            sx={{mt: 2}}
             autoComplete="ban-end"
             required
             autoFocus

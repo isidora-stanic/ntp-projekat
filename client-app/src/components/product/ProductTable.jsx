@@ -24,14 +24,15 @@ const ProductTable = () => {
         { field: 'serie', headerName: 'Serie', width: 100 },
 
         { field: 'dimensions', headerName: 'Dimensions', width: 150 },
-        { field: 'boxSize', headerName: 'Box size', width: 100, renderCell: (params) => (params.value + " m2/k") },
+        { field: 'box_size', headerName: 'Box size', width: 100, renderCell: (params) => (params.value + " m2/k") },
         { field: 'price', headerName: 'Price', width: 150, renderCell: (params) => (params.value.toFixed(2) + " RSD") },
         
-        { field: 'type', headerName: 'Type', width: 100 },
+        { field: 'p_type', headerName: 'Type', width: 100 },
         { field: 'purpose', headerName: 'Purpose', width: 100 },
 
         { field: 'color', headerName: 'Color', width: 100 },
         { field: 'finish', headerName: 'Finish', width: 100 },
+        { field: 'material', headerName: 'Material', width: 100 },
 
         // { field: 'description', headerName: 'Description', width: 150 },
         {

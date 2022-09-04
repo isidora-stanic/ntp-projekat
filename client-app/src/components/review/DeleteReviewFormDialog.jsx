@@ -19,7 +19,7 @@ const DeleteReviewFormDialog = ({selected, open, setOpen}) => {
       <div>
         
         <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>Ban User</DialogTitle>
+          <DialogTitle>Delete Review</DialogTitle>
           <DialogContent>
             <DialogContentText>
               To delete this review, please enter why.

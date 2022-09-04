@@ -33,53 +33,68 @@ const UserTable = () => {
             field: 'edit_id',
             headerName: 'Edit',
             headerAlign: 'center',
-            renderCell: (params) => (
-                <Button
-                  variant="contained"
-                  size="small"
-                  style={{ marginLeft: 16 }}
-                  tabIndex={params.hasFocus ? 0 : -1}
-                  name={params.value}
-                  onClick={(e) => navigate('/users/edit/'+params.value)}
-                >
-                  Edit
-                </Button>
-            ),
+            renderCell: (params) => {
+              if (users.filter(u => u.id === params.value)[0].role === 'ADMIN') {
+                return (
+                  <Button
+                    variant="contained"
+                    size="small"
+                    style={{ marginLeft: 16 }}
+                    tabIndex={params.hasFocus ? 0 : -1}
+                    name={params.value}
+                    onClick={(e) => navigate('/users/edit/'+params.value) }
+                  >
+                    Edit
+                  </Button>
+                )
+              }
+              return <></>
+            },
           },
           {
             field: 'banned_id',
             headerName: 'Ban',
             headerAlign: 'center',
-            renderCell: (params) => (
-                <Button
-                  variant="contained"
-                  size="small"
-                  color="warning"
-                  style={{ marginLeft: 16 }}
-                  tabIndex={params.hasFocus ? 0 : -1}
-                  disabled={params.value ? false : true}
-                  onClick={e => handleBan(params.value)}
-                >
-                  Ban
-                </Button>
-            ),
+            renderCell: (params) => {
+              if (users.filter(u => u.id === params.value)[0].role === 'REGUSER') {
+                return (
+                  <Button
+                    variant="contained"
+                    size="small"
+                    color="warning"
+                    style={{ marginLeft: 16 }}
+                    tabIndex={params.hasFocus ? 0 : -1}
+                    disabled={params.value ? false : true}
+                    onClick={e => handleBan(params.value)}
+                  >
+                    Ban
+                  </Button>
+                )
+              }
+              return <></>
+            },
           },
           {
             field: 'delete_id',
             headerName: 'Delete',
             headerAlign: 'center',
-            renderCell: (params) => (
-                <Button
-                  variant="outlined"
-                  size="small"
-                  color="error"
-                  style={{ marginLeft: 16 }}
-                  tabIndex={params.hasFocus ? 0 : -1}
-                  onClick={(e) => UserService.delete(params.value)}
-                >
-                  Delete
-                </Button>
-            ),
+            renderCell: (params) => {
+              if (users.filter(u => u.id === params.value)[0].role === 'ADMIN') {
+                return (
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    color="error"
+                    style={{ marginLeft: 16 }}
+                    tabIndex={params.hasFocus ? 0 : -1}
+                    onClick={(e) => UserService.delete(params.value)}
+                  >
+                    Delete
+                  </Button>
+                )
+              }
+              return <></>
+            },
           },
       ];
       return (

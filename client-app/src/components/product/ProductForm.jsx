@@ -25,12 +25,12 @@ const ProductForm = () => {
         console.log('sending', {...values, price: parseFloat(values.price)})
         ProductService.create({...values, 
           price: parseFloat(values.price), 
-          boxSize: parseFloat(values.boxSize)})
+          box_size: parseFloat(values.box_size)})
       } else {
         console.log('sending', {...values, price: parseFloat(values.price)})
         ProductService.update(id, {...values, 
           price: parseFloat(values.price), 
-          boxSize: parseFloat(values.boxSize)})
+          box_size: parseFloat(values.box_size)})
       }
         // navigate({
         //   pathname: "/products",
@@ -49,9 +49,10 @@ const ProductForm = () => {
       serie: '',
       finish: '',
       type: '',
-      boxSize: 0.0,
+      box_size: 0.0,
       purpose: '',
-      dimensions: ''
+      dimensions: '',
+      material: '',
     });
 
     useEffect(() => {
@@ -160,14 +161,14 @@ const ProductForm = () => {
             <Grid item xs={2}>
               <TextField
                 fullWidth
-                name="boxSize"
+                name="box_size"
                 label="Box size"
-                id="boxSize"
-                autoComplete="boxSize"
+                id="box_size"
+                autoComplete="box_size"
                 color="primary"
                 type="number"
                 onChange={onChange}
-                value={values.boxSize}
+                value={values.box_size}
               />
             </Grid>
             <Grid item xs={2}>
@@ -211,8 +212,20 @@ const ProductForm = () => {
               />
             </Grid>
             
-            <Grid item xs={4}></Grid>
+            <Grid item xs={2}></Grid>
 
+            <Grid item xs={2}>
+              <TextField
+                  fullWidth
+                  name="material"
+                  label="Material"
+                  id="material"
+                  autoComplete="material"
+                  color="primary"
+                  onChange={onChange}
+                  value={values.material}
+                />
+            </Grid>
             <Grid item xs={2}>
               <TextField
                 fullWidth

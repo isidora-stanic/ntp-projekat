@@ -5,7 +5,7 @@ const ReviewService = {
     getAll : (setReviews) => {
         axios.get("http://localhost:9091/api/reviews").then(
             r => {
-                setReviews(JSON.parse(r.data).map(p => ({...p, delete_id: p.id})))
+                setReviews(r.data.map(p => ({...p, delete_id: p.id})))
             }
         ).catch(err => console.error(err))
     },
@@ -13,8 +13,8 @@ const ReviewService = {
     getForProduct : (id, setReviews) => {
         axios.get("http://localhost:9091/api/reviews/product/"+id).then(
             r => {
-                console.log(r.data)
-                setReviews(JSON.parse(r.data))
+                // console.log(r.data)
+                setReviews(r.data)
             }
         ).catch(err => console.error(err))
     },
@@ -22,7 +22,7 @@ const ReviewService = {
     getByUser : (id, setReviews) => {
         axios.get("http://localhost:9091/api/reviews/user/"+id).then(
             r => {
-                setReviews(JSON.parse(r.data))
+                setReviews(r.data)
             }
         ).catch(err => console.error(err))
     },
@@ -30,7 +30,7 @@ const ReviewService = {
     userCanLeaveComment : (uid, pid, setCanComment) => {
         axios.get("http://localhost:9091/api/reviews/user/"+uid+"/product/"+pid).then(
             r => {
-                if (JSON.parse(r.data).length > 0) {
+                if (r.data.length > 0) {
                     console.log('you already commented on this product')
                     setCanComment(false)
                 } else {
@@ -43,7 +43,7 @@ const ReviewService = {
     getRatingForProduct : (id, setRating) => {
         axios.get("http://localhost:9091/api/reviews/rating/"+id).then(
             r => {
-                setRating(JSON.parse(r.data))
+                setRating(r.data)
             }
         ).catch(err => console.error(err))
     },
@@ -56,10 +56,27 @@ const ReviewService = {
         ).catch(err => console.error(err))
     },
 
-    delete : (id) => {
+    delete : (id, reason) => {
+        let email = ""
+        axios.get("http://localhost:9091/api/users/"+id).then(
+            r => {
+                console.log(r.data)
+                email = r.data.email
+            }
+        ).catch(err => console.error(err))
+
         axios.delete("http://localhost:9091/api/reviews/"+id).then(
             r => {
                 console.log(r)
+                if (r.status === 200) {
+                    axios.post("http://localhost:9093/api/email/send", 
+                        {from: "admin@mail.com", to: email, subject: "Deleted review", msg: "Your review has been deleted because: \n" + reason})
+                        .then(
+                            r => {
+                                console.log(r)
+                            }
+                        ).catch(err => console.error(err))
+                }
             }
         ).catch(err => console.error(err))
     }

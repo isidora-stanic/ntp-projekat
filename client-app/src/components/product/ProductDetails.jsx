@@ -9,12 +9,23 @@ import Carousel from 'react-material-ui-carousel'
 import ImageService from '../../services/ImageService'
 import { useWishlist } from '../../contexts/WishListContext'
 import StatisticsService from '../../services/StatisticsService'
+import ProductShortList from './ProductShortList'
+import ProductShort from './ProductShort'
+import RecommendationService from '../../services/RecommendationService'
+import RecommendBy from './RecommendBy'
+import { useCurrentUser } from '../../contexts/CurrentUserContext'
 
 
 const ProductDetails = () => {
     const [product, setProduct] = useState({})
     const [reviews, setReviews] = useState([])
     const [images, setImages] = useState([])
+    const [recommended, setRecommended] = useState([])
+    
+
+    let { getCurrentUser } = useCurrentUser()
+    const [sub, setSub] = useState({})
+
     let { id } = useParams()
     useEffect(() => {
         ProductService.getOne(id, setProduct)
@@ -24,21 +35,27 @@ const ProductDetails = () => {
 
     useEffect(() => {
       if (product.id) {
-        console.log(product.id)
+        // console.log(product.id)
         StatisticsService.postLog({
           log_type: 'VISIT',
           product_id: Number.parseInt(id),
           timestamp: new Date().toISOString(),
           product: "[" + product.sku + "] " + product.name
         }, 'VISIT')
+
+        RecommendationService.getRecommendations(product, setRecommended)
+        if (getCurrentUser().email) {
+          ProductService.getSubscription(product.id, getCurrentUser().email, setSub)
+        }
       }
     }, [product])
 
     let {wishlist, setWishlist, addProduct, removeProduct, checkIfProductInWishlist} = useWishlist()
 
+
     const handleWishlistAdd = () => {
       if (product.id) {
-        console.log(product.id)
+        // console.log(product.id)
         StatisticsService.postLog({
           log_type: 'SAVE',
           product_id: Number.parseInt(product.id),
@@ -51,6 +68,21 @@ const ProductDetails = () => {
 
     const handleWishlistRemove = () => {
       removeProduct(product)
+    }
+
+    const getSub = () => {
+      ProductService.getSubscription(product.id, getCurrentUser().email, setSub)
+    }
+    const emptySub = () => {
+      setSub({})
+    }
+
+    const handleSubscribe = () => {
+      ProductService.subscribe(product.id, getCurrentUser().email, getSub)
+    }
+
+    const handleUnsubscribe = () => {
+      ProductService.unsubscribe(sub.id, emptySub)
     }
 
   return (
@@ -80,10 +112,18 @@ const ProductDetails = () => {
           {!checkIfProductInWishlist(product) ? 
           <Button variant="contained" color='secondary' onClick={handleWishlistAdd}>Add to Wishlist</Button> : 
           <Button variant="outlined" color='error' onClick={handleWishlistRemove}>Remove from Wishlist</Button>}
+
+          {!sub.email ? 
+          <Button variant="contained" color='secondary' onClick={handleSubscribe}>Subscribe</Button> : 
+          <Button variant="outlined" color='error' onClick={handleUnsubscribe}>Unsubscribe</Button>
+          }
           
         </Grid>
         <Grid item xs={12}>
         <ProductTabs product={product} reviews={reviews} />
+        </Grid>
+        <Grid item xs={12}>
+          {recommended.map(p => <RecommendBy key={p.based_on} by={p.based_on} products={p.products} />)}
         </Grid>
       </Grid>
       {/* <ReviewsList reviews={reviews} /> */}
