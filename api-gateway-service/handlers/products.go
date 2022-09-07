@@ -254,15 +254,19 @@ func (p *Products) GetFilterOptions(rw http.ResponseWriter, r *http.Request) {
 func (p *Products) GetImages(rw http.ResponseWriter, r *http.Request) {
 	utils.SetupResponse(&rw, r)
 
+	vars := mux.Vars(r)
+	id := vars["id"]
+	name := vars["name"]
+
 	response, err := http.Get(
-		utils.ProductServiceRoot.Next().Host + "/images/default_tile.jpg")
+		"http://localhost:9098/images/"+id+"/"+name)
 
 	if err != nil {
 		rw.WriteHeader(http.StatusGatewayTimeout)
 		return
 	}
 
-	utils.DelegateResponse(response, rw)
+	utils.DelegateImageResponse(response, rw)
 }
 
 func (p *Products) GetFilteredPaginated(rw http.ResponseWriter, r *http.Request) {

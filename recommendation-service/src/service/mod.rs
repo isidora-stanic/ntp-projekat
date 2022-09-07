@@ -44,6 +44,14 @@ pub struct RecommendationParam {
 
 #[derive(Serialize, Deserialize)]
 #[serde(crate = "rocket::serde")]
+pub struct CreateRecommendationParam {
+    pub based_on: String, 
+    pub value1: String, 
+    pub value2: String
+}
+
+#[derive(Serialize, Deserialize)]
+#[serde(crate = "rocket::serde")]
 pub struct RecommendationParamDTO {
     pub id: i32, 
     pub based_on: String, 
@@ -192,7 +200,36 @@ pub fn get_all() -> Result<Vec<RecommendationParamDTO>, Error> {
     Ok(ret)
 }
 
-pub fn create(rp: RecommendationParamDTO) -> Result<String, Error> {
+pub fn get_one(id: i32) -> Result<RecommendationParamDTO, Error> {
+    let mut client = Client::connect(
+        "postgresql://postgres:password@localhost:5432/recommendation_db",
+        NoTls,
+    )?;
+
+    let mut ret: RecommendationParamDTO = RecommendationParamDTO{
+        based_on: "".to_string(), value1: "".to_string(), value2: "".to_string(), id: id
+    };
+    for row in client.query("SELECT id, based_on, value1, value2 FROM public.recommendation_param WHERE deleted = false AND id = $1", &[&id])? {
+        let id: i32 = row.get(0);
+        let based_on: &str = row.get(1);
+        let value1: &str = row.get(2);
+        let value2: &str = row.get(3);
+        
+        ret = RecommendationParamDTO { 
+            id: (id),
+            based_on: (based_on.to_string()),
+            value1: (value1.to_string()),
+            value2: (value2.to_string())
+        };
+        
+    }
+
+    client.close()?;
+
+    Ok(ret)
+}
+
+pub fn create(rp: CreateRecommendationParam) -> Result<String, Error> {
     let mut client = Client::connect(
         "postgresql://postgres:password@localhost:5432/recommendation_db",
         NoTls,

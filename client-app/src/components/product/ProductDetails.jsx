@@ -14,6 +14,7 @@ import ProductShort from './ProductShort'
 import RecommendationService from '../../services/RecommendationService'
 import RecommendBy from './RecommendBy'
 import { useCurrentUser } from '../../contexts/CurrentUserContext'
+import { useRef } from 'react'
 
 
 const ProductDetails = () => {
@@ -33,19 +34,25 @@ const ProductDetails = () => {
         ImageService.getNormal(id, setImages)
     }, [])
 
+    const ref = useRef(false);
+
     useEffect(() => {
-      if (product.id) {
+      if (product.id && ref.current === false) {
         // console.log(product.id)
         StatisticsService.postLog({
           log_type: 'VISIT',
           product_id: Number.parseInt(id),
           timestamp: new Date().toISOString(),
-          product: "[" + product.sku + "] " + product.name
+          product: product.name
         }, 'VISIT')
 
         RecommendationService.getRecommendations(product, setRecommended)
         if (getCurrentUser().email) {
           ProductService.getSubscription(product.id, getCurrentUser().email, setSub)
+        }
+        return () => {
+          console.log('unmounted')
+          ref.current = true
         }
       }
     }, [product])
@@ -54,15 +61,15 @@ const ProductDetails = () => {
 
 
     const handleWishlistAdd = () => {
-      if (product.id) {
-        // console.log(product.id)
-        StatisticsService.postLog({
-          log_type: 'SAVE',
-          product_id: Number.parseInt(product.id),
-          timestamp: new Date().toISOString(),
-          product: "[" + product.sku + "] " + product.name
-        }, 'SAVE')
-      }
+      // if (product.id) {
+      //   // console.log(product.id)
+      //   // StatisticsService.postLog({
+      //   //   log_type: 'SAVE',
+      //   //   product_id: Number.parseInt(product.id),
+      //   //   timestamp: new Date().toISOString(),
+      //   //   product: "[" + product.sku + "] " + product.name
+      //   // }, 'SAVE')
+      // }
       addProduct(product)
     }
 
@@ -107,7 +114,9 @@ const ProductDetails = () => {
           <Typography color='secondary' sx={{marginTop: 10}}>SKU: {product.sku}</Typography>
           <Typography variant='h4'><b>{product.name}</b></Typography>
           <br/><br/>
-          <Typography variant='h3' color='primary'><b>{product.price?.toFixed(2)} RSD/m<sup>2</sup></b></Typography>
+          {product.price ? <><Typography variant='h3' color='primary'><b>{(product.price * (1/product.box_size)).toFixed(2)} RSD/m<sup>2</sup></b></Typography>
+          <Typography variant='h5' color='secondary'><b>{(product.price).toFixed(2)} RSD per box</b></Typography></> : <></>}
+          
           <br/>
           {!checkIfProductInWishlist(product) ? 
           <Button variant="contained" color='secondary' onClick={handleWishlistAdd}>Add to Wishlist</Button> : 

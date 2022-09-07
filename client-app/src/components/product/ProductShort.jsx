@@ -22,15 +22,15 @@ const ProductShort = ({product}) => {
   let {wishlist, setWishlist, addProduct, removeProduct, checkIfProductInWishlist} = useWishlist()
 
     const handleWishlistAdd = (e) => {
-      if (product.id) {
-        console.log(product.id)
-        StatisticsService.postLog({
-          log_type: 'SAVE',
-          product_id: Number.parseInt(product.id),
-          timestamp: new Date().toISOString(),
-          product: "[" + product.sku + "] " + product.name
-        }, 'SAVE')
-      }
+      // if (product.id) {
+      //   console.log(product.id)
+      //   StatisticsService.postLog({
+      //     log_type: 'SAVE',
+      //     product_id: Number.parseInt(product.id),
+      //     timestamp: new Date().toISOString(),
+      //     product: "[" + product.sku + "] " + product.name
+      //   }, 'SAVE')
+      // }
       addProduct(product)
     }
 
@@ -54,7 +54,7 @@ const ProductShort = ({product}) => {
           {product.name}
         </Typography>
         <Typography variant="h5" color="primary">
-          {product.price} RSD/m<sup>2</sup>
+          {(product.price * (1/product.box_size)).toFixed(2)} RSD/m<sup>2</sup>
         </Typography>
       </CardContent>
       <CardActions>

@@ -17,6 +17,8 @@ import { WishlistProvider } from './contexts/WishListContext';
 import CanvasV3D from './components/v3d/CanvasV3D';
 import EditImages from './components/image-upload/EditImages';
 import Statistics from './components/statistics/Statistics';
+import RecommendParamTable from './components/recommendation/RecommendParamTable';
+import RecommendParamForm from './components/recommendation/RecommendParamForm';
 
 const theme = createTheme({palette: {
   type: 'light',
@@ -65,9 +67,13 @@ function App() {
           <Route path="/products/new" element={<RequireAuthAdmin><Layout><ProductForm /></Layout></RequireAuthAdmin>} />
           <Route path="/reviews" element={<RequireAuthAdmin><Layout><ReviewTable /></Layout></RequireAuthAdmin>} />
           <Route path="/statistics" element={<RequireAuthAdmin><Layout><Statistics /></Layout></RequireAuthAdmin>} />
+          <Route path="/recommendations" element={<RequireAuthAdmin><Layout><RecommendParamTable /></Layout></RequireAuthAdmin>} />
+          <Route path="/recommendations/edit/:id" element={<RequireAuthAdmin><Layout><RecommendParamForm /></Layout></RequireAuthAdmin>} />
+          <Route path="/recommendations/new" element={<RequireAuthAdmin><Layout><RecommendParamForm /></Layout></RequireAuthAdmin>} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/v3d" element={<Layout><CanvasV3D /></Layout>} />
+          <Route path="/v3d/:id" element={<Layout><CanvasV3D /></Layout>} />
         </Routes>
         </WishlistProvider>
       </CurrentUserProvider>

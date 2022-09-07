@@ -5,15 +5,15 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/isidora-stanic/ntp-projekat/product-service/db"
-	"github.com/isidora-stanic/ntp-projekat/product-service/exceptions"
+	"github.com/isidora-stanic/ntp-projekat/v3d-service/db"
+	"github.com/isidora-stanic/ntp-projekat/v3d-service/exceptions"
 )
 
-func (p *Products) DeleteProduct(rw http.ResponseWriter, r *http.Request) {
-	p.l.Println("Handle DELETE Product")
+func (p *RoomSetups) DeleteRoomSetup(rw http.ResponseWriter, r *http.Request) {
+	p.l.Println("Handle DELETE Room setup")
 
 	vars := mux.Vars(r)
-	id, err := strconv.ParseUint(vars["id"], 10, 32)//strconv.Atoi()
+	id, err := strconv.ParseUint(vars["id"], 10, 32) //strconv.Atoi()
 	if err != nil {
 		http.Error(rw, "Unable to convert id", http.StatusBadRequest)
 		return
@@ -22,7 +22,8 @@ func (p *Products) DeleteProduct(rw http.ResponseWriter, r *http.Request) {
 
 	err = db.Delete(uid)
 
-	if err == exceptions.ErrProductNotFound {
+	if err == exceptions.ErrRoomNotFound {
+		p.l.Println("NOT FOUND")
 		http.Error(rw, "Product not found", http.StatusNotFound)
 		return
 	}

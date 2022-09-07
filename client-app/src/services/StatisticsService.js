@@ -9,14 +9,6 @@ const StatisticsService = {
         ).catch(err => console.error(err))
     },
 
-    getAllByType : (logtype, setLogs) => {
-        axios.get("http://localhost:9091/api/statistics/"+logtype.toLowerCase()+"s").then(
-            r => {
-                setLogs(r.data)
-            }
-        ).catch(err => console.error(err))
-    },
-
     getCountByTypeForAllProducts : (logtype, setLogs, setTopLogs) => {
         axios.get("http://localhost:9091/api/statistics/statistics-for-all/"+logtype).then(
             r => {

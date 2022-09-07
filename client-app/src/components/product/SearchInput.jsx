@@ -16,7 +16,7 @@ const SearchInput = ({searchQuery, setSearchQuery}) => {
       value={searchQuery}
       InputProps={{
         endAdornment: (
-          <InputAdornment>
+          <InputAdornment position='end'>
               <SearchIcon />
           </InputAdornment>
         )

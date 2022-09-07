@@ -2,11 +2,11 @@ import { useTexture } from '@react-three/drei'
 import { useLoader } from '@react-three/fiber'
 import * as THREE from "three"
 
-function ErrorFallback({error, resetErrorBoundary}) {
+function ErrorFallback({error, index}) {
     // const [texture] = useTexture(['http://localhost:9098/images/1/black_metro_1.jpg'])
     return (
         <meshBasicMaterial transparent 
-            attach={"material"}
+            attach={"material-"+index}
             side={THREE.BackSide} 
             color="gray"
             metalness={0.2}

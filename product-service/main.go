@@ -18,7 +18,7 @@ import (
 
 var bindAddress = env.String("BIND_ADDRESS", false, ":9090", "Bind address for the server")
 var logLevel = env.String("LOG_LEVEL", false, "debug", "Log output level for the server [debug, info, trace]")
-var basePath = env.String("BASE_PATH", false, "/tmp/images", "Base path to save images")
+// var basePath = env.String("BASE_PATH", false, "/tmp/images", "Base path to save images")
 
 func main() {
 	fmt.Println("Hello there - this is changed version of service")
@@ -46,6 +46,7 @@ func main() {
 	getRouter.HandleFunc("/api/products/filter-options", ph.GetFilterOptions)
 	getRouter.HandleFunc("/api/products/similar/{id:[0-9]+}", ph.GetSimilarProductsSamePurpose)
 	getRouter.HandleFunc("/api/products/sub/{product_id:[0-9]+}/{email}", ph.GetSubscription)
+	getRouter.HandleFunc("/api/products/sub/{product_id:[0-9]+}", ph.GetSubscriptionsForProduct)
 
 	putRouter := sm.Methods(http.MethodPut).Subrouter()
 	putRouter.HandleFunc("/api/products/{id:[0-9]+}", ph.UpdateProducts)

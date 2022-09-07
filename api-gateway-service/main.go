@@ -38,6 +38,7 @@ func main() {
 	rvwh := handlers.NewReviews(sl)
 	sh := handlers.NewStatistics(sl)
 	rcmdh := handlers.NewRecommendations(sl)
+	v3dh := handlers.NewRoomSetups(sl)
 
 	sm := mux.NewRouter()
 
@@ -56,7 +57,6 @@ func main() {
 	getRouter.HandleFunc("/api/products", ph.GetAllProducts)
 	getRouter.HandleFunc("/api/products/{id:[0-9]+}", ph.GetOneProduct)
 	getRouter.HandleFunc("/api/products/filter-options", ph.GetFilterOptions)
-	// getRouter.HandleFunc("/images/{name}", ph.GetImages)
 	getRouter.HandleFunc("/api/products/sub/{id:[0-9]+}/{email}", ph.GetSubscription)
 	postRouter.HandleFunc("/api/products/filter", ph.GetFilteredPaginated)
 	postRouter.HandleFunc("/api/products", ph.AddProduct)
@@ -91,28 +91,33 @@ func main() {
 	getRouter.HandleFunc("/api/statistics", sh.GetAllLogs)
 	getRouter.HandleFunc("/api/statistics/statistics-for-all/{logtype:[A-Z]+}", sh.GetAllLogsByTypeProduct)
 	getRouter.HandleFunc("/api/statistics/statistics-for-all-interval/{logtype:[A-Z]+}/{t1}/{t2}", sh.GetAllLogsByTypeProductInterval)
-
-	getRouter.HandleFunc("/api/statistics/visits", sh.GetAllVisits)
-	getRouter.HandleFunc("/api/statistics/comments", sh.GetAllComments)
-	getRouter.HandleFunc("/api/statistics/saves", sh.GetAllSaves)
-	getRouter.HandleFunc("/api/statistics/visits/{id:[0-9]+}", sh.GetVisitsForProduct)
-	getRouter.HandleFunc("/api/statistics/comments/{id:[0-9]+}", sh.GetCommentsForProduct)
-	getRouter.HandleFunc("/api/statistics/saves/{id:[0-9]+}", sh.GetSavesForProduct)
+	getRouter.HandleFunc("/api/statistics/subscriptions", sh.GetSubs)
+	getRouter.HandleFunc("/api/statistics/comments", sh.GetComments)
+	getRouter.HandleFunc("/api/statistics/ratings", sh.GetRatings)
 	postRouter.HandleFunc("/api/statistics/visit", sh.AddVisit)
-	postRouter.HandleFunc("/api/statistics/comment", sh.AddComment)
-	postRouter.HandleFunc("/api/statistics/save", sh.AddSave)
 
 	// recomendation-service routes
 	getRouter.HandleFunc("/api/recommendations", rcmdh.GetAllRecommendations)
+	getRouter.HandleFunc("/api/recommendations/{id:[0-9]+}", rcmdh.GetOneRecommendationP)
 	postRouter.HandleFunc("/api/recommendations/recommend", rcmdh.GetRecommendationsForAProduct)
 	postRouter.HandleFunc("/api/recommendations", rcmdh.AddRecommendation)
-	putRouter.HandleFunc("/api/recomendations/{id:[0-9]+}", rcmdh.UpdateRecommendation)
-	deleteRouter.HandleFunc("/api/recomendations/{id:[0-9]+}", rcmdh.DeleteRecommendation)
+	putRouter.HandleFunc("/api/recommendations/{id:[0-9]+}", rcmdh.UpdateRecommendation)
+	deleteRouter.HandleFunc("/api/recommendations/{id:[0-9]+}", rcmdh.DeleteRecommendation)
+
+	// v3d-service routes
+	getRouter.HandleFunc("/api/v3d/rooms-by/{id:[0-9]+}", v3dh.GetAllByUser)
+	getRouter.HandleFunc("/api/v3d/rooms/{id:[0-9]+}", v3dh.GetOneRoomSetup)
+	postRouter.HandleFunc("/api/v3d/rooms", v3dh.AddRoomSetup)
+	// putRouter.HandleFunc("/api/v3d/{id:[0-9]+}", v3dh.UpdateRoomSetup)
+	deleteRouter.HandleFunc("/api/v3d/rooms/{id:[0-9]+}", v3dh.DeleteRoomSetup)
+
+	// image-service routes
+	getRouter.HandleFunc("/images/{id:[0-9]+}/{name}", ph.GetImages)
 
 
 	// CORS
 	ch := gohandlers.CORS(
-		gohandlers.AllowedOrigins([]string{"http://localhost:3000", "*"}),
+		gohandlers.AllowedOrigins([]string{"http://localhost:3000"}),
 		gohandlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
 		gohandlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS", "PATCH", "DELETE"}),
 	)

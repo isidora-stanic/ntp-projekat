@@ -238,9 +238,13 @@ pub fn get_rating_for_product(id_product: i32) -> Result<f32, Error> {
     }
     client.close()?;
 
-    let rating: f32 = sum as f32/count as f32;
-
-    Ok(rating)
+    if count > 0 {
+        let rating: f32 = sum as f32/count as f32;
+        Ok(rating)
+    } else {
+        let rating: f32 = 0.0;
+        Ok(rating)
+    }    
 }
 
 pub fn delete_review(id: i32) -> Result<String, Error> {

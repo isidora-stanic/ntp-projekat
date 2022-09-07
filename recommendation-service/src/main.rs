@@ -12,6 +12,7 @@ use service::Product;
 use service::RecommendationParamDTO;
 use service::AnyFilter;
 use service::RecommendedProducts;
+use service::CreateRecommendationParam;
 
 use std::thread;
 
@@ -23,8 +24,16 @@ fn get_all_params() -> Json<Vec<RecommendationParamDTO>> {
     }).join().unwrap()
 }
 
+#[get("/<id>")]
+fn get_one_param(id: i32) -> Json<RecommendationParamDTO> {
+    thread::spawn(move || {
+        let params = service::get_one(id);
+        Json(params.unwrap())
+    }).join().unwrap()
+}
+
 #[post("/", format = "json", data = "<req>")]
-fn new_param(req: Json<RecommendationParamDTO>) -> Json<String> {
+fn new_param(req: Json<CreateRecommendationParam>) -> Json<String> {
     thread::spawn(move || {
         let resp = service::create(req.into_inner());
         Json(resp.unwrap())
@@ -202,7 +211,7 @@ fn rocket() -> _ {
     rocket::build()
         .mount("/api/recommendations", 
             routes![
-                get_all_params, new_param, delete_param, update_param,
+                get_all_params, get_one_param, new_param, delete_param, update_param,
                 get_recommendations
             ])
 }

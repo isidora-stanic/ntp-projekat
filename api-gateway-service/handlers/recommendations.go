@@ -44,6 +44,33 @@ func (p *Recommendations) GetAllRecommendations(rw http.ResponseWriter, r *http.
 	utils.DelegateResponse(response, rw)
 }
 
+func (p *Recommendations) GetOneRecommendationP(rw http.ResponseWriter, r *http.Request) {
+	err := AuthAdmin(rw, r)
+	if err == utils.ErrUnauthorized {
+		http.Error(rw, err.Error(), 401)
+		return
+	}
+	if err != nil {
+		http.Error(rw, err.Error(), 500)
+		return
+	}
+
+	utils.SetupResponse(&rw, r)
+
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	response, err := http.Get(
+		utils.RecommendationServiceRoot.Next().Host + RecommendationService + "/" + id)
+
+	if err != nil {
+		rw.WriteHeader(http.StatusGatewayTimeout)
+		return
+	}
+
+	utils.DelegateResponse(response, rw)
+}
+
 func (p *Recommendations) AddRecommendation(rw http.ResponseWriter, r *http.Request) {
 	err := AuthAdmin(rw, r)
 	if err == utils.ErrUnauthorized {

@@ -40,6 +40,45 @@ pub struct StatsCountAllResponse {
     saves: Vec<StatsCount>,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Subscription{
+    id: i32,
+    product_id: i32,
+	email: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ReviewDTO {
+    id: i32,
+    user_id: i32,
+    product_id: i32,
+    rate: i32,
+    comment: String,
+    timestamp: String,
+    user: String,
+    product: String
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct Product {
+    pub id: i32, 
+    pub name: String, 
+    pub description: String, 
+    pub image: String, 
+    pub price: f32, 
+    pub sku: String, 
+    pub producer: String,
+    pub brand: String,
+    pub dimensions: String, 
+    pub p_type: String,
+    pub finish: String, 
+    pub purpose: String,
+    pub color: String,
+    pub serie: String,
+    pub box_size: f32,
+    pub material: String,
+}
+
 // init db
 pub fn seed_db() -> Result<(), Error> {
     let mut client = Client::connect(
@@ -64,30 +103,10 @@ pub fn seed_db() -> Result<(), Error> {
     client.execute(
         "INSERT INTO public.logs (log_type, product_id, timestamp, product) VALUES ($1, $2, $3, $4)",
         &[
-            &"COMMENT", 
-            &2.to_owned(), 
-            &str::replace(&Utc.ymd(2022, 3, 5).to_string(), "UTC", ""), 
-            &"[ZOR01027] ZORKA Architect KDS - 02 (light blue smoot)", 
-        ],
-    )?;
-
-    client.execute(
-        "INSERT INTO public.logs (log_type, product_id, timestamp, product) VALUES ($1, $2, $3, $4)",
-        &[
             &"VISIT", 
             &2.to_owned(),
             &str::replace(&Utc.ymd(2022, 3, 5).to_string(), "UTC", ""), 
-            &"[ZOR01027] ZORKA Architect KDS - 02 (light blue smoot)", 
-        ],
-    )?;
-
-    client.execute(
-        "INSERT INTO public.logs (log_type, product_id, timestamp, product) VALUES ($1, $2, $3, $4)",
-        &[
-            &"SAVE",
-            &2.to_owned(), 
-            &str::replace(&Utc.ymd(2022, 3, 5).to_string(), "UTC", ""), 
-            &"[ZOR01027] ZORKA Architect KDS - 02 (light blue smoot)"
+            &"ZORKA Architect KDS - 02 (light blue smoot)", 
         ],
     )?;
 
@@ -242,4 +261,98 @@ pub fn get_count_for_type_product_interval(log_type: String, t1: String, t2: Str
 
     client.close()?;
     Ok(ret)
+}
+
+pub async fn get_sub_count_for_products() -> Result<Vec<(Product, i32)>, Error> {
+    let url_string: String = format!("http://localhost:9090/api/products");
+
+    let products: Vec<Product> = reqwest::get(url_string)
+        .await
+        .unwrap()
+        .json()
+        .await.unwrap();
+
+    let mut prod_sub_count: Vec<(Product, i32)> = Vec::new();
+
+    for product in products{
+        let url_string: String = format!("http://localhost:9090/api/products/sub/{:?}", product.id);
+
+        let subs: Vec<Subscription> = reqwest::get(url_string)
+            .await
+            .unwrap()
+            .json()
+            .await.unwrap();
+
+        if subs.len() > 0 {
+            prod_sub_count.push((product, subs.len().try_into().unwrap()));
+        }
+        
+    }
+
+    prod_sub_count.sort_by(|&(_, sc1), &(_, sc2)| sc2.cmp(&sc1));
+
+    Ok(prod_sub_count)
+}
+
+pub async fn get_comment_count_for_products() -> Result<Vec<(Product, i32)>, Error> {
+    let url_string: String = format!("http://localhost:9090/api/products");
+
+    let products: Vec<Product> = reqwest::get(url_string)
+        .await
+        .unwrap()
+        .json()
+        .await.unwrap();
+
+    let mut prod_comment_count: Vec<(Product, i32)> = Vec::new();
+
+    for product in products{
+        let url_string: String = format!("http://localhost:9081/api/reviews/product/{:?}", product.id);
+
+        let comments: Vec<ReviewDTO> = reqwest::get(url_string)
+            .await
+            .unwrap()
+            .json()
+            .await.unwrap();
+
+        if comments.len() > 0 {
+            prod_comment_count.push((product, comments.len().try_into().unwrap()));
+        }
+        
+    }
+
+    prod_comment_count.sort_by(|&(_, sc1), &(_, sc2)| sc2.cmp(&sc1));
+
+    Ok(prod_comment_count)
+}
+
+pub async fn get_rating_for_products() -> Result<Vec<(Product, f32)>, Error> {
+    let url_string: String = format!("http://localhost:9090/api/products");
+
+    let products: Vec<Product> = reqwest::get(url_string)
+        .await
+        .unwrap()
+        .json()
+        .await.unwrap();
+
+    let mut prod_ratings: Vec<(Product, f32)> = Vec::new();
+
+    for product in products{
+        let url_string: String = format!("http://localhost:9081/api/reviews/rating/{:?}", product.id);
+
+        println!("{}", url_string);
+
+        let rating: f32 = reqwest::get(url_string)
+            .await
+            .unwrap()
+            .json()
+            .await.unwrap();
+ 
+        if rating > 0.0 {
+            prod_ratings.push((product, rating));
+        }        
+    }
+
+    prod_ratings.sort_by(|&(_, sc1), &(_, sc2)| sc2.partial_cmp(&sc1).unwrap());
+
+    Ok(prod_ratings)
 }

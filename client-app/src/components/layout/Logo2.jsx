@@ -7,7 +7,7 @@ const Logo2 = () => {
   let navigate = useNavigate()
   return (
     <>
-      <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+      <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1, cursor: 'pointer' }} />
           <Typography
             variant="h5"
             noWrap
@@ -21,9 +21,10 @@ const Logo2 = () => {
               letterSpacing: '.3rem',
               color: 'inherit',
               textDecoration: 'none',
+              cursor: 'pointer',
             }}
           >
-            LOGO
+            HOME
           </Typography>
     </>
   )

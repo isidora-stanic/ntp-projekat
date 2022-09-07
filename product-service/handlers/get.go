@@ -113,3 +113,30 @@ func (p*Products) GetSubscription(rw http.ResponseWriter, r *http.Request) {
 
 	utils.ReturnResponseAsJson(rw, sub.ToDTO())
 }
+
+func (p*Products) GetSubscriptionsForProduct(rw http.ResponseWriter, r *http.Request) {
+	p.l.Println("Handle GET Subscription for product")
+
+	vars := mux.Vars(r)
+	id, err := strconv.ParseUint(vars["product_id"], 10, 32)
+	if err != nil {
+		http.Error(rw, "Unable to convert id", http.StatusBadRequest)
+		return
+	}
+	uid := uint32(id)
+
+	subs, err := db.GetSubsForProducts(uid)
+
+	if err != nil {
+		p.l.Println(err.Error())
+		http.Error(rw, err.Error(), http.StatusNotFound)
+		return
+	}
+
+	subsDto := []models.SubscriptionDTO{}
+	for _, s := range subs {
+		subsDto = append(subsDto, s.ToDTO())
+	}
+
+	utils.ReturnResponseAsJson(rw, subsDto)
+}

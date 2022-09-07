@@ -5,7 +5,7 @@ import { FormGroup, FormControlLabel, Checkbox, FormLabel, Divider, Typography, 
 const FilterGroup = ({ filter, selectedOptions, setSelectedOptions }) => {
   return (
     <>
-      <Divider fullWidth sx={{m: 2}} />
+      <Divider sx={{m: 2}} />
       <Box display="flex" justifyContent="flex-start">
       <FormGroup>
       <Box display="flex" justifyContent="flex-start">

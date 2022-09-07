@@ -16,7 +16,7 @@ import { Avatar, Badge, Button } from '@mui/material';
 import ViewInArIcon from '@mui/icons-material/ViewInAr';
 import { useWishlist } from '../../contexts/WishListContext';
 
-const pagesAdmin = ['Products', 'Users', 'Reviews', 'Statistics', 'Sign In'];
+const pagesAdmin = ['Products', 'Users', 'Reviews', 'Statistics', 'Recommendations', 'Sign In'];
 const pagesUnauth = ['Sign In'];
 const settings = ['Sign Out'];
 

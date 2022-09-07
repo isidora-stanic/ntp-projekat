@@ -16,6 +16,7 @@ const ProductTable = () => {
     const navigate = useNavigate()
 
     const columns = [
+        { field: 'id', headerName: 'ID', width: 100 },
         { field: 'sku', headerName: 'SKU', width: 100 },
         { field: 'name', headerName: 'Name', width: 300 },
 

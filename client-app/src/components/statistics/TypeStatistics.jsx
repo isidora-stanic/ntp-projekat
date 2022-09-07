@@ -20,15 +20,15 @@ const TypeStatistics = ({ type, titles }) => {
     StatisticsService.getCountByTypeForAllProducts(type, setProdStats, setTopProdStats)
   }, []);
 
-  const handleClick = () => {
-      // get log count for the given type and time
-      if (t1.trim() !== '' && t2.trim() !== '')
-        StatisticsService.getCountByTypeForAllProductsInterval(type, t1, t2, setProdStats, setTopProdStats)
-  }
+  // const handleClick = () => {
+  //     // get log count for the given type and time
+  //     if (t1.trim() !== '' && t2.trim() !== '')
+  //       StatisticsService.getCountByTypeForAllProductsInterval(type, t1, t2, setProdStats, setTopProdStats)
+  // }
 
   return (
     <div>
-          <Card sx={{p: 5, mx: 5, my:3}}>
+          {/* <Card sx={{p: 5, mx: 5, my:3}}>
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <TextField fullWidth type='date' name='t1' id='t1' 
@@ -44,7 +44,7 @@ const TypeStatistics = ({ type, titles }) => {
               <Button onClick={handleClick} variant='contained' size='large'>{titles[2]}</Button>
             </Grid>
           </Grid>
-          </Card>
+          </Card> */}
       <Typography variant='h4'>{showRest ? titles[1] : titles[0]}</Typography>
       <Table>
         <TableHead>
