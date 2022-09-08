@@ -24,7 +24,7 @@ const Layout = ({children}) => {
         </Avatar>
         </Fab>
       </ScrollTop>
-      <StickyFooter />
+      {/* <StickyFooter /> */}
       </Box>
   )
 }

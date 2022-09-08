@@ -19,6 +19,8 @@ import EditImages from './components/image-upload/EditImages';
 import Statistics from './components/statistics/Statistics';
 import RecommendParamTable from './components/recommendation/RecommendParamTable';
 import RecommendParamForm from './components/recommendation/RecommendParamForm';
+import RoomSetups from './components/roomsetup/RoomSetups';
+import RequireAuth from './contexts/RequireAuth';
 
 const theme = createTheme({palette: {
   type: 'light',
@@ -74,6 +76,7 @@ function App() {
           <Route path="/signin" element={<SignIn />} />
           <Route path="/v3d" element={<Layout><CanvasV3D /></Layout>} />
           <Route path="/v3d/:id" element={<Layout><CanvasV3D /></Layout>} />
+          <Route path="/roomsetups" element={<RequireAuth><Layout><RoomSetups /></Layout></RequireAuth>} />
         </Routes>
         </WishlistProvider>
       </CurrentUserProvider>

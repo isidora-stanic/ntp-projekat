@@ -4,7 +4,6 @@ import React from 'react'
 const SortByCombo = ({sortBy, setSortBy}) => {
   return (
         <TextField
-            labelId="lbl"
             select
             fullWidth
             id="sort_by"

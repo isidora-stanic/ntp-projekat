@@ -114,12 +114,12 @@ const CanvasV3D = () => {
   console.log("wishlist len", wishlist.length)
 
   return (
-    <Grid container sx={{ width: "100vw", height: "85vh" }}>
+    <Grid container sx={{ width: "100vw", height: "100vh" }}>
       <Grid item xs={9}>
         <Canvas flat style={{ background: "#7986cb" }}>
           <CameraController />
-          <ambientLight intensity={0.5} />
-          <spotLight position={[0, abc/2, 0]} angle={0.15} penumbra={5} />
+          <ambientLight intensity={0.2} />
+          <spotLight position={[0, abc/2, 0]} angle={0.15} penumbra={1} />
           <pointLight position={[0, abc.b/2, 0]} />
           {wishlist.length > 0 || isReadMode ? <Room
             meshRef={meshRef}

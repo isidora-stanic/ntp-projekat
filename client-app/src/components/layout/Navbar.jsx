@@ -16,7 +16,8 @@ import { Avatar, Badge, Button } from '@mui/material';
 import ViewInArIcon from '@mui/icons-material/ViewInAr';
 import { useWishlist } from '../../contexts/WishListContext';
 
-const pagesAdmin = ['Products', 'Users', 'Reviews', 'Statistics', 'Recommendations', 'Sign In'];
+const pagesAdmin = ['Room setups', 'Products', 'Users', 'Reviews', 'Statistics', 'Recommendations'];
+const pagesRegUser = ['Room setups'];
 const pagesUnauth = ['Sign In'];
 const settings = ['Sign Out'];
 
@@ -24,6 +25,7 @@ const Navbar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
 
   let user = useCurrentUser().getCurrentUser()
+  console.log(user)
 
   let navigate = useNavigate()
 
@@ -43,7 +45,7 @@ const Navbar = () => {
         <Toolbar disableGutters id="back-to-top-anchor">
           <Logo />
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none'} }}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -72,7 +74,7 @@ const Navbar = () => {
                 display: { xs: 'block', md: 'none'},
               }}
             >
-              {user ? pagesAdmin.map((page) => (
+              {user ? user.role === 'ADMIN' ? pagesAdmin.map((page) => (
                 <MenuItem key={page} onClick={() => navigate('/'+page.toLowerCase().replace(/\s/g, ""))}>
                   <Button
                 key={page}
@@ -83,7 +85,19 @@ const Navbar = () => {
                 {page}
               </Button>
                 </MenuItem>
-              )): 
+              )) : user.role === 'REGUSER' ?
+              pagesRegUser.map((page) => (
+                <MenuItem key={page} onClick={() => navigate('/'+page.toLowerCase().replace(/\s/g, ""))}>
+                  <Button
+                key={page}
+                disableRipple 
+                sx={{ my: 0, color: 'primary', display: 'flex', "&:hover": {backgroundColor: 'transparent'} }}
+                fullWidth
+              >
+                {page}
+              </Button>
+                </MenuItem>
+              )) : <></> :
               pagesUnauth.map((page) => (
                 <MenuItem key={page} onClick={() => navigate('/'+page.toLowerCase().replace(/\s/g, ""))}>
                   <Button
@@ -100,7 +114,7 @@ const Navbar = () => {
           </Box>
           <Logo2 />
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {user ? pagesAdmin.map((page) => (
+            {user ? user.role === 'ADMIN' ? pagesAdmin.map((page) => (
               <Button
                 key={page}
                 onClick={() => navigate('/'+page.toLowerCase().replace(/\s/g, ""))}
@@ -108,7 +122,16 @@ const Navbar = () => {
               >
                 {page}
               </Button>
-            )) : 
+            )) : user.role === 'REGUSER' ? 
+            pagesRegUser.map((page) => (
+              <Button
+                key={page}
+                onClick={() => navigate('/'+page.toLowerCase().replace(/\s/g, ""))}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                {page}
+              </Button>
+            )) : <></> :
             pagesUnauth.map((page) => (
               <Button
                 key={page}

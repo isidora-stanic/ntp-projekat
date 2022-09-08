@@ -35,7 +35,7 @@ const RoomSetupInfo = ({room}) => {
             .then(r => {
                 console.log(r.data)
                 navigate("/")
-            })
+            }).catch(e => console.log(e))
     }
 
   return (
@@ -45,7 +45,7 @@ const RoomSetupInfo = ({room}) => {
       <Typography variant="p" color="secondary">{room.description}</Typography>
       <hr/>
       {room.walls.filter((w, i) => i !== 2).map((w, i) => <div key={i} style={{margin:25}}>
-        Wall {i+1}: <a href={"/product/"+w.product_id}><b>{w.product_name}</b></a> {w.wallSize1}x{w.wallSize2} m2
+        Wall {i+1}: <a href={"/product/"+w.product_id}><b>{w.product_name}</b></a> {w.wallSize1}x{w.wallSize2} cm2
          </div>)}
       <hr/>
       <Typography variant="h5" color="primary">Total: {totalPrice.toFixed(2)} RSD</Typography>

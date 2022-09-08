@@ -1,6 +1,4 @@
-import { Description } from "@mui/icons-material";
 import { Button, Grid, InputLabel, Link, MenuItem, Select, TextField, Typography } from "@mui/material";
-import { Box } from "@mui/system";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useCurrentUser } from "../../contexts/CurrentUserContext";
@@ -38,10 +36,14 @@ const V3DOptions = ({
     const [w5P, setw5P] = useState(0.0)
     const [w6P, setw6P] = useState(0.0)
 
+    const [name, setName] = useState('')
+    const [description, setDescription] = useState('')
+
     const handleSave = () => {
+      
       let roomSetup = {
-        name: "Room",
-        description: "Some description",
+        name: name,
+        description: description,
         user_id: user.id,
         a: abc.a,
         b: abc.b,
@@ -65,7 +67,7 @@ const V3DOptions = ({
             size1: w3.size1, size2: w3.size1,
             wallSize1: abc.c, wallSize2: abc.a,
             bump: w3.bump, image: w3.image, roughness: w3.roughness,
-            product_id: w3.id,
+            product_id: 1,
             product_name: w3.name,
           },
           {
@@ -91,6 +93,7 @@ const V3DOptions = ({
           }
         ]
       }
+      console.log(roomSetup)
       axios.post("http://localhost:9091/api/v3d/rooms", roomSetup)
         .then(r => {
           console.log(r)
@@ -101,8 +104,24 @@ const V3DOptions = ({
   return (
     <div style={{ margin: 25 }}>
       <Grid container spacing={2}>
+        {/* <Grid item xs={12}>
+          <Typography>Dimensions</Typography></Grid> */}
+          <Grid item xs={12}>
+        <TextField
+          label="Name of the room"
+          size="small"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        </Grid>
         <Grid item xs={12}>
-          <Typography>Dimensions</Typography></Grid>
+        <TextField
+          label="Description"
+          size="small"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+        </Grid>
         <Grid item xs={12}>
         <TextField
           label="Height [cm]"
@@ -130,9 +149,7 @@ const V3DOptions = ({
           onChange={(e) => setAbc({ ...abc, c: e.target.value })}
         />
         </Grid>
-        <Grid item xs={12}><hr/></Grid>
-
-        
+        {/* <Grid item xs={12}><hr/></Grid> */}
         <Grid item xs={12}>
             {wishlist.length > 0 ?
             (<>
@@ -142,22 +159,16 @@ const V3DOptions = ({
               <SelectTileFormWishList wall={w5} setWall={setW5} wallName='Back Wall' size={[abc.b, abc.a]} setWallPrice={setw5P} wallPrice={w5P} />
               {/* <SelectTileFormWishList wall={w3} setWall={setW3} wallName='Ceiling' /> */}
               <SelectTileFormWishList wall={w4} setWall={setW4} wallName='Floor' size={[abc.c, abc.a]} setWallPrice={setw4P} wallPrice={w4P} />
+              {wishlist.length > 0 ? w1P ? <Typography variant="p" sx={{fontSize: '10pt', mt: 0}}>Total Price: {w1P + w2P + w4P + w5P + w6P} RSD</Typography>:<></> : <></>}
+        { wishlist.length !== 0 && user.id != null ? <Button variant="contained" color="secondary" onClick={handleSave}>Save Room setup</Button>: <></> }
+        
             </>) : 
             <>
               <Typography color='warning.main'>Nothing is in wishlist</Typography>
               <Link href="/">See all products</Link>
             </>}
         </Grid>
-
-        {/* <Grid item xs={12}><hr/></Grid> */}
-        <Grid item xs={12}>
-        {wishlist.length > 0 ? w1P ? <Typography>Total Price: {w1P + w2P + w4P + w5P + w6P} RSD</Typography>:<></> : <></>}
-        </Grid>
-
-        {/* <Grid item xs={12}><hr/></Grid> */}
-
-        <Grid item xs={12}>
-        { wishlist.length !== 0 && user.id != null ? <Button variant="contained" color="secondary" onClick={handleSave}>Save Room setup</Button>: <></> }
+        <Grid item xs={12} sx={{m: 0}}>
         </Grid>
         
       </Grid>

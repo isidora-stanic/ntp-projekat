@@ -55,18 +55,18 @@ func main() {
 
 	// get files
 	getRouter := sm.Methods(http.MethodGet).Subrouter()
-	getRouter.Handle(
-		"/images/{id:[0-9]+}/{filename:[a-zA-Z0-9_ ]+\\.[a-z]{3,4}}",
-		http.StripPrefix("/images/", http.FileServer(http.Dir(*basePath))),
-	)
-
 	getRouter.HandleFunc("/images/{id:[0-9]+}", fh.GetAllImagesForProduct)
 	getRouter.HandleFunc("/images/{id:[0-9]+}/normal", fh.GetNormalImagesForProduct)
 	getRouter.HandleFunc("/images/{id:[0-9]+}/maps", fh.GetMapImagesForProduct)
 	getRouter.HandleFunc("/images/{id:[0-9]+}/main", fh.GetMainImageForProduct)
 
+	getRouter.Handle(
+		"/images/{id:[0-9]+}/{filename}",
+		http.StripPrefix("/images/", http.FileServer(http.Dir(*basePath))),
+	)
+
 	deleteRouter := sm.Methods(http.MethodDelete).Subrouter()
-	deleteRouter.HandleFunc("/images/{id:[0-9]+}/{filename:[a-zA-Z0-9_ ]+\\.[a-z]{3,4}}", fh.DeleteImage)
+	deleteRouter.HandleFunc("/images/{id:[0-9]+}/{filename}", fh.DeleteImage)
 
 	// CORS
 	ch := gohandlers.CORS(

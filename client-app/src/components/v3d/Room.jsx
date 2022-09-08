@@ -8,15 +8,18 @@ import { height } from '@mui/system';
 import Grout from './Grout';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '../util/ErrorFallback';
+import { useParams } from 'react-router-dom';
 
 const Room = ({a, b, c, selectedFace, setSelectedFace, meshRef, walls, setRoomSetup}) => {
-    const [texture] = useLoader(THREE.TextureLoader, ['https://media.istockphoto.com/photos/white-colored-low-contrast-concrete-textured-background-with-and-picture-id1193725656?k=20&m=1193725656&s=612x612&w=0&h=mROTQNi4boogY728Z6oyv-Ew4f3Pd-tJOgc6axm4JmE=']);
+    // const [texture] = useLoader(THREE.TextureLoader, ['https://media.istockphoto.com/photos/white-colored-low-contrast-concrete-textured-background-with-and-picture-id1193725656?k=20&m=1193725656&s=612x612&w=0&h=mROTQNi4boogY728Z6oyv-Ew4f3Pd-tJOgc6axm4JmE=']);
 
         useEffect(() => {
             console.log(selectedFace)
             console.log('selektovan zid', selectedFace.materialIndex)
-            // console.log('Mesh dots',meshRef.current.geometry.attributes.position.array)           
         }, [selectedFace])
+
+        let {id} = useParams()
+        let isAddMode = !id
 
         useEffect(() => {
             // console.log(JSON.stringify(walls))
@@ -53,56 +56,67 @@ const Room = ({a, b, c, selectedFace, setSelectedFace, meshRef, walls, setRoomSe
         //     'http://localhost:9090/images/black_metro_roughness.jpg',
         //     'http://localhost:9090/images/black_metro_diffuse.jpg'])
     
-        // console.log("URL0: " , walls.w1.bump)
-        // let dim1arr = walls.w1.tileSize1, 
-        // console.log("Dim11",parseInt(dim1arr[0]))
-        // console.log("Dim12",parseInt(dim1arr[1]))
-        // let dim2arr = walls.w2.dimensions.split("x")
-        // console.log("Dim21",parseInt(dim2arr[0]))
-        // console.log("Dim22",parseInt(dim2arr[1]))
-        // let dim3arr = walls.w3.dimensions.split("x")
-        // let dim4arr = walls.w4.dimensions.split("x")
-        // let dim5arr = walls.w5.dimensions.split("x")
-        // let dim6arr = walls.w6.dimensions.split("x")
 
+        let sw1 = []
+        let sw2 = []
+        let sw3 = []
+        let sw4 = []
+        let sw5 = []
+        let sw6 = []
+
+        if (isAddMode) {
+            sw1 = [walls.w1.size1, walls.w1.size2]
+            sw2 = [walls.w2.size1, walls.w2.size2]
+            sw3 = [walls.w3.size1, walls.w3.size2]
+            sw4 = [walls.w4.size1, walls.w4.size2]
+            sw5 = [walls.w5.size1, walls.w5.size2]
+            sw6 = [walls.w6.size1, walls.w6.size2]
+        } else {
+            sw1 = [walls[0].size1, walls[0].size2]
+            sw2 = [walls[1].size1, walls[1].size2]
+            sw3 = [walls[2].size1, walls[2].size2]
+            sw4 = [walls[3].size1, walls[3].size2]
+            sw5 = [walls[4].size1, walls[4].size2]
+            sw6 = [walls[5].size1, walls[5].size2]
+        }
 
         let w1Tile={
-            size:[walls.w1.size1, walls.w1.size2],
+            size: sw1,
             bumpUrl: walls.w1.bump,
             roughUrl: walls.w1.roughness,
             imageUrl: walls.w1.image,
             wallSize:[b,c]
         }
         let w2Tile={
-            size:[walls.w2.size1, walls.w2.size2],
+            size: sw2,
             bumpUrl: walls.w2.bump,
             roughUrl: walls.w2.roughness,
             imageUrl: walls.w2.image,
             wallSize:[b,c]
         }
         let w3Tile={
-            size:[walls.w3.size1, walls.w3.size2],
+            size: sw3,
             bumpUrl: walls.w3.bump,
             roughUrl: walls.w3.roughness,
             imageUrl: walls.w3.image,
             wallSize:[c,a]
         }
         let w4Tile={
-            size:[walls.w4.size1, walls.w4.size2],
+            size: sw4,
             bumpUrl: walls.w4.bump,
             roughUrl: walls.w4.roughness,
             imageUrl: walls.w4.image,
             wallSize:[c,a]
         }
         let w5Tile={
-            size:[walls.w5.size1, walls.w5.size2],
+            size: sw5,
             bumpUrl: walls.w5.bump,
             roughUrl: walls.w5.roughness,
             imageUrl: walls.w5.image,
             wallSize:[b,a]
         }
         let w6Tile={
-            size:[walls.w6.size1, walls.w6.size2],
+            size: sw6,
             bumpUrl: walls.w6.bump,
             roughUrl: walls.w6.roughness,
             imageUrl: walls.w6.image,
@@ -126,45 +140,6 @@ const Room = ({a, b, c, selectedFace, setSelectedFace, meshRef, walls, setRoomSe
                 side={THREE.BackSide}/> */}
                 <meshBasicMaterial key={'plafon'} attach="material-2" color="white" transparent={true}
                 side={THREE.BackSide}/>
-          {/* <meshStandardMaterial
-                attach="material-1"
-                map={texture1}
-                transparent={true}
-                side={THREE.BackSide}
-            />
-            <meshStandardMaterial
-                attach="material-0"
-                map={texture2}
-                transparent={true}
-                side={THREE.BackSide}
-            />
-            <meshStandardMaterial
-                attach="material-3"
-                map={texture1}
-                transparent={true}
-                side={THREE.BackSide}
-            />
-            <meshStandardMaterial
-                attach="material-4"
-                map={texture2}
-                transparent={true}
-                side={THREE.BackSide}
-            />
-            <meshStandardMaterial
-                attach="material-5"
-                map={texture1}
-                transparent={true}
-                side={THREE.BackSide}
-            /> */}
-            
-            {/* 2 je plafon */}
-            
-
-            {/* <Grout {...oneGrout} index='0' color='blue' />
-            <Grout {...oneGrout} index='1' color='blue' />
-            <Grout {...oneGrout} index='3' color='blue' />
-            <Grout {...oneGrout} index='4' color='blue' />
-            <Grout {...oneGrout} index='5' color='blue' /> */}
 
                 <Tile {...w1Tile} index='0'/> {/* right ok */}
                 {/* <Tile {...w3Tile} index='2'/> CEILING */}

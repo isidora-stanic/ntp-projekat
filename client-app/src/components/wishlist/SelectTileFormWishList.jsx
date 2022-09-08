@@ -38,7 +38,7 @@ const SelectTileFormWishList = ({wall, setWall, wallName, size, wallPrice, setWa
         </TextField>
         {/* <Typography>You'll need {Math.ceil((size[0]/100 * size[1]/100)/wall.box_size)} boxes</Typography> */}
         {/* <br/> */}
-        <Typography>{Math.ceil((size[0]/100 * size[1]/100)/wall.box_size)} boxes x {wall.price.toFixed(2)}RSD = {wallPrice?.toFixed(2)} RSD</Typography>
+        {/* <Typography variant="p" sx={{fontSize: '8pt'}}>{Math.ceil((size[0]/100 * size[1]/100)/wall.box_size)} boxes x {wall.price.toFixed(2)}RSD = {wallPrice?.toFixed(2)} RSD</Typography> */}
     </>
   )
 }
