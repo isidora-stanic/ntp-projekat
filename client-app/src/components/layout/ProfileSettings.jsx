@@ -18,6 +18,7 @@ const ProfileSettings = ({user}) => {
 
     const handleLogout = () => {
         localStorage.removeItem("token")
+        localStorage.removeItem("wishlist")
         navigate("/signin")
         setAnchorElUser(null);
     }

@@ -215,7 +215,7 @@ pub fn create_log(log: LogCreateRequest, log_type: String) -> Result<String, Err
     Ok("Log successfuly added.".to_string())
 }
 
-// actual statistics
+// visits
 pub fn get_count_for_type_product(log_type: String) -> Result<Vec<StatsCount>, Error> {
     let mut client = Client::connect(
         "postgresql://postgres:password@localhost:5432/statistics_db",
@@ -239,7 +239,7 @@ pub fn get_count_for_type_product(log_type: String) -> Result<Vec<StatsCount>, E
     Ok(ret)
 }
 
-// actual statistics interval
+// visits interval
 pub fn get_count_for_type_product_interval(log_type: String, t1: String, t2: String) -> Result<Vec<StatsCount>, Error> {
     let mut client = Client::connect(
         "postgresql://postgres:password@localhost:5432/statistics_db",

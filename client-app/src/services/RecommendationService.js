@@ -18,8 +18,26 @@ const RecommendationService = {
         ).catch(err => console.error(err))
     },
 
-    getRecommendations : (product, setProducts) => {
-        axios.post("http://localhost:9091/api/recommendations/recommend", product).then(
+    getRecommendByAttrs : (product, setProducts) => {
+        axios.post("http://localhost:9091/api/recommendations/recommend-by-attributes", product).then(
+            r => {
+                // console.log(r.data)
+                setProducts(r.data)
+            }
+        ).catch(err => console.error(err))
+    },
+
+    getRecommendById : (product, setProducts) => {
+        axios.get("http://localhost:9091/api/recommendations/recommend-by-id/"+product.id).then(
+            r => {
+                // console.log(r.data)
+                setProducts(r.data)
+            }
+        ).catch(err => console.error(err))
+    },
+
+    getSimilar : (product, setProducts) => {
+        axios.get("http://localhost:9091/api/recommendations/smilar/"+product.id).then(
             r => {
                 // console.log(r.data)
                 setProducts(r.data)

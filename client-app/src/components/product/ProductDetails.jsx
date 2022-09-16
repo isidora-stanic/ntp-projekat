@@ -12,16 +12,16 @@ import StatisticsService from '../../services/StatisticsService'
 import ProductShortList from './ProductShortList'
 import ProductShort from './ProductShort'
 import RecommendationService from '../../services/RecommendationService'
-import RecommendBy from './RecommendBy'
+import RecommendBy from '../recommendation/RecommendBy'
 import { useCurrentUser } from '../../contexts/CurrentUserContext'
 import { useRef } from 'react'
+import RecommendBox from '../recommendation/RecommendBox'
 
 
 const ProductDetails = () => {
     const [product, setProduct] = useState({})
     const [reviews, setReviews] = useState([])
     const [images, setImages] = useState([])
-    const [recommended, setRecommended] = useState([])
     
 
     let { getCurrentUser } = useCurrentUser()
@@ -46,7 +46,6 @@ const ProductDetails = () => {
           product: product.name
         }, 'VISIT')
 
-        RecommendationService.getRecommendations(product, setRecommended)
         if (getCurrentUser().email) {
           ProductService.getSubscription(product.id, getCurrentUser().email, setSub)
         }
@@ -97,8 +96,6 @@ const ProductDetails = () => {
       <CssBaseline />
       <Grid container spacing={2}>
         <Grid item xs={6}>
-          {/* <img src={product.image} alt={product.name + " image"}/> */}
-          {/* {images.map(i => (<img key={i} height="40px" width="60px" src={i} alt={product.name + " image"}/>))} */}
           <br />
           <div style={{ marginTop: "5rem", marginLeft: "10rem"}}>
           <Carousel animation="slide" navButtonsAlwaysVisible autoPlay={false}>
@@ -132,7 +129,7 @@ const ProductDetails = () => {
         <ProductTabs product={product} reviews={reviews} />
         </Grid>
         <Grid item xs={12}>
-          {recommended.map(p => <RecommendBy key={p.based_on} by={p.based_on} products={p.products} />)}
+          <RecommendBox product={product} />
         </Grid>
       </Grid>
       {/* <ReviewsList reviews={reviews} /> */}

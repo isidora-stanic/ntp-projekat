@@ -168,13 +168,47 @@ func (p *Recommendations) GetRecommendationsForAProduct(rw http.ResponseWriter, 
 	utils.SetupResponse(&rw, r)
 
 	req, _ := http.NewRequest(http.MethodPost,
-		utils.RecommendationServiceRoot.Next().Host+RecommendationService+"/recommend", r.Body)
+		utils.RecommendationServiceRoot.Next().Host+RecommendationService+"/recommend-by-attributes", r.Body)
 
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
 	response, err := client.Do(req)
+
+	if err != nil {
+		rw.WriteHeader(http.StatusGatewayTimeout)
+		return
+	}
+
+	utils.DelegateResponse(response, rw)
+}
+
+func (p *Recommendations) GetRecommendById(rw http.ResponseWriter, r *http.Request) {	
+	utils.SetupResponse(&rw, r)
+
+	vars := mux.Vars(r)
+	id := vars["id"]
+	
+	response, err := http.Get(
+		utils.RecommendationServiceRoot.Next().Host + RecommendationService + "/recommend-by-id/" + id)
+
+	if err != nil {
+		rw.WriteHeader(http.StatusGatewayTimeout)
+		return
+	}
+
+	utils.DelegateResponse(response, rw)
+}
+
+func (p *Recommendations) GetSimilar(rw http.ResponseWriter, r *http.Request) {	
+	utils.SetupResponse(&rw, r)
+
+	vars := mux.Vars(r)
+	id := vars["id"]
+	
+	response, err := http.Get(
+		utils.RecommendationServiceRoot.Next().Host + RecommendationService + "/similar/" + id)
 
 	if err != nil {
 		rw.WriteHeader(http.StatusGatewayTimeout)

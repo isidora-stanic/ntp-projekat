@@ -12,7 +12,6 @@ type ProductDTO struct {
 	ID          uint    `json:"id"`
 	Name        string  `json:"name" validate:"required"`
 	Description string  `json:"description"`
-	ImageSrc    string  `json:"image"`
 	Price       float32 `json:"price" validate:"required,gt=0"`
 	SKU         string  `json:"sku" validate:"required,sku"`
 	Producer	string	`json:"producer"`
@@ -65,8 +64,7 @@ type PageResponse struct {
 func (p *ProductDTO) ToProduct() Product {
 	return Product{
 		Name: p.Name, 
-		Description: p.Description, 
-		ImageSrc: p.ImageSrc, 
+		Description: p.Description,
 		Price: p.Price, 
 		SKU: p.SKU,
 		Producer: p.Producer,

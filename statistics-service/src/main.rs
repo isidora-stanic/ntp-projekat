@@ -36,54 +36,6 @@ fn get_statistics_for_all_interval(logtype: String, t1: String, t2: String) -> J
     }).join().unwrap()
 }
 
-// #[get("/visits")]
-// fn get_all_visits() -> Json<Vec<Log>> {
-//     thread::spawn(move || {
-//         let logs = service::get_all_product_logs_of_type("VISIT".to_string());
-//         Json(logs.unwrap())
-//     }).join().unwrap()
-// }
-
-// #[get("/comments")]
-// fn get_all_comments() -> Json<Vec<Log>> {
-//     thread::spawn(move || {
-//         let logs = service::get_all_product_logs_of_type("COMMENT".to_string());
-//         Json(logs.unwrap())
-//     }).join().unwrap()
-// }
-
-// #[get("/saves")]
-// fn get_all_saves() -> Json<Vec<Log>> {
-//     thread::spawn(move || {
-//         let logs = service::get_all_product_logs_of_type("SAVE".to_string());
-//         Json(logs.unwrap())
-//     }).join().unwrap()
-// }
-
-// #[get("/visits/<id>")]
-// fn get_product_visits(id: i32) -> Json<Vec<Log>> {
-//     thread::spawn(move || {
-//         let logs = service::get_product_logs_of_type(id, "VISIT".to_string());
-//         Json(logs.unwrap())
-//     }).join().unwrap()
-// }
-
-// #[get("/comments/<id>")]
-// fn get_product_comments(id: i32) -> Json<Vec<Log>> {
-//     thread::spawn(move || {
-//         let logs = service::get_product_logs_of_type(id, "COMMENT".to_string());
-//         Json(logs.unwrap())
-//     }).join().unwrap()
-// }
-
-// #[get("/saves/<id>")]
-// fn get_product_saves(id: i32) -> Json<Vec<Log>> {
-//     thread::spawn(move || {
-//         let logs = service::get_product_logs_of_type(id, "SAVE".to_string());
-//         Json(logs.unwrap())
-//     }).join().unwrap()
-// }
-
 #[post("/visit", format = "json", data = "<req>")]
 fn add_visit(req: Json<LogCreateRequest>) -> Json<String> {
     thread::spawn(move || {
@@ -91,22 +43,6 @@ fn add_visit(req: Json<LogCreateRequest>) -> Json<String> {
         Json(resp.unwrap())
     }).join().unwrap()
 }
-
-// #[post("/comment", format = "json", data = "<req>")]
-// fn add_comment(req: Json<LogCreateRequest>) -> Json<String> {
-//     thread::spawn(move || {
-//         let resp = service::create_log(req.into_inner(), "COMMENT".to_string());
-//         Json(resp.unwrap())
-//     }).join().unwrap()
-// }
-
-// #[post("/save", format = "json", data = "<req>")]
-// fn add_save(req: Json<LogCreateRequest>) -> Json<String> {
-//     thread::spawn(move || {
-//         let resp = service::create_log(req.into_inner(), "SAVE".to_string());
-//         Json(resp.unwrap())
-//     }).join().unwrap()
-// }
 
 #[get("/subscriptions")]
 async fn get_sub_count_for_products() -> Json<Vec<(Product, i32)>> {

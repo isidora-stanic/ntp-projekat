@@ -99,7 +99,10 @@ func main() {
 	// recomendation-service routes
 	getRouter.HandleFunc("/api/recommendations", rcmdh.GetAllRecommendations)
 	getRouter.HandleFunc("/api/recommendations/{id:[0-9]+}", rcmdh.GetOneRecommendationP)
-	postRouter.HandleFunc("/api/recommendations/recommend", rcmdh.GetRecommendationsForAProduct)
+	getRouter.HandleFunc("/api/recommendations/recommend-by-id/{id:[0-9]+}", rcmdh.GetRecommendById)
+	getRouter.HandleFunc("/api/recommendations/similar/{id:[0-9]+}", rcmdh.GetSimilar)
+	// postRouter.HandleFunc("/api/recommendations/recommend", rcmdh.GetRecommendationsForAProduct)
+	postRouter.HandleFunc("/api/recommendations/recommend-by-attributes", rcmdh.GetRecommendationsForAProduct)
 	postRouter.HandleFunc("/api/recommendations", rcmdh.AddRecommendation)
 	putRouter.HandleFunc("/api/recommendations/{id:[0-9]+}", rcmdh.UpdateRecommendation)
 	deleteRouter.HandleFunc("/api/recommendations/{id:[0-9]+}", rcmdh.DeleteRecommendation)
@@ -146,6 +149,7 @@ func main() {
 	sig := <- sigChan
 	sl.Println("Recieved terminate, graceful shutdown", sig)
 	
-	tc, _ := context.WithTimeout(context.Background(), 30*time.Second)
+	tc, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
 	s.Shutdown(tc)
 }

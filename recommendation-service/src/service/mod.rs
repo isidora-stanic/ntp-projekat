@@ -7,8 +7,7 @@ use rocket::serde::{Serialize, Deserialize};
 pub struct Product {
     pub id: i32, 
     pub name: String, 
-    pub description: String, 
-    pub image: String, 
+    pub description: String,
     pub price: f32, 
     pub sku: String, 
     pub producer: String,
@@ -111,7 +110,7 @@ pub fn seed_db() -> Result<(), Error> {
         "INSERT INTO public.recommendation_param (based_on, value1, value2, deleted) VALUES ($1, $2, $3, $4)",
         &[
             &"color", 
-            &"bela", 
+            &"Bela", 
             &"Plava",
             &false
         ],
@@ -121,8 +120,8 @@ pub fn seed_db() -> Result<(), Error> {
         "INSERT INTO public.recommendation_param (based_on, value1, value2, deleted) VALUES ($1, $2, $3, $4)",
         &[
             &"color", 
-            &"bela", 
-            &"braon",
+            &"Bela", 
+            &"Braon",
             &false
         ],
     )?;
@@ -131,8 +130,8 @@ pub fn seed_db() -> Result<(), Error> {
         "INSERT INTO public.recommendation_param (based_on, value1, value2, deleted) VALUES ($1, $2, $3, $4)",
         &[
             &"color", 
-            &"siva", 
-            &"crna",
+            &"Siva", 
+            &"Crna",
             &false
         ],
     )?;
@@ -141,8 +140,8 @@ pub fn seed_db() -> Result<(), Error> {
         "INSERT INTO public.recommendation_param (based_on, value1, value2, deleted) VALUES ($1, $2, $3, $4)",
         &[
             &"color", 
-            &"bela", 
-            &"siva",
+            &"Bela", 
+            &"Siva",
             &false
         ],
     )?;
@@ -152,7 +151,7 @@ pub fn seed_db() -> Result<(), Error> {
         &[
             &"finish", 
             &"Mat", 
-            &"sjaj",
+            &"Sjaj",
             &false
         ],
     )?;
@@ -161,7 +160,7 @@ pub fn seed_db() -> Result<(), Error> {
         "INSERT INTO public.recommendation_param (based_on, value1, value2, deleted) VALUES ($1, $2, $3, $4)",
         &[
             &"material", 
-            &"drvo", 
+            &"Drvo", 
             &"Keramika",
             &false
         ],
@@ -317,4 +316,55 @@ pub fn get_all_for_attribute(attribute: String, value: String) -> Result<Vec<Rec
     client.close()?;
 
     Ok(ret)
+}
+
+pub async fn get_recommended_products_by_id(prod_ids: Vec<&str>) -> Result<Vec<Product>, Error> {
+    let mut products: Vec<Product> = vec![];
+
+    // getting connected products
+    for prod_id in prod_ids {
+        // println!("getting product by id: {}", prod_id);
+        let url_string: String = format!("http://localhost:9090/api/products/{}", prod_id);
+        // println!("URL: {}", url_string);
+
+        let resp: Product = reqwest::get(url_string)
+        .await
+        .unwrap()
+        .json()
+        .await.unwrap();
+    
+        // println!("{:#?}", resp.name);
+
+        products.push(resp);
+    }
+    Ok(products)
+}
+
+pub async fn get_recommended_products_by_attr(product_id: i32, any_filter: AnyFilter) -> Result<Vec<Product>, Error> {
+    let client = reqwest::Client::new();
+    let url_string_f: String = format!("http://localhost:9090/api/products/filter/any/{}", &product_id);
+
+    let resp: Vec<Product> = client.post(url_string_f)
+        .json(&serde_json::json!(&any_filter))
+        .header("Content-Type", "application/json")
+        .send()
+        .await
+        .unwrap()
+        .json()
+        .await.unwrap();
+    
+    Ok(resp)
+}
+
+pub async fn get_similar_products(product_id: i32) -> Result<Vec<Product>, Error> {
+    let url_string: String = format!("http://localhost:9090/api/products/similar/{}", product_id);
+    // println!("URL: {}", url_string);
+
+    let resp: Vec<Product> = reqwest::get(url_string)
+        .await
+        .unwrap()
+        .json()
+        .await.unwrap();
+    
+    Ok(resp)
 }

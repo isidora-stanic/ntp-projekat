@@ -16,7 +16,7 @@ const AllProducts = () => {
     })
     const [products, setProducts] = useState([])
     const [pageNum, setPageNum] = useState(1)
-    const [pageSize, setPageSize] = useState(2)
+    const [pageSize, setPageSize] = useState(5)
     const [total, setTotal] = useState(0)
 
     const [prices, setPrices] = useState([0, 100000])

@@ -9,7 +9,6 @@ type Product struct {
 
 	Name        string  `json:"name" gorm:"column:name;not null;default:null"`
 	Description string  `json:"description" gorm:"column:description;not null;default:null"`
-	ImageSrc    string  `json:"image" gorm:"column:image;not null;default:null"`
 	Price       float32 `json:"price" gorm:"column:price;min0.0"`
 	SKU         string  `json:"sku" gorm:"column:sku;not null;default:null;unique"`
 	Producer	string	`json:"producer" gorm:"column:producer;default:null"`
@@ -35,8 +34,7 @@ func (p*Product) ToDTO() ProductDTO {
 	return ProductDTO{
 		ID: p.ID,
 		Name: p.Name, 
-		Description: p.Description, 
-		ImageSrc: p.ImageSrc, 
+		Description: p.Description,
 		Price: p.Price, 
 		SKU: p.SKU,
 		Producer: p.Producer,

@@ -13,7 +13,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
-import ImageUpload from '../image-upload/ImageUpload';
 
 const ProductForm = () => {
     let navigate = useNavigate();
@@ -48,7 +47,7 @@ const ProductForm = () => {
       color: '',
       serie: '',
       finish: '',
-      type: '',
+      p_type: '',
       box_size: 0.0,
       purpose: '',
       dimensions: '',
@@ -61,7 +60,6 @@ const ProductForm = () => {
       }
     },[])
 
-	//ImageSrc    string  `json:"image"`
   return (
     <Container component="main" maxWidth="lg">
       <CssBaseline />
@@ -189,13 +187,13 @@ const ProductForm = () => {
             <Grid item xs={2}>
               <TextField
                 fullWidth
-                name="type"
+                name="p_type"
                 label="Type"
-                id="type"
-                autoComplete="type"
+                id="p_type"
+                autoComplete="p_type"
                 color="primary"
                 onChange={onChange}
-                value={values.type}
+                value={values.p_type}
               />
             </Grid>
             
@@ -272,7 +270,6 @@ const ProductForm = () => {
             
 
           </Grid>
-          {/* {!isAddMode ? <ImageUpload id={id}/> : <></>} */}
           <Button
             type="submit"
             fullWidth

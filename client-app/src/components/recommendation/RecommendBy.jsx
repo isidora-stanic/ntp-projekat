@@ -1,6 +1,6 @@
 import { Avatar, Typography } from '@mui/material'
 import React from 'react'
-import ProductShort from './ProductShort'
+import ProductShort from '../product/ProductShort'
 import RecommendIcon from '@mui/icons-material/Recommend';
 
 const RecommendBy = ({by, products}) => {

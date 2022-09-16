@@ -56,6 +56,104 @@ fn delete_param(id: i32) -> Json<String> {
     }).join().unwrap()
 }
 
+#[get("/recommend-by-id/<id>")]
+async fn get_recommendations_by_id(id: i32) -> Json<Vec<Product>> {
+    let handle1 = thread::spawn(move || {
+        let params = service::get_all_for_attribute("id".to_string(), id.to_string());
+        Json(params.unwrap())
+    });
+
+    let params = handle1.join().unwrap();
+
+    let mut prod_ids: Vec<&str> = params.iter().map(|param| param.value1.as_str()).collect::<Vec<&str>>()
+        .iter().filter(|p| &p.to_string() != &id.to_string()).cloned().collect();
+    let mut prod_ids2: Vec<&str> = params.iter().map(|param| param.value2.as_str()).collect::<Vec<&str>>()
+        .iter().filter(|p| &p.to_string() != &id.to_string()).cloned().collect();
+    prod_ids.append(&mut prod_ids2);
+
+    let products = service::get_recommended_products_by_id(prod_ids);
+    Json(products.await.unwrap())
+
+}
+
+#[get("/similar/<id>")]
+async fn get_similar(id: i32) -> Json<Vec<Product>> {
+    let handle1 = thread::spawn(move || {
+        let params = service::get_all_for_attribute("id".to_string(), id.to_string());
+        Json(params.unwrap())
+    });
+
+    let params = handle1.join().unwrap();
+
+    let mut prod_ids: Vec<&str> = params.iter().map(|param| param.value1.as_str()).collect::<Vec<&str>>()
+        .iter().filter(|p| &p.to_string() != &id.to_string()).cloned().collect();
+    let mut prod_ids2: Vec<&str> = params.iter().map(|param| param.value2.as_str()).collect::<Vec<&str>>()
+        .iter().filter(|p| &p.to_string() != &id.to_string()).cloned().collect();
+    prod_ids.append(&mut prod_ids2);
+
+    let products = service::get_similar_products(id);
+    Json(products.await.unwrap())
+
+}
+
+#[post("/recommend-by-attributes", format = "json", data = "<product>")]
+async fn get_recommendations_by_attr(product: Json<Product>) -> Json<Vec<Product>> {
+    let product_finish = product.finish.clone();
+    let product_color = product.color.clone();
+    let product_material = product.material.clone();
+    let product_purpose = product.purpose.clone();
+
+    let handle2 = thread::spawn(move || {
+        let params_finish = service::get_all_for_attribute("finish".to_string(), product_finish.to_string());
+        Json(params_finish.unwrap())
+    });
+    let handle3 = thread::spawn(move || {
+        let params_color = service::get_all_for_attribute("color".to_string(), product_color.to_string());
+        Json(params_color.unwrap())
+    });
+    let handle4 = thread::spawn(move || {
+        let params_material = service::get_all_for_attribute("material".to_string(), product_material.to_string());
+        Json(params_material.unwrap())
+    });
+
+    // getting connected attributes
+    let mut any_filter = AnyFilter {
+        finish: vec![],
+        color: vec![],
+        purpose: vec![product_purpose.clone()],
+        material: vec![]
+    };
+    // handle 2
+    let params_finish = handle2.join().unwrap();
+
+    let mut prod_finishes: Vec<String> = params_finish.iter().map(|param| param.value1.clone()).collect();
+    let mut prod_finishes2: Vec<String> = params_finish.iter().map(|param| param.value2.clone()).collect();
+    prod_finishes.append(&mut prod_finishes2);
+    any_filter.finish = prod_finishes;
+
+    // handle 3
+    let params_color = handle3.join().unwrap();
+
+    let mut prod_colors: Vec<String> = params_color.iter().map(|param| param.value1.clone()).collect();
+    let mut prod_colors2: Vec<String> = params_color.iter().map(|param| param.value2.clone()).collect();
+    prod_colors.append(&mut prod_colors2);
+    any_filter.color = prod_colors;
+
+    // handle 4
+    let params_material = handle4.join().unwrap();
+
+    let mut prod_materials: Vec<String> = params_material.iter().map(|param| param.value1.clone()).collect();
+    let mut prod_materials2: Vec<String> = params_material.iter().map(|param| param.value2.clone()).collect();
+    prod_materials.append(&mut prod_materials2);
+    any_filter.material = prod_materials;
+
+    let product_id = product.id.clone();
+
+    let products = service::get_recommended_products_by_attr(product_id, any_filter);
+    Json(products.await.unwrap())
+
+}
+
 #[post("/recommend", format = "json", data = "<product>")]
 async fn get_recommendations(product: Json<Product>) -> Json<Vec<RecommendedProducts>> {
     let product_id = product.id.clone();
@@ -212,6 +310,6 @@ fn rocket() -> _ {
         .mount("/api/recommendations", 
             routes![
                 get_all_params, get_one_param, new_param, delete_param, update_param,
-                get_recommendations
+                get_recommendations, get_recommendations_by_id, get_similar, get_recommendations_by_attr
             ])
 }

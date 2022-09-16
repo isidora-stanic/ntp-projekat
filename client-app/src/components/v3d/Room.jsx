@@ -9,6 +9,7 @@ import Grout from './Grout';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from '../util/ErrorFallback';
 import { useParams } from 'react-router-dom';
+// import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 
 const Room = ({a, b, c, selectedFace, setSelectedFace, meshRef, walls, setRoomSetup}) => {
     // const [texture] = useLoader(THREE.TextureLoader, ['https://media.istockphoto.com/photos/white-colored-low-contrast-concrete-textured-background-with-and-picture-id1193725656?k=20&m=1193725656&s=612x612&w=0&h=mROTQNi4boogY728Z6oyv-Ew4f3Pd-tJOgc6axm4JmE=']);
@@ -24,6 +25,21 @@ const Room = ({a, b, c, selectedFace, setSelectedFace, meshRef, walls, setRoomSe
         useEffect(() => {
             // console.log(JSON.stringify(walls))
         }, [walls])
+
+        // const exporter = new GLTFExporter()
+        // const options = {
+        //     trs: params.trs,
+        //     onlyVisible: params.onlyVisible,
+        //     truncateDrawRange: params.truncateDrawRange,
+        //     binary: params.binary,
+        //     maxTextureSize: params.maxTextureSize
+        // };
+
+        // useEffect(() => {
+        //     exporter.parse(meshRef.current, function (gltf) {
+        //         downloadJSON(gltf)
+        //     }, options)
+        // })
 
         // function genPositions(wallSize, fugnaSize, startPos, rotation, size, urls) {
         //     let tiles = []

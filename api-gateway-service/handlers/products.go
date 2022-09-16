@@ -141,7 +141,7 @@ func (p *Products) UpdateProduct(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Products) Subscribe(rw http.ResponseWriter, r *http.Request) {
-	err := AuthAdmin(rw, r)
+	err := AuthAnyRole(rw, r)
 	if err == utils.ErrUnauthorized {
 		http.Error(rw, err.Error(), 401)
 		return
@@ -174,7 +174,7 @@ func (p *Products) Subscribe(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (p *Products) Unsubscribe(rw http.ResponseWriter, r *http.Request) {
-	err := AuthAdmin(rw, r)
+	err := AuthAnyRole(rw, r)
 	if err == utils.ErrUnauthorized {
 		http.Error(rw, err.Error(), 401)
 		return

@@ -78,7 +78,7 @@ const CanvasV3D = () => {
     w1, w2, w3, w4, w5, w6
   }
 
-  localStorage.setItem("enterior", JSON.stringify(walls))
+  // localStorage.setItem("enterior", JSON.stringify(walls))
 
   const [roomGeometry, setRoomGeometry] = useState({
     attributes: { position: { array: [0, 0, 0] } },

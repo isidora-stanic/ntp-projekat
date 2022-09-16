@@ -54,7 +54,6 @@ func Update(id uint32, p models.Product) (models.Product, error) {
 	oldPrice := found.Price
 	newPrice := p.Price
 
-	found.ImageSrc = p.ImageSrc
 	found.Name = p.Name
 	found.Price = p.Price
 	found.SKU = p.SKU

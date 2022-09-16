@@ -18,7 +18,6 @@ import (
 
 var bindAddress = env.String("BIND_ADDRESS", false, ":9090", "Bind address for the server")
 var logLevel = env.String("LOG_LEVEL", false, "debug", "Log output level for the server [debug, info, trace]")
-// var basePath = env.String("BASE_PATH", false, "/tmp/images", "Base path to save images")
 
 func main() {
 	fmt.Println("Hello there - this is changed version of service")
@@ -94,6 +93,7 @@ func main() {
 	sig := <- sigChan
 	sl.Println("Recieved terminate, graceful shutdown", sig)
 	
-	tc, _ := context.WithTimeout(context.Background(), 30*time.Second)
+	tc, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
 	s.Shutdown(tc)
 }

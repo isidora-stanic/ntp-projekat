@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import ShortImage from '../util/ShortImage'
 import { Card, CardMedia, CardContent, Typography, CardActions, Button } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import ImageService from '../../services/ImageService'
 import { useWishlist } from '../../contexts/WishListContext'
-import StatisticsService from '../../services/StatisticsService'
 
 
 const ProductShort = ({product}) => {
@@ -40,7 +38,7 @@ const ProductShort = ({product}) => {
 
 
   return (
-      <Card sx={{ maxWidth: 300, display: 'inline-block', margin: 1, padding: 1, cursor: 'pointer'}}>
+      <Card sx={{ maxWidth: 250, minHeight: 500, display: 'inline-block', margin: 1, padding: 1, cursor: 'pointer'}}>
       <CardMedia
         component="img"
         alt={product.name}

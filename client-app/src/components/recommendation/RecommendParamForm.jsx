@@ -131,7 +131,6 @@ const RecommendParamForm = () => {
             {/*  */}
             
           </Grid>
-          {/* {!isAddMode ? <ImageUpload id={id}/> : <></>} */}
           <Button
             type="submit"
             fullWidth
