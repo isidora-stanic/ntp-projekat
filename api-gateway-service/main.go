@@ -76,7 +76,7 @@ func main() {
 	deleteRouter.HandleFunc("/api/users/{id:[0-9]+}", uh.DeleteUser)
 
 	// email-service routes
-	postRouter.HandleFunc("/api/email/send", eh.SendBasicEmail)
+	postRouter.HandleFunc("/api/email/send-deleted-review", eh.SendBasicEmail)
 
 	// review-service routes
 	getRouter.HandleFunc("/api/reviews", rvwh.GetAllReviews)
@@ -89,8 +89,8 @@ func main() {
 
 	// statistics-service routes
 	getRouter.HandleFunc("/api/statistics", sh.GetAllLogs)
-	getRouter.HandleFunc("/api/statistics/statistics-for-all/{logtype:[A-Z]+}", sh.GetAllLogsByTypeProduct)
-	getRouter.HandleFunc("/api/statistics/statistics-for-all-interval/{logtype:[A-Z]+}/{t1}/{t2}", sh.GetAllLogsByTypeProductInterval)
+	getRouter.HandleFunc("/api/statistics/visits", sh.GetAllLogsByTypeProduct)
+	// getRouter.HandleFunc("/api/statistics/statistics-for-all-interval/{logtype:[A-Z]+}/{t1}/{t2}", sh.GetAllLogsByTypeProductInterval)
 	getRouter.HandleFunc("/api/statistics/subscriptions", sh.GetSubs)
 	getRouter.HandleFunc("/api/statistics/comments", sh.GetComments)
 	getRouter.HandleFunc("/api/statistics/ratings", sh.GetRatings)

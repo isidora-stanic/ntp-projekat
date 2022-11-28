@@ -7,9 +7,9 @@ import (
 	"net/http"
 )
 
-func SendEmail(from string, to string, subject string, message string) {
+func SendEmail(from string, to string, subject string, message string, link string) {
 
-	values := map[string]string{"from": from, "to": to, "subject": subject, "msg": message}
+	values := map[string]string{"from": from, "to": to, "subject": subject, "msg": message, "link": link}
 	json_data, err := json.Marshal(values)
 
 	if err != nil {
@@ -17,7 +17,7 @@ func SendEmail(from string, to string, subject string, message string) {
 		return
 	}
 
-	resp, err := http.Post("http://localhost:9093/api/email/send", "application/json",
+	resp, err := http.Post("http://localhost:9093/api/email/send-product-change", "application/json",
 		bytes.NewBuffer(json_data))
 
 	if err != nil {
@@ -29,5 +29,4 @@ func SendEmail(from string, to string, subject string, message string) {
 
 	json.NewDecoder(resp.Body).Decode(&res)
 
-	// fmt.Println(res["json"])
 }

@@ -323,7 +323,7 @@ func SendEmailsToSubs(id uint32, oldPrice float32, newPrice float32, pName strin
 	}
 
 	for _, sub := range subs {
-		email.SendEmail("admin@mail.com", sub.Email, "Price for " + pName + " changed", "Price for " + pName + " changed. Old price was " + strconv.FormatFloat(float64(oldPrice), 'f', 2, 32) + "RSD. Now it's " + strconv.FormatFloat(float64(newPrice), 'f', 2, 32) + "RSD. You can visit http://localhost:3000/product/"+strconv.FormatUint(uint64(id), 10)+" to see this product.")
+		email.SendEmail("admin@mail.com", sub.Email, "Price for " + pName + " changed", "Price for " + pName + " changed. Old price was " + strconv.FormatFloat(float64(oldPrice), 'f', 2, 32) + "RSD. Now it's " + strconv.FormatFloat(float64(newPrice), 'f', 2, 32) + "RSD.", "http://localhost:3000/product/"+strconv.FormatUint(uint64(id), 10))
 	}
 }
 

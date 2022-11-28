@@ -8,10 +8,10 @@ const CameraController = () => {
       () => {
         const controls = new OrbitControls(camera, gl.domElement);
   
-        controls.minDistance = 20;
+        controls.minDistance = 10;
         controls.maxDistance = 2000;
         controls.zoomSpeed = 2;
-        controls.zoomO = 200;
+        controls.zoomO = 10;
         console.log('camera distance',controls.getDistance())
         controls.enableZoom = true;
         controls.enablePan = true;

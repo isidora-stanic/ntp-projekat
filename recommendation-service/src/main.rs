@@ -189,8 +189,6 @@ async fn get_recommendations(product: Json<Product>) -> Json<Vec<RecommendedProd
     let mut prod_ids2: Vec<&str> = params.iter().map(|param| param.value2.as_str()).collect::<Vec<&str>>()
         .iter().filter(|p| &p.to_string() != &product_id.to_string()).cloned().collect();
     prod_ids.append(&mut prod_ids2);
-    
-    // println!("Product ids: {:#?}", prod_ids);
 
     let mut products: Vec<RecommendedProducts> = vec![];
 
@@ -198,17 +196,13 @@ async fn get_recommendations(product: Json<Product>) -> Json<Vec<RecommendedProd
 
     // getting connected products
     for prod_id in prod_ids {
-        // println!("getting product by id: {}", prod_id);
         let url_string: String = format!("http://localhost:9090/api/products/{}", prod_id);
-        // println!("URL: {}", url_string);
 
         let resp: Product = reqwest::get(url_string)
         .await
         .unwrap()
         .json()
         .await.unwrap();
-    
-        // println!("{:#?}", resp.name);
 
         products_ids.push(resp);
     }
@@ -249,8 +243,6 @@ async fn get_recommendations(product: Json<Product>) -> Json<Vec<RecommendedProd
     prod_materials.append(&mut prod_materials2);
     any_filter.material = prod_materials;
 
-    // println!("filters\n color: {:#?}\n finish: {:#?}\n material: {:#?}\n purpose: {:#?}", any_filter.color, any_filter.finish, any_filter.material, any_filter.purpose);
-
     let client = reqwest::Client::new();
     let url_string_f: String = format!("http://localhost:9090/api/products/filter/any/{}", &product_id);
 
@@ -263,21 +255,13 @@ async fn get_recommendations(product: Json<Product>) -> Json<Vec<RecommendedProd
         .text()
         .await.unwrap();
 
-    // println!("filtered: \n{:#?}", resp);
-
-    // products.append(&mut serde_json::from_str::<Vec<Product>>(&resp).unwrap());
     products.push(RecommendedProducts {
         based_on: "Filter".to_string(), 
         products: serde_json::from_str::<Vec<Product>>(&resp).unwrap()
     });
 
-    // println!("filtered: \n{:#?}", serde_json::from_str::<Vec<Product>>(&resp).unwrap());
-
-
-
     // getting similar products
     let url_string: String = format!("http://localhost:9090/api/products/similar/{}", product_id2);
-    // println!("URL: {}", url_string);
 
     let resp = reqwest::get(url_string)
         .await
@@ -285,10 +269,6 @@ async fn get_recommendations(product: Json<Product>) -> Json<Vec<RecommendedProd
         .text()
         .await.unwrap();
 
-    // products.append(&mut resp);
-    // println!("similar: \n{:#?}", resp);
-
-    // products.append(&mut serde_json::from_str::<Vec<Product>>(&resp).unwrap());
     products.push(RecommendedProducts {
         based_on: "Similar".to_string(), 
         products: serde_json::from_str::<Vec<Product>>(&resp).unwrap()

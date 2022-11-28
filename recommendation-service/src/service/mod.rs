@@ -287,7 +287,6 @@ pub fn delete(id: i32) -> Result<String, Error> {
 }
 
 // e2e
-
 pub fn get_all_for_attribute(attribute: String, value: String) -> Result<Vec<RecommendationParamDTO>, Error> {
     // println!("{:#?} {:#?}", attribute, value);
     let mut client = Client::connect(
@@ -323,17 +322,13 @@ pub async fn get_recommended_products_by_id(prod_ids: Vec<&str>) -> Result<Vec<P
 
     // getting connected products
     for prod_id in prod_ids {
-        // println!("getting product by id: {}", prod_id);
         let url_string: String = format!("http://localhost:9090/api/products/{}", prod_id);
-        // println!("URL: {}", url_string);
 
         let resp: Product = reqwest::get(url_string)
         .await
         .unwrap()
         .json()
         .await.unwrap();
-    
-        // println!("{:#?}", resp.name);
 
         products.push(resp);
     }
@@ -358,7 +353,6 @@ pub async fn get_recommended_products_by_attr(product_id: i32, any_filter: AnyFi
 
 pub async fn get_similar_products(product_id: i32) -> Result<Vec<Product>, Error> {
     let url_string: String = format!("http://localhost:9090/api/products/similar/{}", product_id);
-    // println!("URL: {}", url_string);
 
     let resp: Vec<Product> = reqwest::get(url_string)
         .await

@@ -159,7 +159,7 @@ const V3DOptions = ({
               <SelectTileFormWishList wall={w5} setWall={setW5} wallName='Back Wall' size={[abc.b, abc.a]} setWallPrice={setw5P} wallPrice={w5P} />
               {/* <SelectTileFormWishList wall={w3} setWall={setW3} wallName='Ceiling' /> */}
               <SelectTileFormWishList wall={w4} setWall={setW4} wallName='Floor' size={[abc.c, abc.a]} setWallPrice={setw4P} wallPrice={w4P} />
-              {wishlist.length > 0 ? w1P ? <Typography variant="p" sx={{fontSize: '10pt', mt: 0}}>Total Price: {w1P + w2P + w4P + w5P + w6P} RSD</Typography>:<></> : <></>}
+              {/* {wishlist.length > 0 ? w1P ? <Typography variant="p" sx={{fontSize: '10pt', mt: 0}}>Total Price: {w1P + w2P + w4P + w5P + w6P} RSD</Typography>:<></> : <></>} */}
         { wishlist.length !== 0 && user ? <Button variant="contained" color="secondary" onClick={handleSave}>Save Room setup</Button>: <></> }
         
             </>) : 

@@ -69,8 +69,8 @@ const ReviewService = {
             r => {
                 console.log(r)
                 if (r.status === 200) {
-                    axios.post("http://localhost:9093/api/email/send", 
-                        {from: "admin@mail.com", to: email, subject: "Deleted review", msg: "Your review has been deleted because: \n" + reason})
+                    axios.post("http://localhost:9093/api/email/send-deleted-review", 
+                        {from: "admin@mail.com", to: email, subject: "Deleted review", msg: reason})
                         .then(
                             r => {
                                 console.log(r)

@@ -36,6 +36,8 @@ func main() {
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	postRouter.HandleFunc("/api/email/send", eh.SendBasicEmail)
+	postRouter.HandleFunc("/api/email/send-deleted-review", eh.SendDeletedReviewEmail)
+	postRouter.HandleFunc("/api/email/send-product-change", eh.SendProductChangeEmail)
 
 	// CORS
 	ch := gohandlers.CORS(

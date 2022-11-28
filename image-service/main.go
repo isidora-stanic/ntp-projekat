@@ -50,7 +50,7 @@ func main() {
 	// filename regex: {filename:[a-zA-Z0-9_]+\\.[a-z]{3,4}}
 	// problem with FileServer is that it is dumb
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
-	postRouter.HandleFunc("/images/{id:[0-9]+}/{filename:[a-zA-Z0-9_ ]+\\.[a-z]{3,4}}", fh.UploadImage)
+	postRouter.HandleFunc("/images/{id:[0-9]+}/{filename}", fh.UploadImage)
 	postRouter.HandleFunc("/", fh.UploadImageMultipart)
 
 	// get files

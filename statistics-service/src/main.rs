@@ -20,10 +20,10 @@ fn get_all() -> Json<Vec<Log>> {
     }).join().unwrap()
 }
 
-#[get("/statistics-for-all/<logtype>")]
-fn get_statistics_for_all(logtype: String) -> Json<Vec<StatsCount>> {
+#[get("/statistics-for-all/visits")]
+fn get_statistics_for_all() -> Json<Vec<StatsCount>> {
     thread::spawn(move || {
-        let counts = service::get_count_for_type_product(logtype);
+        let counts = service::get_count_for_type_product("VISIT".to_string());
         Json(counts.unwrap())
     }).join().unwrap()
 }

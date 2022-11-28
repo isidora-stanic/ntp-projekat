@@ -57,11 +57,8 @@ func (p *Statistics) GetAllLogsByTypeProduct(rw http.ResponseWriter, r *http.Req
 	
 	utils.SetupResponse(&rw, r)
 
-	vars := mux.Vars(r)
-	logtype := vars["logtype"]
-
 	response, err := http.Get(
-		utils.StatisticsServiceRoot.Next().Host + StatisticsService + "/statistics-for-all/" + logtype)
+		utils.StatisticsServiceRoot.Next().Host + StatisticsService + "/visits")
 
 	if err != nil {
 		rw.WriteHeader(http.StatusGatewayTimeout)
